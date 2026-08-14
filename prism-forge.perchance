@@ -28,13 +28,13 @@ settings
       type = paragraph
       defaultValue =
       visible() =>
-        return false;
+        return true;
     negative
       label = Negative bridge
       type = text
       defaultValue =
       visible() =>
-        return false;
+        return true;
     artStyle
       label = Art Style bridge
       type = select

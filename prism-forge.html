@@ -152,4 +152,30 @@ body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #ba
   const tick = () => { bind('gallery'); bind('comments'); apply('gallery'); apply('comments'); };
   tick(); setTimeout(tick, 500); setInterval(tick, 1000);
 })();
+</script><script id="prismForgePromptStateBridge">
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const backend = () => document.getElementById('backendMount');
+  const input = (name) => backend()?.querySelector(`[data-name="${name}"] textarea,[data-name="${name}"] input`);
+  const select = (name) => backend()?.querySelector(`select[data-name="${name}"]`);
+  const emit = (element, type) => element?.dispatchEvent(new Event(type, { bubbles: true }));
+  const setFrameworkValue = (name, value) => { const element = input(name); if (element) { element.value = value; emit(element, 'input'); emit(element, 'change'); } try { if (window.input) window.input[name] = value; } catch (_) {} };
+  const prime = () => {
+    const prompt = $('prompt')?.value.trim() || '';
+    if (!prompt) { const message = $('generateStatus'); if (message) { message.textContent = 'Enter a prompt before generating.'; message.className = 'status error'; } return false; }
+    const custom = $('styleMode')?.value === '__custom__';
+    const customText = custom ? ($('customStyle')?.value.trim() || '') : '';
+    setFrameworkValue('description', prompt + (customText ? ', ' + customText : ''));
+    setFrameworkValue('negative', $('negative')?.value.trim() || '');
+    setFrameworkValue('numImages', String(Math.max(1, Math.floor(Number($('count')?.value) || 1))));
+    setFrameworkValue('guidance', String(Number($('guidance')?.value) || 7));
+    setFrameworkValue('seed', $('seed')?.value.trim() || '');
+    const shape = select('shape'); if (shape) { shape.value = $('resolution')?.value || shape.value; emit(shape, 'change'); }
+    const style = select('artStyle'); if (style && !custom) { const match = [...style.options].find((option) => option.value === $('styleMode')?.value); if (match) { style.value = match.value; emit(style, 'change'); } }
+    try { if (window.input) { window.input.description = prompt + (customText ? ', ' + customText : ''); window.input.negative = $('negative')?.value.trim() || ''; window.input.numImages = Number($('count')?.value) || 1; window.input.guidance = Number($('guidance')?.value) || 7; window.input.seed = $('seed')?.value.trim() || ''; window.input.shape = $('resolution')?.value || '768x768'; } } catch (_) {}
+    return true;
+  };
+  const bind = () => { const button = $('generate'); if (!button || button.dataset.promptBridgeBound === '1') return; button.dataset.promptBridgeBound = '1'; button.onclick = () => { if (!prime()) return; const native = backend()?.querySelector('#generateButtonEl'); if (!native) { const message = $('generateStatus'); if (message) { message.textContent = 'Perchance generation controls are still loading.'; message.className = 'status error'; } return; } const message = $('generateStatus'); if (message) { message.textContent = 'Generating with Perchance…'; message.className = 'status'; } native.click(); }; };
+  bind(); setTimeout(bind, 700); setInterval(bind, 1200);
+})();
 </script></body></html>
