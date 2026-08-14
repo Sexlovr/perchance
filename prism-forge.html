@@ -178,4 +178,39 @@ body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #ba
   const bind = () => { const button = $('generate'); if (!button || button.dataset.promptBridgeBound === '1') return; button.dataset.promptBridgeBound = '1'; button.onclick = () => { if (!prime()) return; const native = backend()?.querySelector('#generateButtonEl'); if (!native) { const message = $('generateStatus'); if (message) { message.textContent = 'Perchance generation controls are still loading.'; message.className = 'status error'; } return; } const message = $('generateStatus'); if (message) { message.textContent = 'Generating with Perchance…'; message.className = 'status'; } native.click(); }; };
   bind(); setTimeout(bind, 700); setInterval(bind, 1200);
 })();
+</script><script id="prismForgeExternalPayloadAdapter">
+(() => {
+  if (window.__prismForgeExternalPayloadAdapter) return;
+  window.__prismForgeExternalPayloadAdapter = true;
+  const $ = (id) => document.getElementById(id);
+  const preview = (payload) => {
+    const status = $('profileStatus');
+    if (!status) return;
+    let details = $('externalPayloadPreview');
+    if (!details) { const wrapper = document.createElement('details'); wrapper.className = 'request-preview'; wrapper.innerHTML = '<summary>Show last external request</summary><pre id="externalPayloadPreview"></pre>'; status.after(wrapper); details = $('externalPayloadPreview'); }
+    details.textContent = JSON.stringify(payload, null, 2);
+  };
+  const compose = (body) => {
+    const base = $('prompt')?.value.trim() || body.prompt || '';
+    const visibleNegative = $('negative')?.value.trim() || '';
+    const style = window.input?.artStyle;
+    const stylePrompt = typeof style?.prompt === 'string' ? style.prompt.trim() : '';
+    const styleNegative = typeof style?.negative === 'string' ? style.negative.trim() : '';
+    let prompt = base;
+    if (stylePrompt && stylePrompt !== base && !stylePrompt.includes('[input.')) prompt = stylePrompt.includes(base) ? stylePrompt : base + ', ' + stylePrompt;
+    let negative = visibleNegative;
+    if (styleNegative && !styleNegative.includes('[input.') && styleNegative !== visibleNegative && !negative.includes(styleNegative)) negative = [visibleNegative, styleNegative].filter(Boolean).join(', ');
+    const next = {...body, prompt, negative_prompt: negative, size: $('profileSize')?.value || body.size, n: Math.max(1, Number($('profileCount')?.value) || Number(body.n) || 1), guidance_scale: Number($('guidance')?.value) || undefined};
+    const seed = $('seed')?.value.trim(); if (seed) next.seed = Number(seed);
+    Object.keys(next).forEach((key) => next[key] === undefined || next[key] === '' ? delete next[key] : null);
+    return next;
+  };
+  const realFetch = window.fetch.bind(window);
+  window.fetch = (url, options = {}) => {
+    if (typeof url === 'string' && /\/images\/generations$/i.test(url) && options.body) {
+      try { const payload = compose(JSON.parse(options.body)); options = {...options, body: JSON.stringify(payload)}; preview(payload); } catch (_) {}
+    }
+    return realFetch(url, options);
+  };
+})();
 </script></body></html>

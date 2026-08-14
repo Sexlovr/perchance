@@ -59,6 +59,8 @@ settings
       label = Image count bridge
       type = text
       defaultValue = 1
+      enterKeyTriggersGeneration = true
+      remember = true
     guidance
       label = Guidance bridge
       type = text
@@ -75,6 +77,12 @@ settings
   commentChannels
     general
       label = General
+    chat1
+      label = Room 1
+    chat2
+      label = Room 2
+    chat3
+      label = Room 3
     prompts
       label = Prompts
       commentPlaceholderText = Share a useful prompt or workflow idea.
@@ -83,7 +91,8 @@ settings
     gallery = true
     showprompt = never
     shownegativePrompt = never
-    sort = newest
+    sort = trending
+    hideIfScoreIsBelow = -1
     adaptiveHeight = true
     remember = true
   showFeedback = false

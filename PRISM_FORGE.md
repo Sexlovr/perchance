@@ -10,9 +10,11 @@ Use `prism-forge.html` in the **HTML pane**. It contains the visible Prism Forge
 
 ## External model contract
 
-The optional external path expects an OpenAI-compatible `POST /images/generations` endpoint. Users can create as many saved profiles as they need, then provide a proxy URL, API key, one or more model IDs, image size, an arbitrary positive image count, and custom JSON headers for each profile. The prompt is sent as entered; Prism Forge does not append an aesthetic or force a style. The settings are stored in local browser storage. A shared deployment should use a server-side proxy so API keys are not exposed to other users.
+The optional external path expects an OpenAI-compatible `POST /images/generations` endpoint. Users can create as many saved profiles as they need, then provide a proxy URL, API key, one or more model IDs, image size, an arbitrary positive image count, and custom JSON headers for each profile. The outbound JSON contains `model`, `prompt`, `negative_prompt`, `size`, `n`, `guidance_scale`, and optional numeric `seed`; the selected imported style is composed into the prompt/negative prompt when available. A request-preview panel shows the body that was sent, without exposing the API key. The settings are stored in local browser storage. A shared deployment should use a server-side proxy so API keys are not exposed to other users.
 
 The visible Generate button synchronizes prompt, negative prompt, canvas, guidance, seed, count, and style into the framework’s hidden inputs, then clicks the framework’s own native generate button. This preserves Perchance’s server-backed generation lifecycle and native gallery. The selected style is controlled by the visible UI; **No style** uses the explicit no-style option. Unsafe or obsolete example content and anti-fork behavior are intentionally not restored.
+
+The source pane also preserves the main generator’s additional comment rooms (`general`, `chat1`, `chat2`, `chat3`, and `prompts`), trending gallery sorting with a non-negative score threshold, and Enter-key generation on the image-count input. Unsafe age-coded examples and the original generator’s child-oriented scratchpad content are intentionally not copied.
 
 The header includes six persisted themes: **Graphite**, **Paper**, **Olive**, **Ocean**, **Sunset**, and **Mono**. Theme state is stored locally and applied to the full wrapper and framework output area rather than only to Prism Forge cards.
 
