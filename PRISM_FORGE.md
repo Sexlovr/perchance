@@ -6,13 +6,13 @@ Prism Forge is the provider-neutral Perchance version of the image workspace. It
 
 Use `prism-forge.perchance` in the **main generator/source pane**. It contains the imports, settings, image options, user inputs, and the `onFinish(result) => processGeneration(result)` callback used by Perchance’s default image model.
 
-Use `prism-forge.html` in the **HTML pane**. It is the single-file interface containing the CSS and browser JavaScript for the Prism Forge layout, result handling, Catbox gallery controls, comments section, and third-party model dialog.
+Use `prism-forge.html` in the **HTML pane**. It is the single-file interface containing the CSS and browser JavaScript for the Prism Forge layout, result handling, Catbox gallery controls, the documented t2i framework comments mount positioned below the gallery, and the third-party model dialog.
 
 ## External model contract
 
 The optional external path expects an OpenAI-compatible `POST /images/generations` endpoint. Users can create as many saved profiles as they need, then provide a proxy URL, API key, one or more model IDs, image size, an arbitrary positive image count, and custom JSON headers for each profile. The prompt is sent as entered; Prism Forge does not append an aesthetic or force a style. The settings are stored in local browser storage. A shared deployment should use a server-side proxy so API keys are not exposed to other users.
 
-The source pane also restores the useful framework imports for comments, selectable styles, uploads, fullscreen controls, prompt helpers, tabbed comments, and private media galleries. Unsafe or obsolete example content and anti-fork behavior are intentionally not restored.
+The source pane also restores the useful framework imports for comments, selectable styles, uploads, fullscreen controls, prompt helpers, tabbed comments, and private media galleries. `socialFeatures = enabled` lets the t2i framework create its default comments mount exactly once; the HTML pane does not add a second `[commentsPlugin()]` embed. Native feedback, private-gallery, dark-mode, and fullscreen controls are moved into the Settings drawer instead of floating over the viewport. Unsafe or obsolete example content and anti-fork behavior are intentionally not restored.
 
 ## Catbox behavior
 

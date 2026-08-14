@@ -2587,6 +2587,8 @@ body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFon
 
 
 
+
+
 <style id="prism-forge-polish">
 :root { --pf-ink:#111416; --pf-panel:#191d1e; --pf-line:rgba(242,239,229,.14); --pf-text:#f2efe5; --pf-muted:#8b958d; --pf-lime:#d7f36b; --pf-blue:#9bb6d0; }
 body { background:radial-gradient(circle at 75% 4%,rgba(79,96,78,.16),transparent 32rem),var(--pf-ink) !important; color:var(--pf-text) !important; font-family:'Space Grotesk','DM Sans',system-ui,sans-serif !important; }
@@ -2604,19 +2606,22 @@ body { background:radial-gradient(circle at 75% 4%,rgba(79,96,78,.16),transparen
 .prism-forge-action-dock { max-width:1180px; margin:0 auto 18px; padding:10px; display:flex; flex-wrap:wrap; gap:7px; align-items:center; background:rgba(25,29,30,.88); border:1px solid var(--pf-line); }
 .prism-forge-action-dock button, .prismForgeRehomed { min-height:34px !important; padding:0 12px !important; color:#c9d48c !important; background:transparent !important; border:1px solid rgba(215,243,107,.28) !important; border-radius:0 !important; box-shadow:none !important; font:600 10px 'Space Grotesk',sans-serif !important; position:static !important; transform:none !important; }
 .prism-forge-action-dock button:hover, .prismForgeRehomed:hover { background:rgba(215,243,107,.1) !important; color:var(--pf-lime) !important; }
-.settings-button, .catbox-album-button { display:none !important; }
+  .settings-button, .catbox-album-button, #settingsBtn, #catboxAlbumBtn { display:none !important; position:static !important; inset:auto !important; transform:none !important; }
 #fsExternalBtn { display:inline-flex !important; align-items:center; gap:8px; min-height:36px; padding:0 13px; color:var(--pf-lime) !important; background:rgba(215,243,107,.07) !important; border:1px solid rgba(215,243,107,.35) !important; border-radius:0 !important; font:600 11px 'Space Grotesk',sans-serif !important; position:static !important; box-shadow:none !important; }
 #fsExternalBtn:hover { background:rgba(215,243,107,.16) !important; }
-#fsExternalResults,#prismForgeComments { max-width:1180px; margin:20px auto; padding:20px; background:rgba(25,29,30,.9); border:1px solid var(--pf-line); border-radius:0; }
-#prismForgeComments h2 { margin:0 0 7px; color:var(--pf-text); font-size:20px; letter-spacing:-.04em; }
-#prismForgeComments p { margin:0 0 16px; color:var(--pf-muted); font-size:12px; }
+  #fsExternalResults { max-width:1180px; margin:20px auto; padding:20px; background:rgba(25,29,30,.9); border:1px solid var(--pf-line); border-radius:0; }
+  #commentsPluginCtn654732 { display:block !important; clear:both !important; width:min(1180px, calc(100% - 40px)) !important; margin:28px auto 0 !important; padding:20px !important; background:rgba(25,29,30,.9) !important; border:1px solid var(--pf-line) !important; }
+  #commentsPluginCtn654732 .comments-plugin-ctn { display:block !important; position:relative !important; width:100% !important; height:400px !important; margin:0 auto !important; }
+  .prismForgeNativeTools { display:grid !important; gap:10px !important; margin-top:10px !important; }
+  .prismForgeNativeTools .prismForgeRehomedNative { position:static !important; inset:auto !important; display:block !important; width:100% !important; max-width:none !important; margin:0 !important; padding:0 !important; text-align:left !important; pointer-events:auto !important; transform:none !important; }
+  .prismForgeNativeTools .prismForgeRehomedNative button { position:static !important; inset:auto !important; margin:0 !important; max-width:100% !important; }
 #fsExternalModal { max-width:620px !important; border-radius:0 !important; background:#1d2320 !important; border:1px solid rgba(242,239,229,.22) !important; box-shadow:0 24px 90px rgba(0,0,0,.45) !important; }
 #fsExternalModal input,#fsExternalModal select,#fsExternalModal textarea { border-radius:0 !important; background:#111416 !important; color:var(--pf-text) !important; border:1px solid var(--pf-line) !important; }
 #fsExternalModal button { border-radius:0 !important; }
 .fs-profile-toolbar { display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; gap:7px; align-items:end; margin:16px 0; }
 .fs-profile-toolbar button { min-height:34px; padding:0 10px; color:#c6d48c; background:transparent; border:1px solid rgba(215,243,107,.28); font-size:10px; }
 .fs-profile-toolbar button:hover { background:rgba(215,243,107,.1); }
-@media(max-width:700px) { .prism-forge-intro { grid-template-columns:1fr; gap:15px; } .fs-profile-toolbar { grid-template-columns:1fr 1fr; } .fs-profile-toolbar label { grid-column:1 / -1; } }
+  @media(max-width:700px) { .prism-forge-intro { grid-template-columns:1fr; gap:15px; } .fs-profile-toolbar { grid-template-columns:1fr 1fr; } .fs-profile-toolbar label { grid-column:1 / -1; } #commentsPluginCtn654732 { width:calc(100% - 28px) !important; margin:20px auto 0 !important; padding:14px !important; } #commentsPluginCtn654732 .comments-plugin-ctn { height:420px !important; } }
 </style>
 </head>
 <body>
@@ -5091,15 +5096,40 @@ body { background:radial-gradient(circle at 75% 4%,rgba(79,96,78,.16),transparen
 
 
 
-<section id="prismForgeComments"><div class="prism-forge-kicker">COMMUNITY / NOTES</div><h2>Share the signal.</h2><p>Keep useful prompts, workflow notes, and provider tips together.</p>[commentsPlugin()]</section>
+
+
+
 <script id="prism-forge-rehome-script">
 (() => {
+  const getTools = () => {
+    const content = document.querySelector('#settingsPanel .settings-content');
+    if (!content) return null;
+    let tools = document.getElementById('prismForgeNativeTools');
+    if (!tools) {
+      tools = document.createElement('section');
+      tools.id = 'prismForgeNativeTools';
+      tools.className = 'settings-section prismForgeNativeTools';
+      tools.innerHTML = '<div class="settings-section-title">Perchance tools</div><div class="settings-note">Community and private tools stay inside this drawer so they never cover the workspace.</div>';
+      content.appendChild(tools);
+    }
+    return tools;
+  };
+  const move = (node, tools) => {
+    if (!node || !tools || tools.contains(node)) return;
+    node.classList.add('prismForgeRehomedNative');
+    tools.appendChild(node);
+  };
   const rehome = () => {
-    const dock = document.querySelector('.prism-forge-action-dock');
-    if (!dock) return;
-    document.querySelectorAll('#feedbackButton,.feedback-button,#privateGalleryButton,.private-gallery-button,.social-feature-button').forEach((element) => {
-      if (!dock.contains(element)) { element.classList.add('prismForgeRehomed'); dock.appendChild(element); }
-    });
+    const tools = getTools();
+    if (!tools) return;
+    const feedback = document.getElementById('feedbackBtn893745ykfuhd');
+    move(feedback?.parentElement, tools);
+    move(document.getElementById('privateGalleryCtn97364827'), tools);
+    const dark = document.getElementById('darkModeBtn_875979f948');
+    move(dark?.parentElement, tools);
+    const comments = document.getElementById('commentsPluginCtn654732');
+    const gallery = document.getElementById('imageGalleryCtn8569284');
+    if (comments && gallery?.parentElement && comments !== gallery.nextElementSibling) gallery.parentElement.insertBefore(comments, gallery.nextSibling);
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', rehome, { once: true }); else rehome();
   new MutationObserver(rehome).observe(document.body, { childList: true, subtree: true });
