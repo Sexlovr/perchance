@@ -1,6 +1,6 @@
 # Model Atelier — Perchance Edition
 
-Model Atelier is the provider-neutral Perchance version of the image workspace. It keeps Perchance’s default text-to-image generation path in place while adding a responsive custom interface, Catbox gallery tools, and an optional external image-model connection.
+Model Atelier is the provider-neutral Perchance version of the image workspace. It keeps Perchance’s default text-to-image generation path in place while adding a responsive custom interface, Catbox gallery tools, and optional external image-model profiles.
 
 ## Files to paste into Perchance
 
@@ -10,7 +10,7 @@ Use `model-atelier.html` in the **HTML pane**. It is the single-file interface c
 
 ## External model contract
 
-The optional external path expects an OpenAI-compatible `POST /images/generations` endpoint. Users can provide a proxy URL, API key, one or more model IDs, image size, frame count, and custom JSON headers. The settings are stored in local browser storage. A shared deployment should use a server-side proxy so API keys are not exposed to other users.
+The optional external path expects an OpenAI-compatible `POST /images/generations` endpoint. Users can create as many saved profiles as they need, then provide a proxy URL, API key, one or more model IDs, image size, an arbitrary positive image count, and custom JSON headers for each profile. The prompt is sent as entered; Model Atelier does not append an aesthetic or force a style. The settings are stored in local browser storage. A shared deployment should use a server-side proxy so API keys are not exposed to other users.
 
 ## Catbox behavior
 

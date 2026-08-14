@@ -5,25 +5,23 @@ copyText = {import:copy-text-plugin}
 remember = {import:remember-plugin}
 
 $meta
-  title = Model Atelier — AI Image Generator
-  description = A professional Perchance image generator with style presets, Catbox gallery support, and optional external image models.
+  title = Model Atelier — Provider-neutral Image Generator
+  description = A flexible Perchance image workspace with Catbox tools and optional third-party model profiles.
   image = https://user-uploads.perchance.org/file/0adef8a14fc4e89cf7a9c5005d6417f4.jpeg
 
 settings
   pageTitle = Model Atelier
-  introMessage = Create a polished image from a clear prompt. Choose a style and canvas, then generate.
-  underImagesMessage = <div class="flux-footer-note">Perchance default generation, Catbox gallery support, and optional external model configuration.</div>
+  introMessage = Describe anything you want to create, then generate. No visual style is forced.
+  underImagesMessage = <div class="flux-footer-note">Perchance default generation, Catbox gallery tools, and optional third-party model profiles.</div>
   socialFeatures = button
   numImages = [Number(input.numImages)]
-
   imageButtons
     personality = false
     privateSave = true
-
   imageOptions
-    saveTitle = [input.artStyle.getName] — [input.description]
-    prompt = [input.artStyle.prompt]
-    negativePrompt = [input.artStyle.negative], [input.negative]
+    saveTitle = [input.description]
+    prompt = [input.description]
+    negativePrompt = [input.negative]
     resolution = [input.shape]
     guidanceScale = [input.Gscale]
     seed = [input.seed]
@@ -33,56 +31,19 @@ settings
   userInputs
     description
       label = Prompt
-      tip = Describe the subject, setting, mood, lighting, composition, and visual style.
+      tip = Write any subject, scene, character, composition, medium, or visual direction you want.
       type = paragraph
       remember = true
       takesUpFullRow = true
       width = min(760px, 100%)
-      height = 140px
+      height = 150px
       enterKeyTriggersGeneration = false
-      defaultValue = an editorial portrait of an adult creative professional in a sunlit studio, refined composition, natural expression
-      examples
-        an editorial portrait of an adult creative professional in a sunlit studio, refined composition, natural expression
-        a cinematic coastal observatory at blue hour, dramatic clouds, realistic architectural photography
-        a whimsical botanical library with floating books, warm light, intricate details, storybook illustration
-
+      defaultValue = Describe the image you want to create
     negative
-      label = Negative prompt
-      tip = Optional details to avoid in the generated image.
+      label = Negative prompt (optional)
+      tip = List details you want the model to avoid. Leave blank for full freedom.
       type = text
       remember = true
-      examples
-        blurry, low quality, distorted anatomy, extra fingers, watermark, text artifacts
-
-    catboxAPI
-      label = Catbox user hash (optional)
-      tip = Used only for Catbox uploads and deletion features. Leave blank if you only want to browse the gallery.
-      type = text
-      remember = true
-      takesUpFullRow = true
-      foldToggleState = hidden
-
-    artStyle
-      label = Style
-      type = select
-      remember = true
-      options
-        Photoreal Studio
-          prompt = [input.description], photorealistic studio image, realistic texture, natural color grading, high detail
-          negative = cartoon, illustration, 3d render, oversaturated
-        Cinematic Frame
-          prompt = [input.description], cinematic still, controlled lighting, atmospheric depth, filmic color grade, high detail
-          negative = flat lighting, low contrast, text, logo
-        Editorial Portrait
-          prompt = [input.description], premium editorial photography, art-directed composition, refined styling, soft directional light
-          negative = casual snapshot, clutter, harsh flash, watermark
-        Anime Illustration
-          prompt = [input.description], high-quality anime illustration, expressive character design, clean linework, layered lighting
-          negative = photorealism, muddy colors, malformed hands, text
-        Concept Art
-          prompt = [input.description], professional concept art, imaginative environment design, strong silhouette, detailed materials
-          negative = unfinished sketch, flat composition, low detail, watermark
-
     shape
       label = Canvas
       type = select
@@ -91,36 +52,29 @@ settings
         Portrait = 512x768
         Square = 768x768
         Landscape = 768x512
-
     numImages
-      label = Images
-      type = select
-      remember = true
-      options
-        default(1) = 1
-        2
-        3
-        4
-
-    Gscale
-      label = Guidance
-      type = select
-      remember = true
-      options
-        default(7) = 7
-        5
-        6
-        8
-        9
-        10
-
-    seed
-      label = Seed (optional)
-      tip = Leave blank for a random result. Reuse a seed to reproduce a result with the same prompt and settings.
+      label = Images to generate
+      tip = Enter any positive whole number. Your provider may apply its own request limits.
       type = text
       remember = true
-      examples
-        leave blank for a random seed
+      defaultValue = 1
+    Gscale
+      label = Guidance (optional)
+      type = text
+      remember = true
+      defaultValue = 7
+    seed
+      label = Seed (optional)
+      tip = Leave blank for a random result. Reuse a seed when you want to explore variations.
+      type = text
+      remember = true
+    catboxAPI
+      label = Catbox user hash (optional)
+      tip = Used only for authenticated Catbox upload and deletion tools.
+      type = text
+      remember = true
+      takesUpFullRow = true
+      foldToggleState = hidden
 
   galleryOptions
     gallery = true
@@ -129,5 +83,4 @@ settings
     sort = newest
     adaptiveHeight = true
     remember = true
-
   showFeedback = false
