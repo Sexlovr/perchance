@@ -12,6 +12,7 @@ settings
   introMessage =
   underImagesMessage =
   socialFeatures = enabled
+  numImages = [Number(input.numImages)]
   imageButtons
     personality = false
     privateSave = false
@@ -21,7 +22,6 @@ settings
     resolution = [input.shape]
     guidanceScale = [input.guidance]
     seed = [input.seed]
-    numImages = [Number(input.numImages)]
   userInputs
     description
       label = Prompt bridge
