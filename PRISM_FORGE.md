@@ -14,9 +14,13 @@ The optional external path expects an OpenAI-compatible `POST /images/generation
 
 The visible Generate button synchronizes prompt, negative prompt, canvas, guidance, seed, count, and style into the framework’s hidden inputs, then clicks the framework’s own native generate button. This preserves Perchance’s server-backed generation lifecycle and native gallery. The selected style is controlled by the visible UI; **No style** uses the explicit no-style option. Unsafe or obsolete example content and anti-fork behavior are intentionally not restored.
 
+The header includes six persisted themes: **Graphite**, **Paper**, **Olive**, **Ocean**, **Sunset**, and **Mono**. Theme state is stored locally and applied to the full wrapper and framework output area rather than only to Prism Forge cards.
+
 ## Catbox behavior
 
 The gallery keeps album-based Catbox workflows and supports direct image URLs. A Catbox user hash is useful for authenticated upload and deletion operations, but it should not be treated as an account-wide file enumeration API.
+
+The Catbox panel now includes a browser-local **Catbox user hash** field, save/forget controls, local image-file upload, and buttons that can be added to native Perchance gallery images. Uploads use Catbox’s multipart API fields `reqtype=fileupload`, `userhash`, optional `album`, and `fileToUpload`. Upload responses are added to the Prism Forge Catbox import index when Catbox returns a direct file URL. The hash is never included in the repository or source pane.
 
 ## Branch
 
