@@ -22,7 +22,7 @@ settings
   pageTitle = Prism Forge
   introMessage = Describe anything you want to create, then generate. Choose a style only when you want one.
   underImagesMessage = <div class="flux-footer-note">Perchance default generation, Catbox gallery tools, comments, and optional third-party model profiles.</div>
-  socialFeatures = enabled
+  socialFeatures = disabled
   numImages = [Number(input.numImages)]
   imageButtons
     personality = false
