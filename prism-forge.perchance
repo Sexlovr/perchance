@@ -1,6 +1,6 @@
 image = {import:text-to-image-plugin}
+generateHTML = {import:t2i-framework-plugin-v2}
 commentsPlugin = {import:comments-plugin}
-lolmaoStyles = {import:lolmao-bro-artstyle}
 t2iStyles = {import:t2i-styles}
 
 $meta
@@ -8,48 +8,56 @@ $meta
   description = A clean provider-neutral image workspace with direct Perchance generation, lolmao art styles, Catbox tools, comments, and external model profiles.
   image = https://user-uploads.perchance.org/file/0adef8a14fc4e89cf7a9c5005d6417f4.jpeg
 
-artStyle
-  label = 🎨 Art Style
-  type = select
-  remember = true
-  options
-    No style
-      prompt = [input.description]
-      negative = [input.negative]
-      meta:position = 0
-    meta:import
-      from = {import:lolmao-bro-artstyle}
-    meta:import
-      from = {import:t2i-styles}
-
-input
-  description
-    label = Prompt
-    type = paragraph
-    remember = true
-  negative
-    label = Negative prompt
-    type = text
-    remember = true
-  shape
-    label = Canvas
-    type = select
-    remember = true
-    options
-      Portrait = 512x768
-      Square = 768x768
-      Landscape = 768x512
-  numImages
-    label = Images to generate
-    type = text
-    remember = true
-    defaultValue = 1
-  guidance
-    label = Guidance
-    type = text
-    remember = true
-    defaultValue = 7
-  seed
-    label = Seed
-    type = text
-    remember = true
+settings
+  pageTitle = Prism Forge style bridge
+  introMessage =
+  socialFeatures = disabled
+  imageButtons
+    personality = false
+    privateSave = false
+  imageOptions
+    prompt = [input.artStyle.prompt]
+    negativePrompt = [input.artStyle.negative]
+    resolution = [input.shape]
+    guidanceScale = [input.guidance]
+    seed = [input.seed]
+  userInputs
+    description
+      label = Prompt bridge
+      type = paragraph
+      defaultValue =
+      visible() =>
+        return false;
+    negative
+      label = Negative bridge
+      type = text
+      defaultValue =
+      visible() =>
+        return false;
+    artStyle
+      label = Art Style bridge
+      type = select
+      remember = true
+      options
+        No style
+          prompt = [input.description]
+          negative = [input.negative]
+          meta:position = 0
+        meta:import
+          from = {import:lolmao-bro-artstyle}
+        meta:import
+          from = {import:t2i-styles}
+    shape
+      label = Shape bridge
+      type = select
+      options
+        Portrait = 512x768
+        Square = 768x768
+        Landscape = 768x512
+    guidance
+      label = Guidance bridge
+      type = text
+      defaultValue = 7
+    seed
+      label = Seed bridge
+      type = text
