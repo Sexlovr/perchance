@@ -33,6 +33,74 @@
  const renderCatbox=()=>{const root=$('catboxGrid');root.innerHTML='';catbox.forEach((item,i)=>{const figure=document.createElement('figure');const img=document.createElement('img');img.src=item.url;img.alt=item.label;img.onclick=()=>{$('lightboxImage').src=item.url;$('lightbox').classList.add('open')};const cap=document.createElement('figcaption');cap.textContent=item.label+' · remove';cap.onclick=()=>{catbox.splice(i,1);localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox()};figure.append(img,cap);root.append(figure)})};const addCatbox=(urls,label)=>{let c=0;urls.filter(Boolean).forEach(url=>{if(!catbox.some(x=>x.url===url)){catbox.unshift({url,label:label||'Imported'});c++}});localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox();return c};const loadCatbox=async()=>{const url=$('catboxUrl').value.trim();if(!url){status('catboxStatus','Paste a Catbox URL first.','error');return}try{if(/\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(url)){status('catboxStatus',addCatbox([url],'Catbox URL')?'Image added.':'Already imported.','ok');return}const r=await fetch(url);const text=await r.text();const urls=[...text.matchAll(/https?:\/\/files\.catbox\.moe\/[^\s"'<>]+/gi)].map(m=>m[0].replace(/[)&,.;]+$/,''));if(!urls.length)throw Error('No direct image URLs found.');status('catboxStatus',addCatbox(urls,'Catbox album')+' images added.','ok')}catch(e){status('catboxStatus',e.message||'Catbox import failed.','error')}};
  const active=()=>profiles.items.find(p=>p.id===profiles.activeId)||profiles.items[0],models=v=>String(v||'').split(',').map(x=>x.trim()).filter(Boolean),endpoint=v=>{const x=String(v||'').trim().replace(/\/$/,'');if(!x)throw Error('Add a proxy URL first.');return /\/images\/generations$/i.test(x)?x:x+'/images/generations'};const write=()=>{const p=active();p.name=$('profileName').value.trim()||'Unnamed provider';p.endpoint=$('endpoint').value.trim();p.apiKey=$('apiKey').value.trim();p.modelIds=$('modelIds').value.trim();p.model=$('model').value;p.size=$('profileSize').value;p.count=Math.max(1,Math.floor(Number($('profileCount').value)||1));p.headers=$('headers').value.trim()};const fill=sel=>{$('model').innerHTML='';(models($('modelIds').value).length?models($('modelIds').value):['']).forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n||'Add model IDs above';o.selected=n===sel;$('model').append(o)})};const renderProfiles=()=>{const s=$('profileSelect');s.innerHTML='';profiles.items.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;o.selected=p.id===profiles.activeId;s.append(o)});const p=active();$('profileName').value=p.name;$('endpoint').value=p.endpoint;$('apiKey').value=p.apiKey;$('modelIds').value=p.modelIds;$('profileSize').value=p.size;$('profileCount').value=p.count;$('headers').value=p.headers;fill(p.model||models(p.modelIds)[0]||'')};const generateExternal=async()=>{try{write();const p=active();if(!p.endpoint||!p.model)throw Error('Add a proxy URL and model first.');let extra={};if(p.headers)extra=JSON.parse(p.headers);const h={'Content-Type':'application/json',...extra};if(p.apiKey)h.Authorization='Bearer '+p.apiKey;const r=await fetch(endpoint(p.endpoint),{method:'POST',headers:h,body:JSON.stringify({model:p.model,prompt:$('prompt').value.trim(),size:p.size,n:p.count,response_format:'url'})});const t=await r.text();let d;try{d=JSON.parse(t)}catch{throw Error('Proxy returned non-JSON data ('+r.status+').')}if(!r.ok)throw Error(d.error?.message||d.message||'Proxy rejected the request.');$('externalGrid').innerHTML='';(d.data||d.images||[]).forEach((item,i)=>{const url=item.url||item.b64_json&&'data:image/png;base64,'+item.b64_json;if(!url)return;const f=document.createElement('figure'),im=document.createElement('img');im.src=url;im.onclick=()=>{$('lightboxImage').src=url;$('lightbox').classList.add('open')};const c=document.createElement('figcaption');c.textContent='Third-party '+(i+1);f.append(im,c);$('externalGrid').append(f)});status('profileStatus','Generation complete.','ok')}catch(e){status('profileStatus',e.message||'External generation failed.','error')}};
  document.querySelectorAll('[data-theme]').forEach(b=>b.onclick=()=>{const t=b.dataset.theme;document.documentElement.dataset.theme=t==='graphite'?'':t;localStorage.setItem('prismForgeTheme',t)});$('styleMode').onchange=()=>{$('customStyleField').hidden=$('styleMode').value!=='custom';syncBackend()};$('generate').onclick=clickNative;$('openProfiles').onclick=()=>{$('profilesModal').classList.add('open');renderProfiles()};$('closeProfiles').onclick=()=>{$('profilesModal').classList.remove('open')};$('profileSelect').onchange=()=>{write();profiles.activeId=$('profileSelect').value;renderProfiles()};$('modelIds').oninput=()=>fill($('model').value);$('newProfile').onclick=()=>{write();const p=blank('Provider '+(profiles.items.length+1));profiles.items.push(p);profiles.activeId=p.id;renderProfiles()};$('duplicateProfile').onclick=()=>{write();const p={...active(),id:uid(),name:active().name+' copy'};profiles.items.push(p);profiles.activeId=p.id;renderProfiles()};$('deleteProfile').onclick=()=>{profiles.items=profiles.items.length>1?profiles.items.filter(p=>p.id!==profiles.activeId):[blank('My first provider')];profiles.activeId=profiles.items[0].id;renderProfiles()};$('saveProfile').onclick=()=>{write();localStorage.setItem(profileKey,JSON.stringify(profiles));status('profileStatus','Profile saved locally.','ok')};$('generateExternal').onclick=generateExternal;$('loadCatbox').onclick=loadCatbox;$('addUrl').onclick=()=>{const u=$('catboxUrl').value.trim();status('catboxStatus',addCatbox([u],'Direct URL')?'Image added.':'Already imported.','ok')};$('clearCatbox').onclick=()=>{catbox=[];localStorage.setItem(catboxKey,'[]');renderCatbox()};$('closeLightbox').onclick=()=>{$('lightbox').classList.remove('open')};
- const theme=localStorage.getItem('prismForgeTheme');if(theme&&theme!=='graphite')document.documentElement.dataset.theme=theme;profiles=read(profileKey,profiles);if(!profiles.items?.length)profiles={items:[blank('My first provider')],activeId:''};if(!profiles.activeId)profiles.activeId=profiles.items[0].id;catbox=read(catboxKey,[]);renderProfiles();renderCatbox();setTimeout(syncBackend,700);setInterval(syncBackend,1500);
+ const theme=localStorage.getItem('prismForgeTheme');if(theme&&theme!=='graphite')document.documentElement.dataset.theme=theme;profiles=read(profileKey,profiles);if(!profiles.items?.length)profiles={items:[blank('My first provider')],activeId:''};if(!profiles.activeId)profiles.activeId=profiles.items[0].id;catbox=read(catboxKey,[]);renderProfiles();renderCatbox();setTimeout(syncBackend,700);
+})();
+</script>
+<style id="prismForgeWrapperOverrides">
+/* Wrapper overrides: the visible Prism Forge state wins over framework defaults without changing the backend contract. */
+body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #backendMount .options-container-nix, #backendMount #outputAreaEl, #backendMount #imageGalleryCtn8569284, #backendMount #commentsPluginCtn654732 { background:var(--bg) !important; color:var(--text) !important; }
+#backendMount .input-ctn, #backendMount .input-ctn label, #backendMount .input-ctn .input-label, #backendMount #outputAreaEl, #backendMount #imageGalleryCtn8569284 { color:var(--text) !important; }
+#backendMount input, #backendMount textarea, #backendMount select, #backendMount button { color:var(--text) !important; background:var(--surface2) !important; border-color:var(--line) !important; }
+#backendMount #showSocialsButtonCtn9000274628, #backendMount #showHideGalleryAndCommentsButtonsCtn83728732671, #backendMount #showSocialsButton927514532, #backendMount #hideCommentsBtn85937402, #backendMount #hideGalleryBtn85937402, #backendMount #feedbackBtn893745ykfuhd, #backendMount #darkModeBtn_875979f948, #backendMount #privateGalleryCtn97364827 { display:none !important; }
+.native-visibility-tools { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0; }
+</style>
+<script id="prismForgeWrapperBehaviorFix">
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const backend = () => document.getElementById('backendMount');
+  const hiddenStyle = () => backend()?.querySelector('select[data-name="artStyle"]');
+  const hiddenInput = (name) => backend()?.querySelector(`[data-name="${name}"] textarea,[data-name="${name}"] input`);
+  const syncVisibleStyle = () => {
+    const visible = $('styleMode');
+    const hidden = hiddenStyle();
+    if (!visible || !hidden) return;
+    const custom = visible.value === '__custom__';
+    const selected = [...hidden.options].find((option) => option.value === visible.value) || [...hidden.options].find((option) => option.textContent.trim().toLowerCase().includes('no style')) || hidden.options[0];
+    const promptInput = hiddenInput('description');
+    const negativeInput = hiddenInput('negative');
+    if (promptInput) {
+      const customText = custom ? $('customStyle')?.value.trim() : '';
+      promptInput.value = $('prompt')?.value.trim() + (customText ? ', ' + customText : '');
+      promptInput.oninput?.({});
+    }
+    if (negativeInput) { negativeInput.value = $('negative')?.value.trim() || ''; negativeInput.oninput?.({}); }
+    if (selected && !custom) { hidden.value = selected.value; hidden.onchange?.({}); }
+  };
+  const hydrateVisibleStyles = () => {
+    const visible = $('styleMode');
+    const hidden = hiddenStyle();
+    if (!visible || !hidden || !hidden.options.length) return false;
+    if (visible.dataset.hydrated !== '1') {
+      const current = visible.value;
+      visible.innerHTML = '';
+      [...hidden.options].forEach((option) => { const clone = document.createElement('option'); clone.value = option.value; clone.textContent = option.textContent; visible.append(clone); });
+      const custom = document.createElement('option'); custom.value = '__custom__'; custom.textContent = 'Custom style direction'; visible.append(custom);
+      visible.dataset.hydrated = '1';
+      visible.value = [...visible.options].some((option) => option.textContent.trim().toLowerCase().includes('no style')) ? [...visible.options].find((option) => option.textContent.trim().toLowerCase().includes('no style')).value : current;
+      visible.onchange = () => { $('customStyleField').hidden = visible.value !== '__custom__'; syncVisibleStyle(); };
+      $('customStyle')?.addEventListener('input', syncVisibleStyle);
+      $('prompt')?.addEventListener('input', syncVisibleStyle);
+      $('negative')?.addEventListener('input', syncVisibleStyle);
+    }
+    syncVisibleStyle();
+    return true;
+  };
+  const applyTheme = (theme) => { const value = theme || 'graphite'; document.documentElement.dataset.theme = value === 'graphite' ? '' : value; document.body.dataset.pfTheme = value; document.body.style.backgroundColor = 'var(--bg)'; document.body.style.color = 'var(--text)'; localStorage.setItem('prismForgeTheme', value); };
+  const addVisibilityTools = () => {
+    const heading = backend()?.querySelector('.heading');
+    if (!heading || heading.querySelector('.native-visibility-tools')) return;
+    const tools = document.createElement('div'); tools.className = 'native-visibility-tools';
+    const galleryButton = document.createElement('button'); galleryButton.className = 'button ghost'; galleryButton.type = 'button'; galleryButton.textContent = 'Hide native gallery';
+    const commentsButton = document.createElement('button'); commentsButton.className = 'button ghost'; commentsButton.type = 'button'; commentsButton.textContent = 'Hide comments';
+    const gallery = () => backend()?.querySelector('#imageGalleryCtn8569284');
+    const comments = () => backend()?.querySelector('#commentsPluginCtn654732');
+    galleryButton.onclick = () => { const node = gallery(); if (!node) return; const hidden = node.dataset.pfHidden === '1'; node.dataset.pfHidden = hidden ? '0' : '1'; node.style.display = hidden ? '' : 'none'; galleryButton.textContent = hidden ? 'Hide native gallery' : 'Show native gallery'; };
+    commentsButton.onclick = () => { const node = comments(); if (!node) return; const hidden = node.dataset.pfHidden === '1'; node.dataset.pfHidden = hidden ? '0' : '1'; node.style.display = hidden ? '' : 'none'; commentsButton.textContent = hidden ? 'Hide comments' : 'Show comments'; };
+    tools.append(galleryButton, commentsButton); heading.append(tools);
+  };
+  document.querySelectorAll('[data-theme]').forEach((button) => { button.onclick = () => applyTheme(button.dataset.theme); });
+  applyTheme(localStorage.getItem('prismForgeTheme') || 'graphite');
+  const tick = () => { hydrateVisibleStyles(); addVisibilityTools(); applyTheme(localStorage.getItem('prismForgeTheme') || 'graphite'); };
+  tick(); setTimeout(tick, 500); setInterval(tick, 900);
 })();
 </script></body></html>
