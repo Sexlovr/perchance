@@ -3,220 +3,147 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prism Forge — Image Studio</title>
+<title>Prism Forge — Open Image Studio</title>
 <style>
-/* Prism Forge clean-slate visual system: quiet graphite surfaces, lime signal accents, semantic flow layout, no viewport-fixed workspace controls. */
-:root {
-  --pf-bg:#0d1012;
-  --pf-surface:#171b1d;
-  --pf-surface-2:#202628;
-  --pf-line:rgba(239,243,229,.14);
-  --pf-text:#f1f2e9;
-  --pf-muted:#9aa49d;
-  --pf-accent:#d8f36d;
-  --pf-accent-ink:#11150f;
-  --pf-danger:#ff8f8f;
-  --pf-radius:14px;
-  --pf-shadow:0 20px 65px rgba(0,0,0,.24);
-  color-scheme:dark;
-}
+/* Prism Forge standalone build: every important control is visible in document flow; no legacy drawer, floating action, or t2i framework CSS is used. */
+:root { --bg:#0c1011; --surface:#151b1c; --surface2:#202829; --line:rgba(239,244,229,.15); --text:#f2f3eb; --muted:#9aa69e; --accent:#d7f36c; --accentInk:#12160e; --danger:#ff9a9a; --shadow:0 18px 60px rgba(0,0,0,.24); color-scheme:dark; }
+[data-theme="paper"] { --bg:#f2f0ea; --surface:#fffdf8; --surface2:#e8e4da; --line:rgba(24,29,27,.18); --text:#1a211f; --muted:#5d6962; --accent:#8aa53a; --accentInk:#faffef; --danger:#a73939; color-scheme:light; }
+[data-theme="olive"] { --bg:#172019; --surface:#223026; --surface2:#2b3b2d; --line:rgba(235,245,220,.18); --text:#f0f2df; --muted:#afbd9e; --accent:#d7ec83; --accentInk:#162014; --danger:#ffaaa0; color-scheme:dark; }
 * { box-sizing:border-box; }
-html { min-width:320px; background:var(--pf-bg); }
-body { margin:0; min-width:320px; overflow-x:hidden; background:var(--pf-bg); color:var(--pf-text); font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+html,body { min-width:320px; margin:0; background:var(--bg); color:var(--text); }
+body { overflow-x:hidden; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
 button,input,select,textarea { font:inherit; }
 button { cursor:pointer; }
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:2px solid var(--pf-accent); outline-offset:2px; }
-.pf-app { width:min(1440px,100%); margin:0 auto; padding:18px clamp(14px,3vw,36px) 56px; }
-.pf-header { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:8px 0 18px; border-bottom:1px solid var(--pf-line); }
-.pf-brand { display:flex; align-items:center; gap:10px; min-width:0; letter-spacing:-.04em; font-weight:700; font-size:20px; }
-.pf-mark { display:grid; place-items:center; width:25px; height:25px; flex:none; color:var(--pf-accent-ink); background:var(--pf-accent); clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%); font-size:12px; }
-.pf-brand small { color:var(--pf-muted); font-size:11px; font-weight:500; letter-spacing:.02em; }
-.pf-eyebrow { color:#b7c581; font-size:10px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
-.pf-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,300px); gap:28px; align-items:end; padding:30px 0 24px; }
-.pf-hero h1 { max-width:780px; margin:8px 0 0; font-size:clamp(34px,6vw,72px); line-height:.94; letter-spacing:-.08em; }
-.pf-hero h1 span { color:#a8b0aa; }
-.pf-hero p { margin:0; color:var(--pf-muted); font-size:13px; line-height:1.55; }
-.pf-toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; padding:10px; background:var(--pf-surface); border:1px solid var(--pf-line); }
-.pf-button { min-height:38px; padding:0 14px; border:1px solid var(--pf-line); border-radius:9px; color:var(--pf-text); background:var(--pf-surface-2); transition:background .16s ease,border-color .16s ease,transform .16s ease; }
-.pf-button:hover { border-color:rgba(216,243,109,.55); background:#2a3230; transform:translateY(-1px); }
-.pf-button.primary { border-color:transparent; color:var(--pf-accent-ink); background:var(--pf-accent); font-weight:800; }
-.pf-button.subtle { color:var(--pf-accent); background:transparent; }
-.pf-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,360px); gap:18px; align-items:start; }
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.pf-page { width:min(1320px,100%); margin:0 auto; padding:18px clamp(14px,3vw,38px) 56px; }
+.pf-header { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:8px 0 18px; border-bottom:1px solid var(--line); }
+.pf-brand { display:flex; align-items:center; gap:10px; font-size:20px; font-weight:800; letter-spacing:-.05em; }
+.pf-mark { display:grid; place-items:center; width:26px; height:26px; color:var(--accentInk); background:var(--accent); clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%); font-size:12px; }
+.pf-brand small { color:var(--muted); font-size:11px; font-weight:500; letter-spacing:0; }
+.pf-header-tools { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:7px; }
+.pf-kicker { color:#b8c87e; font-size:10px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
+.pf-button { min-height:38px; padding:0 13px; border:1px solid var(--line); border-radius:9px; color:var(--text); background:var(--surface2); transition:transform .16s ease,background .16s ease,border-color .16s ease; }
+.pf-button:hover { transform:translateY(-1px); border-color:color-mix(in srgb,var(--accent) 65%,var(--line)); background:color-mix(in srgb,var(--surface2) 76%,var(--accent)); }
+.pf-button.primary { border-color:transparent; color:var(--accentInk); background:var(--accent); font-weight:800; }
+.pf-button.ghost { color:var(--accent); background:transparent; }
+.pf-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,310px); gap:30px; align-items:end; padding:34px 0 22px; }
+.pf-hero h1 { max-width:780px; margin:8px 0 0; font-size:clamp(38px,6vw,74px); line-height:.93; letter-spacing:-.09em; }
+.pf-hero h1 span { color:var(--muted); }
+.pf-hero p { margin:0; color:var(--muted); font-size:13px; line-height:1.55; }
+.pf-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(270px,350px); gap:18px; align-items:start; }
 .pf-stack { display:grid; gap:18px; min-width:0; }
-.pf-card { min-width:0; padding:clamp(16px,2.3vw,24px); background:var(--pf-surface); border:1px solid var(--pf-line); border-radius:var(--pf-radius); box-shadow:var(--pf-shadow); }
-.pf-card h2,.pf-card h3 { margin:0; letter-spacing:-.04em; }
-.pf-card h2 { font-size:22px; }
+.pf-card { min-width:0; padding:clamp(16px,2.4vw,24px); background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); }
+.pf-card h2,.pf-card h3 { margin:0; letter-spacing:-.05em; }
+.pf-card h2 { font-size:23px; }
 .pf-card h3 { font-size:15px; }
-.pf-card p { color:var(--pf-muted); font-size:12px; line-height:1.55; }
-.pf-heading { display:flex; align-items:start; justify-content:space-between; gap:12px; margin-bottom:16px; }
-.pf-heading p { max-width:360px; margin:0; text-align:right; }
-.pf-native { min-width:0; }
-/* Neutralize only the framework's legacy floating buttons; the actual generated controls remain in normal document flow. */
-.pf-native .settings-button,.pf-native .catbox-album-button,#settingsBtn,#catboxAlbumBtn { display:none !important; position:static !important; inset:auto !important; transform:none !important; }
-.pf-native .main-container-nix { width:100% !important; max-width:none !important; margin:0 !important; padding:0 !important; }
-.pf-native .options-container-nix,.pf-native .generate-button-nix { width:100% !important; max-width:none !important; margin:0 !important; }
-.pf-native #outputAreaEl { width:100% !important; min-height:260px !important; max-height:none !important; margin:18px 0 0 !important; padding:12px !important; overflow:visible !important; }
-.pf-native #imageGalleryCtn8569284 { margin-top:18px !important; }
-.pf-native .history-nix,.pf-native #stats-panel-nix { position:static !important; inset:auto !important; max-width:100% !important; margin:12px 0 !important; }
-.pf-field { display:grid; gap:7px; margin-bottom:12px; }
-.pf-field:last-child { margin-bottom:0; }
-.pf-field label,.pf-label { color:#dfe4da; font-size:11px; font-weight:800; letter-spacing:.03em; }
-.pf-field input,.pf-field select,.pf-field textarea,.pf-input { width:100%; min-height:40px; padding:10px 11px; border:1px solid var(--pf-line); border-radius:9px; color:var(--pf-text); background:#0e1214; }
-.pf-field textarea { min-height:86px; resize:vertical; }
-.pf-field input::placeholder,.pf-field textarea::placeholder { color:#66716a; }
-.pf-inline { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.pf-card p { color:var(--muted); font-size:12px; line-height:1.55; }
+.pf-card-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:17px; }
+.pf-card-heading p { max-width:360px; margin:0; text-align:right; }
+.pf-form { display:grid; gap:13px; }
+.pf-field { display:grid; gap:7px; }
+.pf-field label { color:var(--text); font-size:11px; font-weight:800; letter-spacing:.02em; }
+.pf-field small { color:var(--muted); font-size:11px; line-height:1.4; }
+.pf-field input,.pf-field textarea,.pf-field select { width:100%; min-height:41px; padding:10px 11px; border:1px solid var(--line); border-radius:9px; color:var(--text); background:color-mix(in srgb,var(--bg) 78%,black); }
+.pf-field textarea { min-height:120px; resize:vertical; }
+.pf-field input::placeholder,.pf-field textarea::placeholder { color:var(--muted); opacity:.72; }
+.pf-grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.pf-inline { display:flex; flex-wrap:wrap; gap:8px; }
 .pf-inline > * { flex:1 1 140px; }
-.pf-status { min-height:20px; margin-top:12px; color:var(--pf-muted); font-size:12px; line-height:1.4; }
-.pf-status.error { color:var(--pf-danger); }
-.pf-status.ok { color:var(--pf-accent); }
-.pf-gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:10px; }
-.pf-gallery-empty { padding:24px 10px; border:1px dashed var(--pf-line); color:var(--pf-muted); text-align:center; font-size:12px; }
-.pf-gallery-item { position:relative; overflow:hidden; border:1px solid var(--pf-line); background:#0b0e0f; }
-.pf-gallery-item img { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
-.pf-gallery-item button { width:100%; padding:8px; border:0; border-top:1px solid var(--pf-line); color:var(--pf-muted); background:#14191a; font-size:11px; text-align:left; }
-.pf-gallery-item button:hover { color:var(--pf-accent); }
+.pf-status { min-height:20px; margin-top:12px; color:var(--muted); font-size:12px; line-height:1.45; }
+.pf-status.ok { color:var(--accent); }
+.pf-status.error { color:var(--danger); }
+.pf-output { display:grid; gap:13px; margin-top:18px; }
+.pf-output-empty { padding:28px 14px; border:1px dashed var(--line); color:var(--muted); text-align:center; font-size:12px; }
+.pf-output-card { overflow:hidden; border:1px solid var(--line); background:var(--bg); }
+.pf-output-card img { display:block; width:100%; max-height:720px; object-fit:contain; background:#080a0b; }
+.pf-output-meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; padding:9px 11px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+.pf-gallery { margin-top:18px; }
+.pf-gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(142px,1fr)); gap:10px; }
+.pf-gallery-empty { padding:26px 10px; border:1px dashed var(--line); color:var(--muted); text-align:center; font-size:12px; }
+.pf-gallery-item { overflow:hidden; border:1px solid var(--line); background:var(--bg); }
+.pf-gallery-item img { display:block; width:100%; aspect-ratio:1; object-fit:cover; cursor:zoom-in; }
+.pf-gallery-item button { width:100%; padding:8px 9px; border:0; border-top:1px solid var(--line); color:var(--muted); background:var(--surface2); font-size:11px; text-align:left; }
+.pf-gallery-item button:hover { color:var(--accent); }
 .pf-comments { margin-top:18px; }
-.pf-comments-lead { margin-bottom:14px; }
-.pf-comments-lead h2 { margin-bottom:6px; }
-.pf-comments-lead p { margin:0; }
+.pf-comments p { margin:6px 0 14px; }
 #pfCommentsMount { min-width:0; }
-#commentsPluginCtn654732 { display:block !important; width:100% !important; max-width:none !important; margin:0 !important; padding:0 !important; background:transparent !important; border:0 !important; }
-#commentsPluginCtn654732 .comments-plugin-ctn { display:block !important; width:100% !important; height:400px !important; margin:0 !important; position:relative !important; }
-.pf-drawer-backdrop { position:fixed; inset:0; z-index:1000; display:none; background:rgba(0,0,0,.66); }
-.pf-drawer-backdrop.open { display:block; }
-.pf-drawer { position:fixed; z-index:1001; top:0; right:0; width:min(520px,100%); height:100dvh; display:none; overflow:auto; padding:20px; background:#151a1b; border-left:1px solid var(--pf-line); box-shadow:-20px 0 70px rgba(0,0,0,.35); }
-.pf-drawer.open { display:block; }
-.pf-drawer-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--pf-line); }
-.pf-drawer-header h2 { margin:0; font-size:22px; letter-spacing:-.05em; }
-.pf-drawer-section { padding:16px 0; border-bottom:1px solid var(--pf-line); }
-.pf-drawer-section:last-child { border-bottom:0; }
-.pf-drawer-section h3 { margin:0 0 12px; font-size:13px; }
-.pf-native-tools { display:grid; gap:10px; }
-.pf-native-tools > * { position:static !important; inset:auto !important; display:block !important; width:100% !important; max-width:none !important; margin:0 !important; padding:0 !important; pointer-events:auto !important; transform:none !important; text-align:left !important; }
-.pf-native-tools > * button { position:static !important; max-width:100% !important; margin:0 !important; }
-.pf-modal { position:fixed; inset:0; z-index:1100; display:none; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.72); }
+.pf-comments iframe { display:block; width:100%; min-height:390px; border:1px solid var(--line); background:var(--surface2); }
+.pf-modal { position:fixed; inset:0; z-index:10; display:none; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.72); }
 .pf-modal.open { display:flex; }
-.pf-modal-card { width:min(680px,100%); max-height:calc(100dvh - 32px); overflow:auto; padding:22px; background:#171d1e; border:1px solid var(--pf-line); border-radius:var(--pf-radius); box-shadow:0 28px 90px rgba(0,0,0,.48); }
-.pf-modal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
-.pf-modal-header h2 { margin:0; font-size:20px; letter-spacing:-.05em; }
-.pf-profile-bar { display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; gap:8px; align-items:end; margin-bottom:14px; }
-.pf-profile-bar label { display:grid; gap:6px; color:#dfe4da; font-size:11px; font-weight:800; }
-.pf-modal-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; margin-top:16px; }
-.pf-lightbox { position:fixed; inset:0; z-index:1200; display:none; place-items:center; padding:20px; background:rgba(0,0,0,.86); }
+.pf-modal-card { width:min(700px,100%); max-height:calc(100dvh - 32px); overflow:auto; padding:22px; border:1px solid var(--line); border-radius:14px; background:var(--surface); box-shadow:0 30px 90px rgba(0,0,0,.46); }
+.pf-modal-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:15px; }
+.pf-modal-header h2 { margin:0; font-size:22px; letter-spacing:-.05em; }
+.pf-profile-bar { display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; gap:8px; align-items:end; margin:14px 0; }
+.pf-profile-bar label { display:grid; gap:6px; color:var(--text); font-size:11px; font-weight:800; }
+.pf-lightbox { position:fixed; inset:0; z-index:20; display:none; place-items:center; padding:20px; background:rgba(0,0,0,.88); }
 .pf-lightbox.open { display:grid; }
-.pf-lightbox img { display:block; max-width:min(1100px,100%); max-height:88dvh; object-fit:contain; }
+.pf-lightbox img { display:block; max-width:min(1100px,100%); max-height:87dvh; object-fit:contain; }
 .pf-lightbox button { position:absolute; top:14px; right:14px; }
-@media (max-width:900px) { .pf-layout { grid-template-columns:1fr; } .pf-hero { grid-template-columns:1fr; gap:14px; } .pf-hero p { max-width:560px; text-align:left; } .pf-heading { display:block; } .pf-heading p { max-width:none; margin-top:8px; text-align:left; } }
-@media (max-width:600px) { .pf-app { padding:12px 12px 40px; } .pf-header { align-items:flex-start; } .pf-brand { font-size:18px; } .pf-brand small { display:none; } .pf-hero { padding:24px 0 18px; } .pf-hero h1 { font-size:clamp(38px,14vw,58px); } .pf-toolbar { margin-inline:-2px; } .pf-toolbar .pf-button { flex:1 1 130px; } #commentsPluginCtn654732 .comments-plugin-ctn { height:420px !important; } .pf-profile-bar { grid-template-columns:1fr 1fr; } .pf-profile-bar label { grid-column:1 / -1; } }
-@media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+@media (max-width:900px) { .pf-layout,.pf-hero { grid-template-columns:1fr; } .pf-hero { gap:15px; } .pf-hero p { max-width:580px; } .pf-card-heading { display:block; } .pf-card-heading p { max-width:none; margin-top:8px; text-align:left; } }
+@media (max-width:600px) { .pf-page { padding:12px 12px 38px; } .pf-header { align-items:flex-start; } .pf-brand { font-size:18px; } .pf-brand small { display:none; } .pf-header-tools { justify-content:flex-start; } .pf-header-tools .pf-button { min-height:34px; padding:0 10px; font-size:11px; } .pf-hero { padding:25px 0 18px; } .pf-hero h1 { font-size:clamp(40px,14vw,60px); } .pf-grid-2 { grid-template-columns:1fr; } .pf-profile-bar { grid-template-columns:1fr 1fr; } .pf-profile-bar label { grid-column:1 / -1; } }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { transition-duration:.01ms !important; animation-duration:.01ms !important; } }
 </style>
 </head>
 <body>
-<div class="pf-app">
+<div class="pf-page">
   <header class="pf-header">
     <div class="pf-brand"><span class="pf-mark">✦</span><span>Prism Forge</span><small>/ open image studio</small></div>
-    <div class="pf-eyebrow">provider-neutral / clean build</div>
+    <div class="pf-header-tools" aria-label="Theme choices"><button class="pf-button" data-theme="graphite" type="button">Graphite</button><button class="pf-button" data-theme="paper" type="button">Paper</button><button class="pf-button" data-theme="olive" type="button">Olive</button></div>
   </header>
-  <section class="pf-hero">
-    <div><div class="pf-eyebrow">IMAGE MAKING WORKSPACE</div><h1>Shape the frame. <span>Keep the signal.</span></h1></div>
-    <p>Use Perchance’s default image model, optional style helpers, Catbox tools, comments, or a provider profile you configure yourself.</p>
-  </section>
-  <nav class="pf-toolbar" aria-label="Workspace actions">
-    <button class="pf-button" id="pfOpenSettings" type="button">Settings</button>
-    <button class="pf-button" id="pfScrollGallery" type="button">Catbox gallery</button>
-    <button class="pf-button primary" id="pfOpenProfiles" type="button">Third-party profiles</button>
-  </nav>
-  <main class="pf-layout">
-    <section class="pf-card pf-native" aria-labelledby="pfGeneratorTitle">
-      <div class="pf-heading"><div><div class="pf-eyebrow">DEFAULT PERCHANCE MODEL</div><h2 id="pfGeneratorTitle">Generate an image</h2></div><p>Prompt and settings remain user-controlled. No style is appended automatically.</p></div>
-      <div id="pfNativeGenerator">[generateHTML(settings)]</div>
+  <section class="pf-hero"><div><div class="pf-kicker">VISIBLE CONTROLS / CLEAN BUILD</div><h1>Shape the frame. <span>Keep the signal.</span></h1></div><p>Generate with Perchance’s direct image plugin, add an optional lolmao style only when you want it, or use a provider profile you control.</p></section>
+  <main>
+    <section class="pf-card" aria-labelledby="pfGenerateTitle">
+      <div class="pf-card-heading"><div><div class="pf-kicker">IMAGE WORKSPACE</div><h2 id="pfGenerateTitle">Generate an image</h2></div><p>Nothing is hidden in a settings drawer. Prompt, style, count, canvas, and theme are visible here.</p></div>
+      <div class="pf-form">
+        <div class="pf-field"><label for="pfPrompt">Prompt</label><textarea id="pfPrompt" placeholder="Describe the subject, scene, composition, materials, light, and mood."></textarea></div>
+        <div class="pf-field"><label for="pfNegative">Negative prompt <span style="color:var(--muted);font-weight:500;">optional</span></label><input id="pfNegative" type="text" placeholder="Details you want the model to avoid"></div>
+        <div class="pf-grid-2"><div class="pf-field"><label for="pfStyle">Art style</label><select id="pfStyle"><option value="none">No style</option><option value="lolmao">Random imported lolmao style</option><option value="custom">Custom style direction</option></select></div><div class="pf-field"><label for="pfCanvas">Canvas</label><select id="pfCanvas"><option value="512x768">Portrait · 512×768</option><option value="768x768" selected>Square · 768×768</option><option value="768x512">Landscape · 768×512</option></select></div></div>
+        <div class="pf-field" id="pfCustomStyleField" hidden><label for="pfCustomStyle">Custom style direction</label><input id="pfCustomStyle" type="text" placeholder="Optional: watercolor, editorial photo, charcoal, etc."></div>
+        <div class="pf-grid-2"><div class="pf-field"><label for="pfCount">Images to generate</label><input id="pfCount" type="number" min="1" step="1" value="1"></div><div class="pf-field"><label for="pfSeed">Seed <span style="color:var(--muted);font-weight:500;">optional</span></label><input id="pfSeed" type="text" placeholder="Random if blank"></div></div>
+        <div class="pf-inline"><button class="pf-button primary" id="pfGenerateDefault" type="button">Generate with Perchance</button><button class="pf-button ghost" id="pfOpenProfiles" type="button">Use third-party profile</button></div>
+        <div class="pf-status" id="pfGenerateStatus" aria-live="polite"></div>
+      </div>
+      <div class="pf-output" id="pfOutput"><div class="pf-output-empty">Your generated images will appear here.</div></div>
     </section>
-    <aside class="pf-stack">
-      <section class="pf-card" aria-labelledby="pfCatboxTitle">
-        <div class="pf-heading"><div><div class="pf-eyebrow">CATBOX / IMPORT</div><h3 id="pfCatboxTitle">Bring images into the gallery</h3></div></div>
-        <div class="pf-field"><label for="pfCatboxUrl">Album URL or direct image URL</label><input id="pfCatboxUrl" type="url" placeholder="https://catbox.moe/c/album-id"></div>
-        <div class="pf-inline"><button class="pf-button primary" id="pfLoadCatbox" type="button">Load album</button><button class="pf-button subtle" id="pfAddImageUrl" type="button">Add image URL</button></div>
-        <div class="pf-field" style="margin-top:12px;"><label for="pfCatboxHash">Catbox user hash <span style="color:var(--pf-muted);font-weight:500;">optional</span></label><input id="pfCatboxHash" type="text" autocomplete="off" placeholder="Used only by authenticated Catbox actions"></div>
-        <div class="pf-status" id="pfCatboxStatus" aria-live="polite"></div>
-      </section>
-      <section class="pf-card"><div class="pf-eyebrow">OPTIONAL HELPERS</div><h3 style="margin-top:7px;">Style is a choice</h3><p>Imported t2i styles remain available through the Perchance generator controls. Leave the helper unselected whenever you want a raw prompt.</p></section>
-    </aside>
+    <section class="pf-card pf-gallery" id="pfGallerySection" aria-labelledby="pfGalleryTitle"><div class="pf-card-heading"><div><div class="pf-kicker">CATBOX / LOCAL INDEX</div><h2 id="pfGalleryTitle">Saved images</h2></div><button class="pf-button ghost" id="pfClearGallery" type="button">Clear index</button></div><div class="pf-form"><div class="pf-field"><label for="pfCatboxUrl">Catbox album URL or direct image URL</label><input id="pfCatboxUrl" type="url" placeholder="https://catbox.moe/c/album-id"></div><div class="pf-inline"><button class="pf-button" id="pfLoadCatbox" type="button">Load album</button><button class="pf-button ghost" id="pfAddImageUrl" type="button">Add direct URL</button></div></div><div class="pf-status" id="pfCatboxStatus" aria-live="polite"></div><div class="pf-gallery-grid" id="pfGalleryGrid"><div class="pf-gallery-empty">Imported images will appear here.</div></div></section>
+    <section class="pf-card pf-comments" aria-labelledby="pfCommentsTitle"><div class="pf-kicker">COMMUNITY / NOTES</div><h2 id="pfCommentsTitle">Share the signal.</h2><p>One comments section, below the gallery.</p><div id="pfCommentsMount">[commentsPlugin()]</div></section>
   </main>
-  <section class="pf-card" id="pfGallerySection" style="margin-top:18px;" aria-labelledby="pfGalleryTitle">
-    <div class="pf-heading"><div><div class="pf-eyebrow">CATBOX / LOCAL INDEX</div><h2 id="pfGalleryTitle">Saved images</h2></div><button class="pf-button subtle" id="pfClearGallery" type="button">Clear local index</button></div>
-    <div class="pf-gallery-grid" id="pfGalleryGrid"><div class="pf-gallery-empty">Your imported Catbox and direct image URLs will appear here.</div></div>
-  </section>
-  <section class="pf-card pf-comments" aria-labelledby="pfCommentsTitle">
-    <div class="pf-comments-lead"><div class="pf-eyebrow">COMMUNITY / NOTES</div><h2 id="pfCommentsTitle">Share the signal.</h2><p>One default Perchance comments section, kept below the gallery.</p></div>
-    <div id="pfCommentsMount"></div>
-  </section>
 </div>
-
-<div class="pf-drawer-backdrop" id="pfDrawerBackdrop"></div>
-<aside class="pf-drawer" id="pfSettingsDrawer" aria-label="Prism Forge settings" aria-hidden="true">
-  <div class="pf-drawer-header"><h2>Settings</h2><button class="pf-button" id="pfCloseSettings" type="button">Close</button></div>
-  <section class="pf-drawer-section"><h3>Workspace</h3><p>Choose a theme or use Perchance’s native display controls without covering the generator.</p><div class="pf-inline"><button class="pf-button" type="button" data-theme-choice="dark">Graphite</button><button class="pf-button" type="button" data-theme-choice="light">Light</button><button class="pf-button" type="button" data-theme-choice="system">System</button></div></section>
-  <section class="pf-drawer-section"><h3>Perchance tools</h3><div class="pf-native-tools" id="pfNativeTools"><p class="pf-status">Native controls appear here when the generator finishes loading.</p></div></section>
-</aside>
-
-<div class="pf-modal" id="pfProfilesModal" role="dialog" aria-modal="true" aria-labelledby="pfProfilesTitle">
-  <div class="pf-modal-card">
-    <div class="pf-modal-header"><h2 id="pfProfilesTitle">Third-party model profiles</h2><button class="pf-button" id="pfCloseProfiles" type="button">Close</button></div>
-    <p>Save as many provider profiles as needed. Each profile supports its own proxy URL, API key, model ID, size, count, and optional headers.</p>
-    <div class="pf-profile-bar"><label>Active profile<select id="pfProfileSelect"></select></label><button class="pf-button" id="pfNewProfile" type="button">New</button><button class="pf-button" id="pfDuplicateProfile" type="button">Duplicate</button><button class="pf-button" id="pfDeleteProfile" type="button">Delete</button></div>
-    <div class="pf-field"><label for="pfProfileName">Profile name</label><input id="pfProfileName" type="text" placeholder="My provider"></div>
-    <div class="pf-field"><label for="pfEndpoint">Proxy URL or full image endpoint</label><input id="pfEndpoint" type="url" placeholder="https://your-proxy.example/v1"></div>
-    <div class="pf-field"><label for="pfApiKey">API key</label><input id="pfApiKey" type="password" autocomplete="off" placeholder="Optional for local proxies"></div>
-    <div class="pf-field"><label for="pfModelIds">Model IDs</label><input id="pfModelIds" type="text" placeholder="model-a, model-b"><small style="color:var(--pf-muted);font-size:11px;">Separate multiple IDs with commas.</small></div>
-    <div class="pf-field"><label for="pfModel">Selected model</label><select id="pfModel"></select></div>
-    <div class="pf-inline"><div class="pf-field"><label for="pfSize">Image size</label><select id="pfSize"><option value="512x768">Portrait · 512×768</option><option value="768x768">Square · 768×768</option><option value="768x512">Landscape · 768×512</option></select></div><div class="pf-field"><label for="pfCount">Images</label><input id="pfCount" type="number" min="1" step="1" value="1"></div></div>
-    <div class="pf-field"><label for="pfHeaders">Optional JSON headers</label><textarea id="pfHeaders" placeholder="Use a JSON object only when your proxy requires extra headers."></textarea></div>
-    <div class="pf-inline"><button class="pf-button" id="pfSaveProfile" type="button">Save profile</button><button class="pf-button primary" id="pfExternalGenerate" type="button">Generate with profile</button></div>
-    <div class="pf-status" id="pfProfileStatus" aria-live="polite"></div>
-    <div class="pf-gallery-grid" id="pfExternalGrid" style="margin-top:14px;"></div>
-  </div>
-</div>
-
-<div class="pf-lightbox" id="pfLightbox"><button class="pf-button" id="pfCloseLightbox" type="button">Close</button><img id="pfLightboxImage" alt="Expanded gallery image"></div>
-
+<div class="pf-modal" id="pfProfilesModal" role="dialog" aria-modal="true" aria-labelledby="pfProfilesTitle"><div class="pf-modal-card"><div class="pf-modal-header"><h2 id="pfProfilesTitle">Third-party model profiles</h2><button class="pf-button" id="pfCloseProfiles" type="button">Close</button></div><p>Save as many profiles as you need. Each one supports its own proxy URL, key, model ID, size, image count, and optional headers.</p><div class="pf-profile-bar"><label>Active profile<select id="pfProfileSelect"></select></label><button class="pf-button" id="pfNewProfile" type="button">New</button><button class="pf-button" id="pfDuplicateProfile" type="button">Duplicate</button><button class="pf-button" id="pfDeleteProfile" type="button">Delete</button></div><div class="pf-form"><div class="pf-field"><label for="pfProfileName">Profile name</label><input id="pfProfileName" type="text" placeholder="My provider"></div><div class="pf-field"><label for="pfEndpoint">Proxy URL or full image endpoint</label><input id="pfEndpoint" type="url" placeholder="https://your-proxy.example/v1"></div><div class="pf-field"><label for="pfApiKey">API key</label><input id="pfApiKey" type="password" autocomplete="off" placeholder="Optional for local proxies"></div><div class="pf-field"><label for="pfModelIds">Model IDs</label><input id="pfModelIds" type="text" placeholder="model-a, model-b"></div><div class="pf-field"><label for="pfModel">Selected model</label><select id="pfModel"></select></div><div class="pf-grid-2"><div class="pf-field"><label for="pfProfileSize">Image size</label><select id="pfProfileSize"><option value="512x768">Portrait · 512×768</option><option value="768x768">Square · 768×768</option><option value="768x512">Landscape · 768×512</option></select></div><div class="pf-field"><label for="pfProfileCount">Images</label><input id="pfProfileCount" type="number" min="1" step="1" value="1"></div></div><div class="pf-field"><label for="pfHeaders">Optional JSON headers</label><textarea id="pfHeaders" placeholder="Only when your proxy requires extra headers"></textarea></div><div class="pf-inline"><button class="pf-button" id="pfSaveProfile" type="button">Save profile</button><button class="pf-button primary" id="pfGenerateExternal" type="button">Generate with profile</button></div></div><div class="pf-status" id="pfProfileStatus" aria-live="polite"></div><div class="pf-output" id="pfExternalOutput"></div></div></div>
+<div class="pf-lightbox" id="pfLightbox"><button class="pf-button" id="pfCloseLightbox" type="button">Close</button><img id="pfLightboxImage" alt="Expanded image"></div>
+<span id="pfImportedLolmaoStyle" hidden>[artStyle.prompt]</span>
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
-  const profileKey = 'prismForgeProfiles:clean-v1';
-  const galleryKey = 'prismForgeGallery:clean-v1';
-  const makeId = () => 'pf-' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
-  const blankProfile = (name) => ({id:makeId(),name:name || 'New provider',endpoint:'',apiKey:'',modelIds:'',model:'',size:'768x768',count:1,headers:''});
-  let profileState = {profiles:[blankProfile('My first provider')],activeId:'',enabled:false};
-  let galleryState = [];
-  const readJson = (key,fallback) => { try { const value = JSON.parse(localStorage.getItem(key) || ''); return value ?? fallback; } catch { return fallback; } };
-  const setStatus = (id,text,kind) => { const el=$(id); if(el){el.textContent=text || ''; el.className='pf-status' + (kind ? ' ' + kind : '');} };
-  const activeProfile = () => profileState.profiles.find((p) => p.id === profileState.activeId) || profileState.profiles[0];
-  const modelList = (value) => String(value || '').split(',').map((item)=>item.trim()).filter(Boolean);
-  const endpoint = (value) => { const raw=String(value || '').trim().replace(/\/$/,''); if(!raw) throw new Error('Add a proxy URL first.'); return /\/images\/generations$/i.test(raw) ? raw : raw + '/images/generations'; };
-  const promptValue = () => document.querySelector('[data-name="description"] textarea,[data-name="description"] input,textarea[name="description"],#descriptionEl')?.value?.trim() || '';
-  const negativeValue = () => document.querySelector('[data-name="negative"] textarea,[data-name="negative"] input,textarea[name="negative"],#negativeEl')?.value?.trim() || '';
-  function saveGallery(){ localStorage.setItem(galleryKey,JSON.stringify(galleryState)); }
-  function renderGallery(){ const grid=$('pfGalleryGrid'); if(!grid) return; grid.innerHTML=''; if(!galleryState.length){grid.innerHTML='<div class="pf-gallery-empty">Your imported Catbox and direct image URLs will appear here.</div>';return;} galleryState.forEach((item,index)=>{const card=document.createElement('article');card.className='pf-gallery-item';const img=document.createElement('img');img.src=item.url;img.alt='Saved image '+(index+1);img.loading='lazy';img.addEventListener('click',()=>openLightbox(item.url));const btn=document.createElement('button');btn.type='button';btn.textContent=(item.source || 'Imported image')+' · remove';btn.addEventListener('click',()=>{galleryState.splice(index,1);saveGallery();renderGallery();});card.append(img,btn);grid.append(card);}); }
-  function addImages(urls,source){ let added=0; urls.map((url)=>String(url).trim()).filter((url)=>/^https?:\/\//i.test(url)).forEach((url)=>{if(!galleryState.some((item)=>item.url===url)){galleryState.unshift({url,source:source || 'import'});added++;}}); saveGallery(); renderGallery(); return added; }
-  async function loadCatbox(){ const input=$('pfCatboxUrl'); const url=input.value.trim(); if(!url){setStatus('pfCatboxStatus','Paste a Catbox album or image URL first.','error');return;} setStatus('pfCatboxStatus','Loading Catbox…'); try { if(/\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(url)){const added=addImages([url],'Catbox URL');setStatus('pfCatboxStatus',added?'Image added.':'Image already in the gallery.','ok');return;} const response=await fetch(url,{mode:'cors'}); if(!response.ok) throw new Error('Catbox returned HTTP '+response.status+'.'); const text=await response.text(); const urls=[...text.matchAll(/https?:\/\/files\.catbox\.moe\/[^\s"'<>]+/gi)].map((m)=>m[0].replace(/[)&,.;]+$/,'')); const added=addImages(urls,'Catbox album'); if(!urls.length) throw new Error('No direct image URLs were found. Try a direct image URL.'); setStatus('pfCatboxStatus',added+' image'+(added===1?'':'s')+' added.','ok'); } catch(error){setStatus('pfCatboxStatus',error.message || 'Could not load that Catbox URL.','error');} }
-  function addDirect(){ const url=$('pfCatboxUrl').value.trim(); if(!/^https?:\/\/[^\s]+$/i.test(url)){setStatus('pfCatboxStatus','Enter a valid direct image URL.','error');return;} const added=addImages([url],'Direct URL');setStatus('pfCatboxStatus',added?'Image added.':'Image already in the gallery.','ok'); }
-  function openLightbox(url){$('pfLightboxImage').src=url;$('pfLightbox').classList.add('open');}
-  function closeLightbox(){$('pfLightbox').classList.remove('open');$('pfLightboxImage').removeAttribute('src');}
-  function readProfiles(){ const stored=readJson(profileKey,null); if(stored?.profiles?.length) profileState=stored; if(!profileState.profiles.length) profileState.profiles=[blankProfile('My first provider')]; if(!profileState.activeId || !profileState.profiles.some((p)=>p.id===profileState.activeId)) profileState.activeId=profileState.profiles[0].id; }
-  function writeProfileFields(){ const p=activeProfile(); if(!p)return; p.name=$('pfProfileName').value.trim() || 'Unnamed provider'; p.endpoint=$('pfEndpoint').value.trim(); p.apiKey=$('pfApiKey').value.trim(); p.modelIds=$('pfModelIds').value.trim(); p.model=$('pfModel').value; p.size=$('pfSize').value; p.count=Math.floor(Number($('pfCount').value)); p.headers=$('pfHeaders').value.trim(); }
-  function fillModels(selected){ const select=$('pfModel'); const ids=modelList($('pfModelIds').value); select.innerHTML=''; (ids.length?ids:['']).forEach((id)=>{const option=document.createElement('option');option.value=id;option.textContent=id || 'Add a model ID above';option.selected=id===selected;select.append(option);}); }
-  function renderProfiles(){ const select=$('pfProfileSelect');select.innerHTML='';profileState.profiles.forEach((p)=>{const option=document.createElement('option');option.value=p.id;option.textContent=p.name || 'Unnamed provider';option.selected=p.id===profileState.activeId;select.append(option);}); const p=activeProfile(); if(!p)return; $('pfProfileName').value=p.name || ''; $('pfEndpoint').value=p.endpoint || ''; $('pfApiKey').value=p.apiKey || ''; $('pfModelIds').value=p.modelIds || ''; $('pfSize').value=p.size || '768x768'; $('pfCount').value=String(Number.isFinite(p.count)&&p.count>0?p.count:1); $('pfHeaders').value=p.headers || ''; fillModels(p.model || modelList(p.modelIds)[0] || ''); }
-  function persistProfiles(){ writeProfileFields(); localStorage.setItem(profileKey,JSON.stringify(profileState)); setStatus('pfProfileStatus','Profile saved locally.','ok'); }
-  function renderExternal(items){ const grid=$('pfExternalGrid');grid.innerHTML='';items.forEach((item,index)=>{const url=item.url || (item.b64_json?'data:image/png;base64,'+item.b64_json:'');if(!url)return;const card=document.createElement('article');card.className='pf-gallery-item';const img=document.createElement('img');img.src=url;img.alt='Third-party result '+(index+1);img.addEventListener('click',()=>openLightbox(url));const label=document.createElement('button');label.type='button';label.textContent='Result '+(index+1);card.append(img,label);grid.append(card);});}
-  async function generateExternal(){ try { writeProfileFields(); const p=activeProfile(); if(!p.endpoint || !p.model) throw new Error('Add a proxy URL and model ID first.'); if(!Number.isFinite(p.count)||p.count<1) throw new Error('Images must be a positive whole number.'); let extra={}; if(p.headers)extra=JSON.parse(p.headers); const headers={'Content-Type':'application/json',...extra}; if(p.apiKey)headers.Authorization='Bearer '+p.apiKey; const body={model:p.model,prompt:promptValue(),size:p.size||'768x768',n:p.count,response_format:'url'}; const negative=negativeValue(); if(negative)body.negative_prompt=negative; if(!body.prompt)throw new Error('Add a prompt in the Perchance generator first.'); setStatus('pfProfileStatus','Generating…'); const response=await fetch(endpoint(p.endpoint),{method:'POST',headers,body:JSON.stringify(body)}); const text=await response.text(); let data; try{data=JSON.parse(text);}catch{throw new Error('The proxy returned non-JSON data ('+response.status+').');} if(!response.ok)throw new Error(data.error?.message || data.message || 'The proxy rejected the request ('+response.status+').'); const items=Array.isArray(data.data)?data.data:(Array.isArray(data.images)?data.images:[]); if(!items.length)throw new Error('No image URLs or base64 images were returned.'); renderExternal(items); setStatus('pfProfileStatus','Generation complete.','ok'); }catch(error){setStatus('pfProfileStatus',error.message || 'External generation failed.','error');} }
-  function openDrawer(){ $('pfSettingsDrawer').classList.add('open');$('pfDrawerBackdrop').classList.add('open');$('pfSettingsDrawer').setAttribute('aria-hidden','false'); integrateNative(); }
-  function closeDrawer(){ $('pfSettingsDrawer').classList.remove('open');$('pfDrawerBackdrop').classList.remove('open');$('pfSettingsDrawer').setAttribute('aria-hidden','true'); }
-  function integrateNative(){ const mount=$('pfCommentsMount');const nativeComments=$('commentsPluginCtn654732');if(nativeComments&&mount&&!mount.contains(nativeComments))mount.append(nativeComments); const tools=$('pfNativeTools');if(!tools)return; const move=(node)=>{if(node&&!tools.contains(node)){node.classList.add('pf-native-tool-item');tools.append(node);}}; move($('feedbackBtn893745ykfuhd')?.parentElement); move($('privateGalleryCtn97364827')); move($('darkModeBtn_875979f948')?.parentElement); const legacy=document.querySelectorAll('.settings-button,.catbox-album-button,#settingsBtn,#catboxAlbumBtn');legacy.forEach((node)=>{node.style.display='none';node.style.position='static';}); }
-  function applyTheme(theme){ if(theme==='system'){document.documentElement.removeAttribute('data-pf-theme');return;} document.documentElement.dataset.pfTheme=theme; }
-  $('pfLoadCatbox').addEventListener('click',loadCatbox);$('pfAddImageUrl').addEventListener('click',addDirect);$('pfClearGallery').addEventListener('click',()=>{galleryState=[];saveGallery();renderGallery();});$('pfScrollGallery').addEventListener('click',()=>$('pfGallerySection').scrollIntoView({behavior:'smooth',block:'start'}));$('pfOpenSettings').addEventListener('click',openDrawer);$('pfCloseSettings').addEventListener('click',closeDrawer);$('pfDrawerBackdrop').addEventListener('click',closeDrawer);document.querySelectorAll('[data-theme-choice]').forEach((button)=>button.addEventListener('click',()=>applyTheme(button.dataset.themeChoice)));
-  $('pfOpenProfiles').addEventListener('click',()=>{$('pfProfilesModal').classList.add('open');renderProfiles();});$('pfCloseProfiles').addEventListener('click',()=>$('pfProfilesModal').classList.remove('open'));$('pfProfileSelect').addEventListener('change',()=>{writeProfileFields();profileState.activeId=$('pfProfileSelect').value;renderProfiles();});$('pfModelIds').addEventListener('input',()=>fillModels($('pfModel').value));$('pfNewProfile').addEventListener('click',()=>{writeProfileFields();const p=blankProfile('Provider '+(profileState.profiles.length+1));profileState.profiles.push(p);profileState.activeId=p.id;renderProfiles();});$('pfDuplicateProfile').addEventListener('click',()=>{writeProfileFields();const copy={...activeProfile(),id:makeId(),name:(activeProfile().name||'Provider')+' copy'};profileState.profiles.push(copy);profileState.activeId=copy.id;renderProfiles();});$('pfDeleteProfile').addEventListener('click',()=>{if(profileState.profiles.length===1)profileState.profiles[0]=blankProfile('My first provider');else profileState.profiles=profileState.profiles.filter((p)=>p.id!==profileState.activeId);profileState.activeId=profileState.profiles[0].id;renderProfiles();});$('pfSaveProfile').addEventListener('click',persistProfiles);$('pfExternalGenerate').addEventListener('click',generateExternal);
-  $('pfCloseLightbox').addEventListener('click',closeLightbox);$('pfLightbox').addEventListener('click',(event)=>{if(event.target===$('pfLightbox'))closeLightbox();});
-  galleryState=readJson(galleryKey,[]);readProfiles();renderGallery();renderProfiles();integrateNative();setTimeout(integrateNative,500);new MutationObserver(integrateNative).observe(document.body,{childList:true,subtree:true});
+  const profileKey = 'prismForgeProfiles:standalone-v1';
+  const galleryKey = 'prismForgeGallery:standalone-v1';
+  const id = () => 'pf-' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  const blankProfile = (name) => ({id:id(),name:name || 'New provider',endpoint:'',apiKey:'',modelIds:'',model:'',size:'768x768',count:1,headers:''});
+  let profiles = {items:[blankProfile('My first provider')],activeId:''};
+  let gallery = [];
+  const status = (target,text,type) => { const el=$(target); if(el){el.textContent=text || '';el.className='pf-status' + (type ? ' '+type : '');} };
+  const json = (key,fallback) => { try { return JSON.parse(localStorage.getItem(key) || '') ?? fallback; } catch { return fallback; } };
+  const active = () => profiles.items.find((item)=>item.id===profiles.activeId) || profiles.items[0];
+  const models = (value) => String(value || '').split(',').map((item)=>item.trim()).filter(Boolean);
+  const endpoint = (value) => { const raw=String(value || '').trim().replace(/\/$/,''); if(!raw) throw new Error('Add a proxy URL first.'); return /\/images\/generations$/i.test(raw) ? raw : raw+'/images/generations'; };
+  const stylePrompt = () => { const choice=$('pfStyle').value; if(choice==='custom') return $('pfCustomStyle').value.trim(); if(choice==='lolmao') return $('pfImportedLolmaoStyle').textContent.trim(); return ''; };
+  const composedPrompt = () => { const prompt=$('pfPrompt').value.trim(); const style=stylePrompt(); return style && style !== '[artStyle.prompt]' ? prompt+', '+style : prompt; };
+  const renderImages = (target,items,label) => { const root=$(target); root.innerHTML=''; if(!items.length){root.innerHTML='<div class="pf-output-empty">No image output was returned.</div>';return;} items.forEach((item,index)=>{const url=typeof item==='string'?item:(item?.dataUrl || item?.url || item?.imageUrl || (item?.b64_json ? 'data:image/png;base64,'+item.b64_json : ''));if(!url)return;const card=document.createElement('article');card.className='pf-output-card';const img=document.createElement('img');img.src=url;img.alt=(label || 'Generated image')+' '+(index+1);img.addEventListener('click',()=>openLightbox(url));const meta=document.createElement('div');meta.className='pf-output-meta';meta.innerHTML='<span>'+(label || 'Generated image')+' '+(index+1)+'</span><button class="pf-button ghost" type="button">Save to gallery</button>';meta.querySelector('button').addEventListener('click',()=>{addGallery([url],label || 'Generated');});card.append(img,meta);root.append(card);}); };
+  const addGallery = (urls,label) => { let added=0; urls.map((url)=>String(url).trim()).filter((url)=>/^https?:\/\//i.test(url) || /^data:image\//i.test(url)).forEach((url)=>{if(!gallery.some((item)=>item.url===url)){gallery.unshift({url,label:label || 'Imported'});added++;}});localStorage.setItem(galleryKey,JSON.stringify(gallery));renderGallery();return added; };
+  const renderGallery = () => { const root=$('pfGalleryGrid');root.innerHTML='';if(!gallery.length){root.innerHTML='<div class="pf-gallery-empty">Imported images will appear here.</div>';return;}gallery.forEach((item,index)=>{const card=document.createElement('article');card.className='pf-gallery-item';const img=document.createElement('img');img.src=item.url;img.alt=item.label+' '+(index+1);img.addEventListener('click',()=>openLightbox(item.url));const button=document.createElement('button');button.type='button';button.textContent=item.label+' · remove';button.addEventListener('click',()=>{gallery.splice(index,1);localStorage.setItem(galleryKey,JSON.stringify(gallery));renderGallery();});card.append(img,button);root.append(card);}); };
+  const openLightbox = (url) => {$('pfLightboxImage').src=url;$('pfLightbox').classList.add('open');};
+  const closeLightbox = () => {$('pfLightbox').classList.remove('open');$('pfLightboxImage').removeAttribute('src');};
+  const normalizePluginResult = (result) => { if(Array.isArray(result))return result; if(result?.images && Array.isArray(result.images))return result.images; if(result?.data && Array.isArray(result.data))return result.data; if(result?.dataUrl || result?.url || result?.imageUrl || result?.b64_json)return [result]; if(typeof result==='string')return [result]; return []; };
+  const generateDefault = async () => { const prompt=composedPrompt();const count=Math.max(1,Math.floor(Number($('pfCount').value)||1));if(!prompt){status('pfGenerateStatus','Add a prompt first.','error');return;}const fn=window.image;if(typeof fn!=='function'){status('pfGenerateStatus','The direct Perchance image plugin is not available in this draft.','error');return;}status('pfGenerateStatus','Generating with Perchance…');$('pfGenerateDefault').disabled=true;try{const options={prompt,negativePrompt:$('pfNegative').value.trim(),resolution:$('pfCanvas').value,numImages:count,guidanceScale:$('pfGuidance')?.value || undefined,seed:$('pfSeed').value.trim() || undefined};const result=await fn(options);const items=normalizePluginResult(result);renderImages('pfOutput',items,'Perchance');status('pfGenerateStatus','Generation complete.','ok');}catch(error){status('pfGenerateStatus',error.message || 'Perchance generation failed.','error');}finally{$('pfGenerateDefault').disabled=false;}};
+  const writeProfile = () => { const p=active();if(!p)return;p.name=$('pfProfileName').value.trim()||'Unnamed provider';p.endpoint=$('pfEndpoint').value.trim();p.apiKey=$('pfApiKey').value.trim();p.modelIds=$('pfModelIds').value.trim();p.model=$('pfModel').value;p.size=$('pfProfileSize').value;p.count=Math.max(1,Math.floor(Number($('pfProfileCount').value)||1));p.headers=$('pfHeaders').value.trim(); };
+  const fillModels = (selected) => { const select=$('pfModel');select.innerHTML='';const list=models($('pfModelIds').value);(list.length?list:['']).forEach((name)=>{const option=document.createElement('option');option.value=name;option.textContent=name || 'Add model IDs above';option.selected=name===selected;select.append(option);});};
+  const renderProfiles = () => { const select=$('pfProfileSelect');select.innerHTML='';profiles.items.forEach((p)=>{const option=document.createElement('option');option.value=p.id;option.textContent=p.name;option.selected=p.id===profiles.activeId;select.append(option);});const p=active();if(!p)return;$('pfProfileName').value=p.name;$('pfEndpoint').value=p.endpoint;$('pfApiKey').value=p.apiKey;$('pfModelIds').value=p.modelIds;$('pfProfileSize').value=p.size;$('pfProfileCount').value=p.count;$('pfHeaders').value=p.headers;fillModels(p.model || models(p.modelIds)[0] || '');};
+  const saveProfiles = () => { writeProfile();localStorage.setItem(profileKey,JSON.stringify(profiles));status('pfProfileStatus','Profile saved in this browser.','ok');};
+  const generateExternal = async () => { try { writeProfile();const p=active();if(!p.endpoint || !p.model)throw new Error('Add a proxy URL and selected model first.');let extra={};if(p.headers)extra=JSON.parse(p.headers);const headers={'Content-Type':'application/json',...extra};if(p.apiKey)headers.Authorization='Bearer '+p.apiKey;const body={model:p.model,prompt:composedPrompt(),size:p.size,n:p.count,response_format:'url'};const response=await fetch(endpoint(p.endpoint),{method:'POST',headers,body:JSON.stringify(body)});const text=await response.text();let data;try{data=JSON.parse(text);}catch{throw new Error('Proxy returned non-JSON data ('+response.status+').');}if(!response.ok)throw new Error(data.error?.message || data.message || 'Proxy rejected the request ('+response.status+').');const items=Array.isArray(data.data)?data.data:(Array.isArray(data.images)?data.images:[]);renderImages('pfExternalOutput',items,'Third-party');status('pfProfileStatus','Generation complete.','ok');}catch(error){status('pfProfileStatus',error.message || 'Third-party generation failed.','error');}};
+  const loadCatbox = async () => { const url=$('pfCatboxUrl').value.trim();if(!url){status('pfCatboxStatus','Paste a Catbox URL first.','error');return;}status('pfCatboxStatus','Loading…');try{if(/\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(url)){const added=addGallery([url],'Catbox URL');status('pfCatboxStatus',added?'Image added.':'Already in gallery.','ok');return;}const response=await fetch(url,{mode:'cors'});if(!response.ok)throw new Error('Catbox returned HTTP '+response.status+'.');const text=await response.text();const urls=[...text.matchAll(/https?:\/\/files\.catbox\.moe\/[^\s"'<>]+/gi)].map((match)=>match[0].replace(/[)&,.;]+$/,''));if(!urls.length)throw new Error('No direct image URLs found in that album response.');const added=addGallery(urls,'Catbox album');status('pfCatboxStatus',added+' image'+(added===1?'':'s')+' added.','ok');}catch(error){status('pfCatboxStatus',error.message || 'Catbox import failed.','error');}};
+  document.querySelectorAll('[data-theme]').forEach((button)=>button.addEventListener('click',()=>{const theme=button.dataset.theme;document.documentElement.dataset.theme=theme==='graphite'?'':theme;localStorage.setItem('prismForgeTheme',theme);}));
+  $('pfStyle').addEventListener('change',()=>{$('pfCustomStyleField').hidden=$('pfStyle').value!=='custom';});$('pfGenerateDefault').addEventListener('click',generateDefault);$('pfOpenProfiles').addEventListener('click',()=>{$('pfProfilesModal').classList.add('open');renderProfiles();});$('pfCloseProfiles').addEventListener('click',()=>$('pfProfilesModal').classList.remove('open'));$('pfProfileSelect').addEventListener('change',()=>{writeProfile();profiles.activeId=$('pfProfileSelect').value;renderProfiles();});$('pfModelIds').addEventListener('input',()=>fillModels($('pfModel').value));$('pfNewProfile').addEventListener('click',()=>{writeProfile();const p=blankProfile('Provider '+(profiles.items.length+1));profiles.items.push(p);profiles.activeId=p.id;renderProfiles();});$('pfDuplicateProfile').addEventListener('click',()=>{writeProfile();const copy={...active(),id:id(),name:(active().name || 'Provider')+' copy'};profiles.items.push(copy);profiles.activeId=copy.id;renderProfiles();});$('pfDeleteProfile').addEventListener('click',()=>{if(profiles.items.length===1)profiles.items[0]=blankProfile('My first provider');else profiles.items=profiles.items.filter((p)=>p.id!==profiles.activeId);profiles.activeId=profiles.items[0].id;renderProfiles();});$('pfSaveProfile').addEventListener('click',saveProfiles);$('pfGenerateExternal').addEventListener('click',generateExternal);$('pfLoadCatbox').addEventListener('click',loadCatbox);$('pfAddImageUrl').addEventListener('click',()=>{const url=$('pfCatboxUrl').value.trim();if(!/^https?:\/\/[^\s]+$/i.test(url)){status('pfCatboxStatus','Enter a valid image URL.','error');return;}const added=addGallery([url],'Direct URL');status('pfCatboxStatus',added?'Image added.':'Already in gallery.','ok');});$('pfClearGallery').addEventListener('click',()=>{gallery=[];localStorage.setItem(galleryKey,'[]');renderGallery();});$('pfCloseLightbox').addEventListener('click',closeLightbox);$('pfLightbox').addEventListener('click',(event)=>{if(event.target===$('pfLightbox'))closeLightbox();});
+  const savedTheme=localStorage.getItem('prismForgeTheme');if(savedTheme && savedTheme!=='graphite')document.documentElement.dataset.theme=savedTheme;gallery=json(galleryKey,[]);profiles=json(profileKey,profiles);if(!profiles.items?.length)profiles={items:[blankProfile('My first provider')],activeId:''};if(!profiles.activeId || !profiles.items.some((p)=>p.id===profiles.activeId))profiles.activeId=profiles.items[0].id;renderGallery();renderProfiles();
 })();
 </script>
 </body>
