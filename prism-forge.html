@@ -578,28 +578,39 @@ if (btn) { btn.disabled = false; btn.textContent = 'Upload'; }
 };
 
 // Global canvas hook that the t2i-framework plugin invokes
+window.__pfCanvasMap = window.__pfCanvasMap || new Map();
 window.processGeneration = (result) => {
 if (!result) return;
 const iframe = result.iframe;
 const canvas = result.canvas;
 if (!iframe || !canvas) return;
 
-((thisCanvas, thisIframe) => {
-let existingBtn = thisIframe.parentElement?.querySelector(':scope > .pf-upload-button');
-if (!existingBtn) {
-existingBtn = document.createElement('button');
-existingBtn.className = 'pf-upload-button';
-existingBtn.type = 'button';
-existingBtn.textContent = 'Upload to Catbox';
-existingBtn.title = 'Upload this image to your Catbox album';
-thisIframe.insertAdjacentElement('afterend', existingBtn);
-}
-existingBtn.onclick = (e) => {
+window.currentCanvas = canvas;
+iframe.__pfCanvas = canvas;
+if (iframe.parentElement) iframe.parentElement.__pfCanvas = canvas;
+if (iframe.src) window.__pfCanvasMap.set(iframe.src, canvas);
+if (iframe.id) window.__pfCanvasMap.set(iframe.id, canvas);
+const dataId = iframe.getAttribute('data-gen-id') || iframe.src || '';
+if (dataId) window.__pfCanvasMap.set(dataId, canvas);
+
+iframe.parentElement?.querySelectorAll(':scope > .pf-upload-button').forEach(b => b.remove());
+const uploadButton = document.createElement('button');
+uploadButton.className = 'pf-upload-button';
+uploadButton.type = 'button';
+uploadButton.textContent = 'Upload to Catbox';
+uploadButton.title = 'Upload this image to your Catbox album';
+uploadButton.onclick = (e) => {
 e.preventDefault();
 e.stopPropagation();
-window.showImageUploadDialog(thisCanvas);
+window.currentCanvas = canvas;
+window.showImageUploadDialog(canvas);
 };
-})(canvas, iframe);
+iframe.insertAdjacentElement('afterend', uploadButton);
+
+iframe.addEventListener('mouseover', () => {
+window.currentCanvas = canvas;
+if (iframe.parentElement) iframe.parentElement.__pfCanvas = canvas;
+});
 };
 
 const attachButtonToMedia = (el) => {
@@ -643,6 +654,17 @@ return;
 
 // 4. Iframe tag
 if (el.tagName.toLowerCase() === 'iframe') {
+if (el.__pfCanvas) {
+window.showImageUploadDialog(el.__pfCanvas);
+return;
+}
+if (window.__pfCanvasMap) {
+const mapped = window.__pfCanvasMap.get(el.src) || window.__pfCanvasMap.get(el.id);
+if (mapped) {
+window.showImageUploadDialog(mapped);
+return;
+}
+}
 try {
 const doc = el.contentDocument || el.contentWindow?.document;
 const innerCanvas = doc?.querySelector('canvas');
@@ -657,7 +679,6 @@ return;
 }
 } catch (_) {}
 
-// If iframe src is a direct image URL or generator asset
 if (el.src && !el.src.includes('about:blank') && !el.src.includes('perchance.org/')) {
 window.showImageUploadDialog(el.src);
 return;
