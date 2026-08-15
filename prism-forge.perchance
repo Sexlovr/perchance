@@ -1,4 +1,5 @@
 generateHTML = {import:t2i-framework-plugin-v2}
+superFetch = {import:super-fetch-plugin}
 commentsPlugin = {import:comments-plugin}
 t2iStyles = {import:t2i-styles}
 
@@ -22,6 +23,8 @@ settings
     resolution = [input.shape]
     guidanceScale = [input.guidance]
     seed = [input.seed]
+    onFinish(result) =>
+      processGeneration(result)
   userInputs
     description
       label = Prompt bridge
@@ -68,6 +71,13 @@ settings
     seed
       label = Seed bridge
       type = text
+    catboxAPI
+      label = Catbox Hash
+      type = text
+      remember = true
+      takesUpFullRow = true
+      visible() =>
+        return true;
   defaultCommentOptions
     width = 100%
     height = 400

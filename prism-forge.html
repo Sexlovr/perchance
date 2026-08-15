@@ -29,7 +29,7 @@
 <div class="lightbox" id="lightbox"><button class="button" id="closeLightbox" type="button">Close</button><img id="lightboxImage" alt="Expanded image"></div>
 <script>
 (()=>{const $=id=>document.getElementById(id),profileKey='prismForgeProfiles:backend-v1',catboxKey='prismForgeCatbox:backend-v1',uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7),blank=n=>({id:uid(),name:n||'New provider',providerType:'openai',endpoint:'',apiKey:'',modelIds:'',model:'',size:'768x768',count:1,headers:'',nvSteps:50,nvGuidance:3.5,nvWidth:1024,nvHeight:1024,nvMode:'base'});let profiles={items:[blank('My first provider')],activeId:''},catbox=[];const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'')||f}catch{return f}},status=(id,t,k='')=>{const e=$(id);if(e){e.textContent=t;e.className='status '+k}};
- const bridge=()=>document.querySelector('#backendMount'),field=n=>bridge()?.querySelector('[data-name="'+n+'"] textarea, [data-name="'+n+'"] input'),select=()=>bridge()?.querySelector('select[data-name="artStyle"]');const syncBackend=()=>{const p=field('description'),n=field('negative'),shape=bridge()?.querySelector('select[data-name="shape"]'),num=field('numImages'),g=field('guidance'),seed=field('seed'),style=select();if(p){p.value=$('prompt').value;p.oninput?.({})}if(n){n.value=$('negative').value;n.oninput?.({})}if(shape){shape.value=$('resolution').value;shape.onchange?.({})}if(num){num.value=$('count').value;num.oninput?.({})}if(g){g.value=$('guidance').value;g.oninput?.({})}if(seed){seed.value=$('seed').value;seed.oninput?.({})}if(style){const opts=[...style.options],mode=$('styleMode').value;const target=mode==='lolmao'?(opts.filter(o=>!o.textContent.toLowerCase().includes('no style'))[Math.floor(Math.random()*Math.max(1,opts.length-1))]||opts[0]):opts.find(o=>o.textContent.toLowerCase().includes('no style'))||opts[0];style.value=target.value;style.onchange?.({})}};const clickNative=()=>{syncBackend();const b=bridge()?.querySelector('#generateButtonEl');if(!b){status('generateStatus','Framework generate control is not ready yet.','error');return}status('generateStatus','Generating with Perchance…');b.click()};
+ const bridge=()=>document.querySelector('#backendMount'),field=n=>bridge()?.querySelector('[data-name="'+n+'"] textarea, [data-name="'+n+'"] input'),select=()=>bridge()?.querySelector('select[data-name="artStyle"]');const syncBackend=()=>{const p=field('description'),n=field('negative'),shape=bridge()?.querySelector('select[data-name="shape"]'),num=field('numImages'),g=field('guidance'),seed=field('seed'),cb=field('catboxAPI'),style=select();if(p){p.value=$('prompt').value;p.oninput?.({})}if(n){n.value=$('negative').value;n.oninput?.({})}if(shape){shape.value=$('resolution').value;shape.onchange?.({})}if(num){num.value=$('count').value;num.oninput?.({})}if(g){g.value=$('guidance').value;g.oninput?.({})}if(seed){seed.value=$('seed').value;seed.oninput?.({})}if(cb){const h=$('catboxHash')?.value?.trim()||localStorage.getItem('prismForgeCatboxHash')||'';if(cb.value!==h){cb.value=h;cb.oninput?.({})}}if(style){const opts=[...style.options],mode=$('styleMode').value;const target=mode==='lolmao'?(opts.filter(o=>!o.textContent.toLowerCase().includes('no style'))[Math.floor(Math.random()*Math.max(1,opts.length-1))]||opts[0]):opts.find(o=>o.textContent.toLowerCase().includes('no style'))||opts[0];style.value=target.value;style.onchange?.({})}};const clickNative=()=>{syncBackend();const b=bridge()?.querySelector('#generateButtonEl');if(!b){status('generateStatus','Framework generate control is not ready yet.','error');return}status('generateStatus','Generating with Perchance…');b.click()};
  const renderCatbox=()=>{const root=$('catboxGrid');root.innerHTML='';catbox.forEach((item,i)=>{const figure=document.createElement('figure');const img=document.createElement('img');img.src=item.url;img.alt=item.label;img.onclick=()=>{$('lightboxImage').src=item.url;$('lightbox').classList.add('open')};const cap=document.createElement('figcaption');cap.textContent=item.label+' · remove';cap.onclick=()=>{catbox.splice(i,1);localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox()};figure.append(img,cap);root.append(figure)})};const addCatbox=(urls,label)=>{let c=0;urls.filter(Boolean).forEach(url=>{if(!catbox.some(x=>x.url===url)){catbox.unshift({url,label:label||'Imported'});c++}});localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox();return c};const loadCatbox=async()=>{const url=$('catboxUrl').value.trim();if(!url){status('catboxStatus','Paste a Catbox URL first.','error');return}try{if(/\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(url)){status('catboxStatus',addCatbox([url],'Catbox URL')?'Image added.':'Already imported.','ok');return}const r=await fetch(url);const text=await r.text();const urls=[...text.matchAll(/https?:\/\/files\.catbox\.moe\/[^\s"'<>]+/gi)].map(m=>m[0].replace(/[)&,.;]+$/,''));if(!urls.length)throw Error('No direct image URLs found.');status('catboxStatus',addCatbox(urls,'Catbox album')+' images added.','ok')}catch(e){status('catboxStatus',e.message||'Catbox import failed.','error')}};
  const active=()=>profiles.items.find(p=>p.id===profiles.activeId)||profiles.items[0],models=v=>String(v||'').split(',').map(x=>x.trim()).filter(Boolean),endpoint=v=>{const x=String(v||'').trim().replace(/\/$/,'');if(!x)throw Error('Add a proxy URL first.');return /\/images\/generations$/i.test(x)?x:x+'/images/generations'};const write=()=>{const p=active();p.name=$('profileName').value.trim()||'Unnamed provider';p.endpoint=$('endpoint').value.trim();p.apiKey=$('apiKey').value.trim();p.modelIds=$('modelIds').value.trim();p.model=$('model').value;p.size=$('profileSize').value;p.count=Math.max(1,Math.floor(Number($('profileCount').value)||1));p.headers=$('headers').value.trim();p.providerType=($('providerType').value)||'openai';p.nvWidth=parseInt($('nvWidth').value,10)||1024;p.nvHeight=parseInt($('nvHeight').value,10)||1024;p.nvSteps=Math.max(5,Math.min(100,Math.floor(Number($('nvSteps').value)||50)));p.nvGuidance=Math.max(1.01,Math.min(9,Number($('nvGuidance').value)||3.5));p.nvMode=$('nvMode').value||'base'};const syncProviderType=(v)=>{const nv=(v==='nvidia');$('nvFields').hidden=!nv;$('nvPresets').hidden=!nv;if(nv){$('endpoint').placeholder='https://ai.api.nvidia.com/v1 or proxy';$('modelIds').placeholder='black-forest-labs/flux.1-dev, black-forest-labs/flux.2-klein-4b'}else{$('endpoint').placeholder='https://your-proxy.example/v1';$('modelIds').placeholder='model-a, model-b'}};const fill=sel=>{$('model').innerHTML='';(models($('modelIds').value).length?models($('modelIds').value):['']).forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n||'Add model IDs above';o.selected=n===sel;$('model').append(o)})};const renderProfiles=()=>{const s=$('profileSelect');s.innerHTML='';profiles.items.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;o.selected=p.id===profiles.activeId;s.append(o)});const p=active();$('profileName').value=p.name;$('providerType').value=p.providerType||'openai';$('endpoint').value=p.endpoint;$('apiKey').value=p.apiKey;$('modelIds').value=p.modelIds;$('profileSize').value=p.size;$('profileCount').value=p.count;$('headers').value=p.headers;$('nvWidth').value=p.nvWidth||1024;$('nvHeight').value=p.nvHeight||1024;$('nvSteps').value=p.nvSteps||50;$('nvGuidance').value=p.nvGuidance||3.5;$('nvMode').value=p.nvMode||'base';syncProviderType(p.providerType||'openai');fill(p.model||models(p.modelIds)[0]||'')};const generateExternal=async()=>{try{write();const p=active();const isNvidia=(p.providerType||'openai')==='nvidia';if(!p.endpoint||!p.model)throw Error('Add a proxy URL and model first.');let extra={};if(p.headers)extra=JSON.parse(p.headers);const h={'Content-Type':'application/json',...extra};if(p.apiKey)h.Authorization='Bearer '+p.apiKey;
 const promptBase=$('prompt').value.trim()||'';const seedRaw=$('seed').value.trim();
@@ -176,9 +176,11 @@ body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #ba
     setFrameworkValue('numImages', String(Math.max(1, Math.floor(Number($('count')?.value) || 1))));
     setFrameworkValue('guidance', String(Number($('guidance')?.value) || 7));
     setFrameworkValue('seed', $('seed')?.value.trim() || '');
+    const catHash = $('catboxHash')?.value?.trim() || localStorage.getItem('prismForgeCatboxHash') || '';
+    setFrameworkValue('catboxAPI', catHash);
     const shape = select('shape'); if (shape) { shape.value = $('resolution')?.value || shape.value; emit(shape, 'change'); }
     const style = select('artStyle'); if (style && !custom) { const match = [...style.options].find((option) => option.value === $('styleMode')?.value); if (match) { style.value = match.value; emit(style, 'change'); } }
-    try { if (window.input) { window.input.description = prompt + (customText ? ', ' + customText : ''); window.input.negative = $('negative')?.value.trim() || ''; window.input.numImages = Number($('count')?.value) || 1; window.input.guidance = Number($('guidance')?.value) || 7; window.input.seed = $('seed')?.value.trim() || ''; window.input.shape = $('resolution')?.value || '768x768'; } } catch (_) {}
+    try { if (window.input) { window.input.description = prompt + (customText ? ', ' + customText : ''); window.input.negative = $('negative')?.value.trim() || ''; window.input.numImages = Number($('count')?.value) || 1; window.input.guidance = Number($('guidance')?.value) || 7; window.input.seed = $('seed')?.value.trim() || ''; window.input.catboxAPI = catHash; window.input.shape = $('resolution')?.value || '768x768'; } } catch (_) {}
     return true;
   };
   const bind = () => { const button = $('generate'); if (!button || button.dataset.promptBridgeBound === '1') return; button.dataset.promptBridgeBound = '1'; button.onclick = () => { if (!prime()) return; const native = backend()?.querySelector('#generateButtonEl'); if (!native) { const message = $('generateStatus'); if (message) { message.textContent = 'Perchance generation controls are still loading.'; message.className = 'status error'; } return; } const message = $('generateStatus'); if (message) { message.textContent = 'Generating with Perchance…'; message.className = 'status'; } native.click(); }; };
@@ -221,12 +223,12 @@ body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #ba
 })();
 </script><script id="prismForgeUnifiedCatbox">
 (() => {
-  // Per-image Catbox upload. Mirrors the proven simple approach from lolmaobro-art-flux:
-  //   1) scan ALL <img> in #imageGalleryCtn8569284 / #outputAreaEl (no .t2i-image-ctn dependency)
-  //   2) place a single "Upload to Catbox" button right after each image
-  //   3) click -> fetch(img.currentSrc||img.src) -> blob -> pfCatboxUploadBlob
-  // user-uploads.perchance.org returns Access-Control-Allow-Origin: * so the fetch works.
-  // Canvas fallback (via processGeneration or same-origin iframe) is kept as a secondary path.
+  // Per-image Catbox upload FALLBACK.
+  // The t2i framework's own processGeneration (in the output template) creates
+  // "Upload to Catbox" buttons natively when catboxAPI input + onFinish hook are
+  // present in the .perchance source. This script only adds buttons to images
+  // that the framework missed (e.g. external profile results in #externalGrid).
+  // It does NOT override window.processGeneration.
 
   const hashKey = 'prismForgeCatboxHash';
   const albumKey = 'defaultCatboxAlbum';
@@ -235,95 +237,55 @@ body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #ba
   const $ = (id) => document.getElementById(id);
   const setStatus = (text, kind = '') => { const node = $('catboxStatus'); if (node) { node.textContent = text; node.className = 'status ' + kind; } };
   const getHash = () => $('catboxHash')?.value.trim() || localStorage.getItem(hashKey) || '';
-  const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem(albumKey) || ''; const m = url.match(albumRe); return m ? m[1] : ''; };
+  const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem(albumKey) || ''; const m = url.match(/catbox\.moe\/c\/([A-Za-z0-9]+)/i); return m ? m[1] : ''; };
 
   const uploadBlob = async (blob, name) => {
-    if (!blob) throw Error('No image data was read for this result.');
+    if (!blob) throw Error('No image data.');
     if (window.pfCatboxUploadBlob) return window.pfCatboxUploadBlob(blob, name);
-    const hash = getHash(); if (!hash) throw Error('Enter and save your Catbox user hash before uploading.');
+    const hash = getHash(); if (!hash) throw Error('Enter and save your Catbox user hash.');
     const form = new FormData(); form.append('reqtype', 'fileupload'); form.append('userhash', hash);
     const album = getAlbum(); if (album) form.append('album', album);
     form.append('fileToUpload', blob, name || 'prism-forge.png');
     const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
     const url = (await r.text()).trim();
-    if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw Error(url || 'Catbox did not return a file URL.');
+    if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw Error(url || 'Catbox returned no URL.');
     if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
     return url;
   };
 
-  const uploadUrl = async (url) => {
-    if (!url || !/^https?:/i.test(url)) throw Error('This image does not expose a direct URL for upload.');
-    const hash = getHash(); if (!hash) throw Error('Enter and save your Catbox user hash before uploading.');
-    const form = new FormData(); form.append('reqtype', 'urlupload'); form.append('userhash', hash);
-    const album = getAlbum(); if (album) form.append('album', album);
-    form.append('url', url);
-    const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
-    const result = (await r.text()).trim();
-    if (!/^https?:\/\/files\.catbox\.moe\//i.test(result)) throw Error(result || 'Catbox did not return a file URL.');
-    if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(result, 'Catbox upload');
-    return result;
-  };
-
-  const canvasToBlob = (canvas) => new Promise((resolve, reject) => {
-    if (!canvas || typeof canvas.toBlob !== 'function') reject(Error('The generated canvas is not available for upload.'));
-    canvas.toBlob((b) => b ? resolve(b) : reject(Error('Canvas toBlob failed.')), 'image/png');
-  });
-
   const wire = (button, img) => {
     if (button.dataset.pfBound === '1') return;
-    button.dataset.pfBound = '1';
-    button.type = 'button';
+    button.dataset.pfBound = '1'; button.type = 'button';
     button.onclick = async () => {
       if (button.disabled) return;
-      button.disabled = true; const original = button.textContent; button.textContent = 'Uploading\u2026';
+      button.disabled = true; const orig = button.textContent; button.textContent = 'Uploading\u2026';
       setStatus('Uploading image to Catbox\u2026');
       try {
-        // Preferred: fetch the img URL directly (works because user-uploads.perchance.org sets ACAO: *)
         const url = img.currentSrc || img.src || '';
-        if (url.startsWith('data:')) { const resp = await fetch(url); const blob = await resp.blob(); await uploadBlob(blob, 'prism-forge.png'); }
-        else if (url) { try { const resp = await fetch(url); const blob = await resp.blob(); await uploadBlob(blob, 'prism-forge.png'); }
-                        catch (_) { /* CORS/CSP fallback: let catbox fetch it */ await uploadUrl(url); } }
-        else throw Error('This image does not expose a source URL yet.');
-      } catch (err) { setStatus(err.message || 'Catbox upload failed.', 'error'); }
-      finally { button.disabled = false; button.textContent = original; }
+        if (url.startsWith('data:')) { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
+        else if (url) { try { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
+                        catch (_) { /* urlupload fallback */ const h=getHash(); if(!h){setStatus('Enter hash first.','error');return;} const f=new FormData();f.append('reqtype','urlupload');f.append('userhash',h);const al=getAlbum();if(al)f.append('album',al);f.append('url',url);const rr=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:f});const u=(await rr.text()).trim();if(!/^https?:\/\/files\.catbox\.moe\//i.test(u))throw Error(u);if(window.pfCatboxSaveUrl)window.pfCatboxSaveUrl(u,'Catbox upload');setStatus('Uploaded: '+u,'ok'); } }
+        else throw Error('No image URL available.');
+      } catch (e) { setStatus(e.message || 'Catbox upload failed.', 'error'); }
+      finally { button.disabled = false; button.textContent = orig; }
     };
   };
 
-  // Canvas hook (kept for frameworks that expose a canvas via processGeneration)
-  const previous = window.processGeneration;
-  window.processGeneration = (result) => {
-    try { if (result?.iframe && result.canvas) result.iframe.__pfCanvas = result.canvas; } catch (_) {}
-    if (typeof previous === 'function') try { previous(result); } catch (_) {}
-  };
-
   const scan = () => {
-    const roots = [document.querySelector('#imageGalleryCtn8569284'), document.querySelector('#outputAreaEl')].filter(Boolean);
-    if (!roots.length) return;
-    const seen = new Set();
-    roots.forEach((root) => {
-      // Match ALL images: native Perchance <img>, plus any iframe-wrapped ones.
-      root.querySelectorAll('img').forEach((img) => {
-        if (seen.has(img)) return; seen.add(img);
-        // Skip tiny UI icons (catbox gallery thumbnails live in #catboxGrid, also skip those)
+    // Only scan external grid results (framework handles native gallery images)
+    const extGrid = document.querySelector('#externalGrid');
+    if (extGrid) {
+      extGrid.querySelectorAll('img').forEach((img) => {
         if (img.closest('#catboxGrid')) return;
-        if (img.width < 64 && img.naturalWidth < 64) return;
         const holder = img.parentElement; if (!holder) return;
-        let button = holder.querySelector(':scope > .pf-upload-button');
-        if (!button) {
-          button = document.createElement('button');
-          button.className = 'pf-upload-button';
-          button.textContent = 'Upload to Catbox';
-          button.title = 'Upload this image to Catbox';
-          img.insertAdjacentElement('afterend', button);
-        }
-        wire(button, img);
+        let btn = holder.querySelector(':scope > .pf-upload-button');
+        if (!btn) { btn = document.createElement('button'); btn.className = 'pf-upload-button'; btn.textContent = 'Send to Catbox'; img.insertAdjacentElement('afterend', btn); }
+        wire(btn, img);
       });
-    });
+    }
   };
 
-  scan();
-  new MutationObserver(scan).observe(document.body, { subtree: true, childList: true });
-  setTimeout(scan, 700); setInterval(scan, 1500);
+  scan(); new MutationObserver(scan).observe(document.body, { subtree: true, childList: true });
+  setTimeout(scan, 700); setInterval(scan, 2000);
 })();
-
 </script></body></html>
