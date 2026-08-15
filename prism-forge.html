@@ -441,6 +441,7 @@ t._timer = setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.
 };
 
 window.currentCanvas = null;
+window.currentImgUrl = null;
 
 // Exact uploadCanvasToCatbox implementation
 window.uploadCanvasToCatbox = function(canvas, userhash, albumUrl) {
@@ -479,8 +480,42 @@ reject(err);
 });
 };
 
-window.showImageUploadDialog = function(canvas) {
-window.currentCanvas = canvas;
+window.uploadUrlToCatbox = async function(imgUrl, userhash, albumUrl) {
+if (!userhash) {
+throw new Error('missing Catbox.moe UserHash');
+}
+const formData = new FormData();
+formData.append('reqtype', 'urlupload');
+formData.append('userhash', userhash);
+if (albumUrl) {
+const albumId = extractAlbumId(albumUrl);
+formData.append('album', albumId);
+}
+formData.append('url', imgUrl);
+const response = await fetch('https://catbox.moe/user/api.php', {
+method: 'POST',
+body: formData
+});
+const url = (await response.text()).trim();
+if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) {
+throw new Error(url || 'Catbox did not return a valid file URL');
+}
+if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
+return url;
+};
+
+window.showImageUploadDialog = function(target) {
+window.currentCanvas = null;
+window.currentImgUrl = null;
+
+if (typeof target === 'string') {
+window.currentImgUrl = target;
+} else if (target && (target.tagName?.toLowerCase() === 'canvas' || typeof target.toBlob === 'function')) {
+window.currentCanvas = target;
+} else if (target && target.tagName?.toLowerCase() === 'img') {
+window.currentImgUrl = target.currentSrc || target.src || '';
+}
+
 const curAlbum = $('catboxUrl')?.value.trim() || localStorage.getItem('defaultCatboxAlbum') || '';
 const input = $('albumUploadInput');
 if (input) input.value = curAlbum;
@@ -499,8 +534,8 @@ if (dialog) dialog.style.display = 'none';
 window.confirmImageUpload = async function() {
 const btn = $('confirmImageUploadBtn');
 if (btn?.disabled) return;
-if (!window.currentCanvas) {
-showToast('No image canvas found to upload', true);
+if (!window.currentCanvas && !window.currentImgUrl) {
+showToast('No image found to upload', true);
 return;
 }
 const albumUrl = $('albumUploadInput')?.value.trim() || '';
@@ -513,7 +548,26 @@ return;
 if (btn) { btn.disabled = true; btn.textContent = 'Uploading…'; }
 showToast('Uploading to Catbox…');
 try {
-const url = await window.uploadCanvasToCatbox(window.currentCanvas, apiKey, albumUrl);
+let url = '';
+if (window.currentCanvas) {
+url = await window.uploadCanvasToCatbox(window.currentCanvas, apiKey, albumUrl);
+} else if (window.currentImgUrl) {
+if (window.currentImgUrl.startsWith('data:')) {
+const r = await fetch(window.currentImgUrl);
+const blob = await r.blob();
+const form = new FormData();
+form.append('reqtype', 'fileupload');
+form.append('userhash', apiKey);
+if (albumUrl) form.append('album', extractAlbumId(albumUrl));
+form.append('fileToUpload', blob, 'perchance-gen.png');
+const res = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
+url = (await res.text()).trim();
+if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw new Error(url || 'Upload failed');
+if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
+} else {
+url = await window.uploadUrlToCatbox(window.currentImgUrl, apiKey, albumUrl);
+}
+}
 showToast('✅ Uploaded to Catbox: ' + url);
 window.closeImageUploadDialog();
 } catch (err) {
@@ -570,6 +624,10 @@ if (el.tagName.toLowerCase() === 'canvas') {
 window.showImageUploadDialog(el);
 return;
 }
+if (el.tagName.toLowerCase() === 'img') {
+window.showImageUploadDialog(el.currentSrc || el.src || el);
+return;
+}
 if (el.tagName.toLowerCase() === 'iframe') {
 try {
 const doc = el.contentDocument || el.contentWindow?.document;
@@ -578,15 +636,21 @@ if (innerCanvas) {
 window.showImageUploadDialog(innerCanvas);
 return;
 }
+const innerImg = doc?.querySelector('img');
+if (innerImg) {
+window.showImageUploadDialog(innerImg.currentSrc || innerImg.src || innerImg);
+return;
+}
 } catch (_) {}
 }
 
-const c = document.createElement('canvas');
-c.width = el.naturalWidth || el.width || 768;
-c.height = el.naturalHeight || el.height || 768;
-const ctx = c.getContext('2d');
-ctx.drawImage(el, 0, 0);
-window.showImageUploadDialog(c);
+const fallbackImg = el.querySelector?.('img') || el.parentElement?.querySelector('img');
+if (fallbackImg) {
+window.showImageUploadDialog(fallbackImg.currentSrc || fallbackImg.src || fallbackImg);
+return;
+}
+
+showToast('Image still loading. Please click again in a moment.', true);
 };
 
 if (el.nextSibling) {
