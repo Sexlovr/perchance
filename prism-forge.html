@@ -296,11 +296,39 @@ if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(result, 'Catbox upload');
 return result;
 };
 
+// Global hook: captures canvas and iframe elements as soon as generation finishes
+const existingHook = window.processGeneration;
+window.processGeneration = (result) => {
+try {
+if (result?.iframe && result?.canvas) {
+result.iframe.__pfCanvas = result.canvas;
+if (result.iframe.parentElement) {
+result.iframe.parentElement.__pfCanvas = result.canvas;
+}
+}
+} catch (_) {}
+if (typeof existingHook === 'function') {
+try { existingHook(result); } catch (_) {}
+}
+};
+
 const extractBlobFromElement = async (el) => {
 if (!el) throw Error('Element not found');
+
+// 1. Direct canvas attached from processGeneration hook
+if (el.__pfCanvas && typeof el.__pfCanvas.toBlob === 'function') {
+return new Promise((res, rej) => el.__pfCanvas.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
+}
+if (el.parentElement?.__pfCanvas && typeof el.parentElement.__pfCanvas.toBlob === 'function') {
+return new Promise((res, rej) => el.parentElement.__pfCanvas.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
+}
+
+// 2. Direct canvas element
 if (el.tagName && el.tagName.toLowerCase() === 'canvas') {
 return new Promise((res, rej) => el.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
 }
+
+// 3. Direct img element
 if (el.tagName && el.tagName.toLowerCase() === 'img') {
 const src = el.currentSrc || el.src || '';
 if (src.startsWith('data:')) {
@@ -314,6 +342,8 @@ return { urlOnly: src };
 }
 }
 }
+
+// 4. Iframe with canvas or img inside
 if (el.tagName && el.tagName.toLowerCase() === 'iframe') {
 try {
 const doc = el.contentDocument || el.contentWindow?.document;
@@ -325,6 +355,7 @@ if (img) return await extractBlobFromElement(img);
 }
 } catch (_) {}
 }
+
 throw Error('Image data not ready. Try again in a moment.');
 };
 
