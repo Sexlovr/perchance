@@ -442,7 +442,7 @@ t._timer = setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.
 
 window.currentCanvas = null;
 
-// Exact uploadCanvasToCatbox implementation from OG generator
+// Exact uploadCanvasToCatbox implementation
 window.uploadCanvasToCatbox = function(canvas, userhash, albumUrl) {
 if (!userhash) {
 throw new Error('missing Catbox.moe UserHash');
@@ -531,7 +531,7 @@ const canvas = result.canvas;
 if (!iframe || !canvas) return;
 
 ((thisCanvas, thisIframe) => {
-let existingBtn = thisIframe.parentElement?.querySelector('.pf-upload-button');
+let existingBtn = thisIframe.parentElement?.querySelector(':scope > .pf-upload-button');
 if (!existingBtn) {
 existingBtn = document.createElement('button');
 existingBtn.className = 'pf-upload-button';
@@ -548,46 +548,76 @@ window.showImageUploadDialog(thisCanvas);
 })(canvas, iframe);
 };
 
-// Fallback scanner for static / external results
-const scanFallbacks = () => {
-const scopes = [
-document.querySelector('#outputAreaEl'),
-document.querySelector('#imageGalleryCtn8569284'),
-document.querySelector('#externalGrid')
-].filter(Boolean);
-
-scopes.forEach(scope => {
-scope.querySelectorAll('canvas, img').forEach(el => {
-if (el.closest('#catboxGrid') || el.closest('.modal') || el.closest('.lightbox')) return;
-if (el.width > 0 && el.width < 50 && el.height > 0 && el.height < 50) return;
+const attachButtonToMedia = (el) => {
 const p = el.parentElement;
-if (!p || p.querySelector(':scope > .pf-upload-button')) return;
+if (!p) return;
+if (p.querySelector(':scope > .pf-upload-button')) return;
+
 const btn = document.createElement('button');
 btn.className = 'pf-upload-button';
 btn.type = 'button';
 btn.textContent = 'Upload to Catbox';
+btn.title = 'Upload this image to your Catbox album';
 btn.onclick = (e) => {
 e.preventDefault();
 e.stopPropagation();
+
+if (el.__pfCanvas) {
+window.showImageUploadDialog(el.__pfCanvas);
+return;
+}
 if (el.tagName.toLowerCase() === 'canvas') {
 window.showImageUploadDialog(el);
-} else {
+return;
+}
+if (el.tagName.toLowerCase() === 'iframe') {
+try {
+const doc = el.contentDocument || el.contentWindow?.document;
+const innerCanvas = doc?.querySelector('canvas');
+if (innerCanvas) {
+window.showImageUploadDialog(innerCanvas);
+return;
+}
+} catch (_) {}
+}
+
 const c = document.createElement('canvas');
 c.width = el.naturalWidth || el.width || 768;
 c.height = el.naturalHeight || el.height || 768;
 const ctx = c.getContext('2d');
 ctx.drawImage(el, 0, 0);
 window.showImageUploadDialog(c);
+};
+
+if (el.nextSibling) {
+p.insertBefore(btn, el.nextSibling);
+} else {
+p.appendChild(btn);
 }
 };
-if (el.nextSibling) p.insertBefore(btn, el.nextSibling);
-else p.appendChild(btn);
-});
+
+// Continuous Scanner that guarantees buttons on every iframe, img, and canvas
+const scanAllMedia = () => {
+const elements = document.querySelectorAll(
+'#outputAreaEl iframe, #outputAreaEl img, #outputAreaEl canvas, ' +
+'#imageGalleryCtn8569284 iframe, #imageGalleryCtn8569284 img, #imageGalleryCtn8569284 canvas, ' +
+'#backendMount iframe, #backendMount img, #backendMount canvas, ' +
+'#externalGrid img, #externalGrid canvas'
+);
+
+elements.forEach(el => {
+if (el.closest('#catboxGrid') || el.closest('.modal') || el.closest('.lightbox') || el.closest('#commentsPluginCtn654732')) return;
+if (el.id === 'commentsPluginCtn654732') return;
+if (el.tagName.toLowerCase() === 'img') {
+if (el.width > 0 && el.width < 50 && el.height > 0 && el.height < 50) return;
+if (el.src && (el.src.includes('favicon') || el.src.includes('emoji') || el.src.includes('icon'))) return;
+}
+attachButtonToMedia(el);
 });
 };
 
-scanFallbacks();
-new MutationObserver(scanFallbacks).observe(document.body, { subtree: true, childList: true });
-setInterval(scanFallbacks, 1200);
+scanAllMedia();
+new MutationObserver(scanAllMedia).observe(document.body, { subtree: true, childList: true });
+setInterval(scanAllMedia, 800);
 })();
 </script></body></html>
