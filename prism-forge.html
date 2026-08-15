@@ -226,16 +226,49 @@ return realFetch(url, options);
 const hashKey = 'prismForgeCatboxHash';
 const albumKey = 'defaultCatboxAlbum';
 const albumRe = /catbox\.moe\/c\/([A-Za-z0-9]+)/i;
+
 const $ = (id) => document.getElementById(id);
-const setStatus = (text, kind = '') => { const node = $('catboxStatus'); if (node) { node.textContent = text; node.className = 'status ' + kind; } };
-const getHash = () => $('catboxHash')?.value.trim() || localStorage.getItem(hashKey) || '';
-const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem(albumKey) || ''; const m = url.match(albumRe); return m ? m[1] : ''; };
+const getHash = () => $('catboxHash')?.value.trim() || localStorage.getItem('catboxUserHash') || localStorage.getItem(hashKey) || '';
+const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem('defaultCatboxAlbum') || localStorage.getItem(albumKey) || ''; const m = url.match(albumRe); return m ? m[1] : ''; };
+
+const setStatus = (text, kind = '') => {
+const node = $('catboxStatus');
+if (node) {
+node.textContent = text;
+node.className = 'status ' + kind;
+node.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+};
+
+const showToast = (msg, isErr = false) => {
+let t = document.getElementById('pfToastEl');
+if (!t) {
+t = document.createElement('div');
+t.id = 'pfToastEl';
+t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,0.5);transition:all 0.3s ease;pointer-events:none;max-width:90vw;text-align:center;';
+document.body.appendChild(t);
+}
+t.style.background = isErr ? 'var(--danger, #ff5555)' : 'var(--accent, #d7f36c)';
+t.style.color = isErr ? '#fff' : 'var(--ink, #11150d)';
+t.textContent = msg;
+t.style.opacity = '1';
+t.style.display = 'block';
+clearTimeout(t._timer);
+t._timer = setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; }, 300); }, 4000);
+};
+
 const uploadBlob = async (blob, name) => {
-if (!blob) throw Error('No image data found to upload.');
+const hash = getHash();
+if (!hash) {
+showToast('Enter & save Catbox Hash first in Catbox section!', true);
+throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
+}
 if (window.pfCatboxUploadBlob) return window.pfCatboxUploadBlob(blob, name);
-const hash = getHash(); if (!hash) throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
-const form = new FormData(); form.append('reqtype', 'fileupload'); form.append('userhash', hash);
-const album = getAlbum(); if (album) form.append('album', album);
+const form = new FormData();
+form.append('reqtype', 'fileupload');
+form.append('userhash', hash);
+const album = getAlbum();
+if (album) form.append('album', album);
 form.append('fileToUpload', blob, name || 'perchance-gen.png');
 const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
 const url = (await r.text()).trim();
@@ -243,10 +276,18 @@ if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw Error(url || 'Catbox d
 if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
 return url;
 };
+
 const uploadUrl = async (url) => {
-const hash = getHash(); if (!hash) throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
-const form = new FormData(); form.append('reqtype', 'urlupload'); form.append('userhash', hash);
-const album = getAlbum(); if (album) form.append('album', album);
+const hash = getHash();
+if (!hash) {
+showToast('Enter & save Catbox Hash first in Catbox section!', true);
+throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
+}
+const form = new FormData();
+form.append('reqtype', 'urlupload');
+form.append('userhash', hash);
+const album = getAlbum();
+if (album) form.append('album', album);
 form.append('url', url);
 const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
 const result = (await r.text()).trim();
@@ -254,6 +295,7 @@ if (!/^https?:\/\/files\.catbox\.moe\//i.test(result)) throw Error(result || 'Ca
 if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(result, 'Catbox upload');
 return result;
 };
+
 const extractBlobFromElement = async (el) => {
 if (!el) throw Error('Element not found');
 if (el.tagName && el.tagName.toLowerCase() === 'canvas') {
@@ -283,39 +325,56 @@ if (img) return await extractBlobFromElement(img);
 }
 } catch (_) {}
 }
-throw Error('Could not extract image data from this element yet.');
+throw Error('Image data not ready. Try again in a moment.');
 };
+
 const handleUploadClick = async (btn, targetMedia) => {
 if (btn.disabled) return;
+const hash = getHash();
+if (!hash) {
+showToast('⚠️ Please enter & save your Catbox User Hash in the Catbox section first!', true);
+setStatus('Enter and save your Catbox user hash before uploading.', 'error');
+$('catboxHash')?.focus();
+return;
+}
 btn.disabled = true;
 const originalText = btn.textContent;
 btn.textContent = 'Uploading…';
 setStatus('Uploading to Catbox…');
+showToast('Uploading image to Catbox…');
 try {
 const extracted = await extractBlobFromElement(targetMedia);
+let finalUrl = '';
 if (extracted && extracted.urlOnly) {
-const u = await uploadUrl(extracted.urlOnly);
-setStatus('Uploaded to Catbox: ' + u, 'ok');
+finalUrl = await uploadUrl(extracted.urlOnly);
 } else if (extracted instanceof Blob) {
-const u = await uploadBlob(extracted, 'perchance-image-' + Date.now() + '.png');
-setStatus('Uploaded to Catbox: ' + u, 'ok');
+finalUrl = await uploadBlob(extracted, 'perchance-image-' + Date.now() + '.png');
 }
+setStatus('Uploaded to Catbox: ' + finalUrl, 'ok');
+showToast('✅ Uploaded to Catbox: ' + finalUrl);
 } catch (err) {
-setStatus(err.message || 'Catbox upload failed.', 'error');
+const msg = err.message || 'Catbox upload failed.';
+setStatus(msg, 'error');
+showToast('❌ ' + msg, true);
 } finally {
 btn.disabled = false;
 btn.textContent = originalText;
 }
 };
+
 const createUploadBtn = (targetMedia) => {
 const btn = document.createElement('button');
 btn.className = 'pf-upload-button';
 btn.type = 'button';
 btn.textContent = 'Upload to Catbox';
 btn.title = 'Upload this image to your Catbox account';
-btn.onclick = () => handleUploadClick(btn, targetMedia);
+btn.style.cssText = 'display:block;width:calc(100% - 16px);margin:8px auto;padding:8px 12px;border:1px solid var(--line, rgba(239,244,229,.15));border-radius:8px;background:var(--surface2, #222a2b);color:var(--accent, #d7f36c);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.16s ease;text-align:center;box-sizing:border-box;';
+btn.onmouseenter = () => { btn.style.background = 'var(--accent, #d7f36c)'; btn.style.color = 'var(--ink, #11150d)'; };
+btn.onmouseleave = () => { btn.style.background = 'var(--surface2, #222a2b)'; btn.style.color = 'var(--accent, #d7f36c)'; };
+btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); handleUploadClick(btn, targetMedia); };
 return btn;
 };
+
 const scanAndInject = () => {
 const scopes = [
 document.querySelector('#backendMount'),
@@ -324,19 +383,21 @@ document.querySelector('#imageGalleryCtn8569284'),
 document.querySelector('#externalGrid'),
 document.body
 ].filter(Boolean);
+
 scopes.forEach(scope => {
 const mediaEls = scope.querySelectorAll('img, canvas, iframe');
 mediaEls.forEach(media => {
-if (media.closest('#catboxGrid') || media.closest('.modal') || media.closest('.lightbox')) return;
+if (media.closest('#catboxGrid') || media.closest('.modal') || media.closest('.lightbox') || media.closest('.theme-row')) return;
 if (media.tagName.toLowerCase() === 'iframe') {
 if (media.id === 'commentsPluginCtn654732' || media.closest('#commentsPluginCtn654732')) return;
 }
 if (media.tagName.toLowerCase() === 'img') {
 if (media.width > 0 && media.width < 50 && media.height > 0 && media.height < 50) return;
+if (media.src && (media.src.includes('favicon') || media.src.includes('emoji') || media.src.includes('icon'))) return;
 }
 const parent = media.parentElement;
 if (!parent) return;
-if (parent.querySelector(':scope > .pf-upload-button')) return;
+if (parent.querySelector(':scope > .pf-upload-button') || parent.parentElement?.querySelector(':scope > .pf-upload-button')) return;
 const btn = createUploadBtn(media);
 if (media.nextSibling) {
 parent.insertBefore(btn, media.nextSibling);
@@ -346,6 +407,7 @@ parent.appendChild(btn);
 });
 });
 };
+
 scanAndInject();
 new MutationObserver(scanAndInject).observe(document.body, { subtree: true, childList: true });
 setInterval(scanAndInject, 1000);
