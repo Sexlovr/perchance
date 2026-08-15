@@ -616,18 +616,32 @@ btn.onclick = (e) => {
 e.preventDefault();
 e.stopPropagation();
 
+// 1. Direct canvas attached from processGeneration
 if (el.__pfCanvas) {
 window.showImageUploadDialog(el.__pfCanvas);
 return;
 }
+if (p.__pfCanvas) {
+window.showImageUploadDialog(p.__pfCanvas);
+return;
+}
+
+// 2. Direct canvas tag
 if (el.tagName.toLowerCase() === 'canvas') {
 window.showImageUploadDialog(el);
 return;
 }
+
+// 3. Direct img tag
 if (el.tagName.toLowerCase() === 'img') {
-window.showImageUploadDialog(el.currentSrc || el.src || el);
+const s = el.currentSrc || el.src || '';
+if (s) {
+window.showImageUploadDialog(s);
 return;
 }
+}
+
+// 4. Iframe tag
 if (el.tagName.toLowerCase() === 'iframe') {
 try {
 const doc = el.contentDocument || el.contentWindow?.document;
@@ -637,16 +651,39 @@ window.showImageUploadDialog(innerCanvas);
 return;
 }
 const innerImg = doc?.querySelector('img');
-if (innerImg) {
-window.showImageUploadDialog(innerImg.currentSrc || innerImg.src || innerImg);
+if (innerImg && (innerImg.currentSrc || innerImg.src)) {
+window.showImageUploadDialog(innerImg.currentSrc || innerImg.src);
 return;
 }
 } catch (_) {}
+
+// If iframe src is a direct image URL or generator asset
+if (el.src && !el.src.includes('about:blank') && !el.src.includes('perchance.org/')) {
+window.showImageUploadDialog(el.src);
+return;
+}
 }
 
-const fallbackImg = el.querySelector?.('img') || el.parentElement?.querySelector('img');
-if (fallbackImg) {
-window.showImageUploadDialog(fallbackImg.currentSrc || fallbackImg.src || fallbackImg);
+// 5. Check any canvas or img in container or siblings
+const siblingCanvas = p.querySelector('canvas') || p.parentElement?.querySelector('canvas');
+if (siblingCanvas) {
+window.showImageUploadDialog(siblingCanvas);
+return;
+}
+const siblingImg = p.querySelector('img') || p.parentElement?.querySelector('img');
+if (siblingImg && (siblingImg.currentSrc || siblingImg.src)) {
+window.showImageUploadDialog(siblingImg.currentSrc || siblingImg.src);
+return;
+}
+
+// 6. Check global canvas or latest generated canvas/image
+if (window.currentCanvas) {
+window.showImageUploadDialog(window.currentCanvas);
+return;
+}
+const latestGalleryImg = document.querySelector('#imageGalleryCtn8569284 img, #outputAreaEl img');
+if (latestGalleryImg && (latestGalleryImg.currentSrc || latestGalleryImg.src)) {
+window.showImageUploadDialog(latestGalleryImg.currentSrc || latestGalleryImg.src);
 return;
 }
 
@@ -679,7 +716,6 @@ if (el.src && (el.src.includes('favicon') || el.src.includes('emoji') || el.src.
 attachButtonToMedia(el);
 });
 };
-
 scanAllMedia();
 new MutationObserver(scanAllMedia).observe(document.body, { subtree: true, childList: true });
 setInterval(scanAllMedia, 800);
