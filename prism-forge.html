@@ -223,63 +223,131 @@ return realFetch(url, options);
 })();
 </script><script id="prismForgeUnifiedCatbox">
 (() => {
-// Per-image Catbox upload FALLBACK.
-// The t2i framework's own processGeneration (in the output template) creates
-// "Upload to Catbox" buttons natively when catboxAPI input + onFinish hook are
-// present in the .perchance source. This script only adds buttons to images
-// that the framework missed (e.g. external profile results in #externalGrid).
-// It does NOT override window.processGeneration.
 const hashKey = 'prismForgeCatboxHash';
 const albumKey = 'defaultCatboxAlbum';
 const albumRe = /catbox\.moe\/c\/([A-Za-z0-9]+)/i;
 const $ = (id) => document.getElementById(id);
 const setStatus = (text, kind = '') => { const node = $('catboxStatus'); if (node) { node.textContent = text; node.className = 'status ' + kind; } };
 const getHash = () => $('catboxHash')?.value.trim() || localStorage.getItem(hashKey) || '';
-const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem(albumKey) || ''; const m = url.match(/catbox\.moe\/c\/([A-Za-z0-9]+)/i); return m ? m[1] : ''; };
+const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem(albumKey) || ''; const m = url.match(albumRe); return m ? m[1] : ''; };
 const uploadBlob = async (blob, name) => {
-if (!blob) throw Error('No image data.');
+if (!blob) throw Error('No image data found to upload.');
 if (window.pfCatboxUploadBlob) return window.pfCatboxUploadBlob(blob, name);
-const hash = getHash(); if (!hash) throw Error('Enter and save your Catbox user hash.');
+const hash = getHash(); if (!hash) throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
 const form = new FormData(); form.append('reqtype', 'fileupload'); form.append('userhash', hash);
 const album = getAlbum(); if (album) form.append('album', album);
-form.append('fileToUpload', blob, name || 'prism-forge.png');
+form.append('fileToUpload', blob, name || 'perchance-gen.png');
 const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
 const url = (await r.text()).trim();
-if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw Error(url || 'Catbox returned no URL.');
+if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw Error(url || 'Catbox did not return a valid URL.');
 if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
 return url;
 };
-const wire = (button, img) => {
-if (button.dataset.pfBound === '1') return;
-button.dataset.pfBound = '1'; button.type = 'button';
-button.onclick = async () => {
-if (button.disabled) return;
-button.disabled = true; const orig = button.textContent; button.textContent = 'Uploading\u2026';
-setStatus('Uploading image to Catbox\u2026');
+const uploadUrl = async (url) => {
+const hash = getHash(); if (!hash) throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
+const form = new FormData(); form.append('reqtype', 'urlupload'); form.append('userhash', hash);
+const album = getAlbum(); if (album) form.append('album', album);
+form.append('url', url);
+const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
+const result = (await r.text()).trim();
+if (!/^https?:\/\/files\.catbox\.moe\//i.test(result)) throw Error(result || 'Catbox did not return a file URL.');
+if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(result, 'Catbox upload');
+return result;
+};
+const extractBlobFromElement = async (el) => {
+if (!el) throw Error('Element not found');
+if (el.tagName && el.tagName.toLowerCase() === 'canvas') {
+return new Promise((res, rej) => el.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
+}
+if (el.tagName && el.tagName.toLowerCase() === 'img') {
+const src = el.currentSrc || el.src || '';
+if (src.startsWith('data:')) {
+const r = await fetch(src); return await r.blob();
+}
+if (src.startsWith('http')) {
 try {
-const url = img.currentSrc || img.src || '';
-if (url.startsWith('data:')) { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
-else if (url) { try { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
-catch (_) { /* urlupload fallback */ const h=getHash(); if(!h){setStatus('Enter hash first.','error');return;} const f=new FormData();f.append('reqtype','urlupload');f.append('userhash',h);const al=getAlbum();if(al)f.append('album',al);f.append('url',url);const rr=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:f});const u=(await rr.text()).trim();if(!/^https?:\/\/files\.catbox\.moe\//i.test(u))throw Error(u);if(window.pfCatboxSaveUrl)window.pfCatboxSaveUrl(u,'Catbox upload');setStatus('Uploaded: '+u,'ok'); } }
-else throw Error('No image URL available.');
-} catch (e) { setStatus(e.message || 'Catbox upload failed.', 'error'); }
-finally { button.disabled = false; button.textContent = orig; }
+const r = await fetch(src); return await r.blob();
+} catch (_) {
+return { urlOnly: src };
+}
+}
+}
+if (el.tagName && el.tagName.toLowerCase() === 'iframe') {
+try {
+const doc = el.contentDocument || el.contentWindow?.document;
+if (doc) {
+const canvas = doc.querySelector('canvas');
+if (canvas) return new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
+const img = doc.querySelector('img');
+if (img) return await extractBlobFromElement(img);
+}
+} catch (_) {}
+}
+throw Error('Could not extract image data from this element yet.');
 };
-};
-const scan = () => {
-// Only scan external grid results (framework handles native gallery images)
-const extGrid = document.querySelector('#externalGrid');
-if (extGrid) {
-extGrid.querySelectorAll('img').forEach((img) => {
-if (img.closest('#catboxGrid')) return;
-const holder = img.parentElement; if (!holder) return;
-let btn = holder.querySelector(':scope > .pf-upload-button');
-if (!btn) { btn = document.createElement('button'); btn.className = 'pf-upload-button'; btn.textContent = 'Send to Catbox'; img.insertAdjacentElement('afterend', btn); }
-wire(btn, img);
-});
+const handleUploadClick = async (btn, targetMedia) => {
+if (btn.disabled) return;
+btn.disabled = true;
+const originalText = btn.textContent;
+btn.textContent = 'Uploading…';
+setStatus('Uploading to Catbox…');
+try {
+const extracted = await extractBlobFromElement(targetMedia);
+if (extracted && extracted.urlOnly) {
+const u = await uploadUrl(extracted.urlOnly);
+setStatus('Uploaded to Catbox: ' + u, 'ok');
+} else if (extracted instanceof Blob) {
+const u = await uploadBlob(extracted, 'perchance-image-' + Date.now() + '.png');
+setStatus('Uploaded to Catbox: ' + u, 'ok');
+}
+} catch (err) {
+setStatus(err.message || 'Catbox upload failed.', 'error');
+} finally {
+btn.disabled = false;
+btn.textContent = originalText;
 }
 };
-scan(); new MutationObserver(scan).observe(document.body, { subtree: true, childList: true });
-setTimeout(scan, 700); setInterval(scan, 2000);
+const createUploadBtn = (targetMedia) => {
+const btn = document.createElement('button');
+btn.className = 'pf-upload-button';
+btn.type = 'button';
+btn.textContent = 'Upload to Catbox';
+btn.title = 'Upload this image to your Catbox account';
+btn.onclick = () => handleUploadClick(btn, targetMedia);
+return btn;
+};
+const scanAndInject = () => {
+const scopes = [
+document.querySelector('#backendMount'),
+document.querySelector('#outputAreaEl'),
+document.querySelector('#imageGalleryCtn8569284'),
+document.querySelector('#externalGrid'),
+document.body
+].filter(Boolean);
+scopes.forEach(scope => {
+const mediaEls = scope.querySelectorAll('img, canvas, iframe');
+mediaEls.forEach(media => {
+if (media.closest('#catboxGrid') || media.closest('.modal') || media.closest('.lightbox')) return;
+if (media.tagName.toLowerCase() === 'iframe') {
+if (media.id === 'commentsPluginCtn654732' || media.closest('#commentsPluginCtn654732')) return;
+}
+if (media.tagName.toLowerCase() === 'img') {
+if (media.width > 0 && media.width < 50 && media.height > 0 && media.height < 50) return;
+}
+const parent = media.parentElement;
+if (!parent) return;
+if (parent.querySelector(':scope > .pf-upload-button')) return;
+const btn = createUploadBtn(media);
+if (media.nextSibling) {
+parent.insertBefore(btn, media.nextSibling);
+} else {
+parent.appendChild(btn);
+}
+});
+});
+};
+scanAndInject();
+new MutationObserver(scanAndInject).observe(document.body, { subtree: true, childList: true });
+setInterval(scanAndInject, 1000);
 })();
 </script></body></html>

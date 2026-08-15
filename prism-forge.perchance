@@ -23,8 +23,6 @@ settings
     resolution = [input.shape]
     guidanceScale = [input.guidance]
     seed = [input.seed]
-    onFinish(result) =>
-      processGeneration(result)
   userInputs
     description
       label = Prompt bridge
