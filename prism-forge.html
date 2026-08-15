@@ -166,27 +166,100 @@ const input = (name) => backend()?.querySelector(`[data-name="${name}"] textarea
 const select = (name) => backend()?.querySelector(`select[data-name="${name}"]`);
 const emit = (element, type) => element?.dispatchEvent(new Event(type, { bubbles: true }));
 const setFrameworkValue = (name, value) => { const element = input(name); if (element) { element.value = value; emit(element, 'input'); emit(element, 'change'); } try { if (window.input) window.input[name] = value; } catch (_) {} };
+
+const stateKey = 'prismForgeFormState:v1';
+const saveState = () => {
+try {
+const data = {
+prompt: $('prompt')?.value || '',
+negative: $('negative')?.value || '',
+styleMode: $('styleMode')?.value || '',
+customStyle: $('customStyle')?.value || '',
+resolution: $('resolution')?.value || '768x768',
+count: $('count')?.value || '1',
+guidance: $('guidance')?.value || '7',
+seed: $('seed')?.value || ''
+};
+localStorage.setItem(stateKey, JSON.stringify(data));
+} catch (_) {}
+};
+
+const restoreState = () => {
+try {
+const raw = localStorage.getItem(stateKey);
+if (!raw) return;
+const d = JSON.parse(raw);
+if (d.prompt !== undefined && $('prompt') && !$('prompt').value) $('prompt').value = d.prompt;
+if (d.negative !== undefined && $('negative') && !$('negative').value) $('negative').value = d.negative;
+if (d.styleMode !== undefined && $('styleMode')) {
+$('styleMode').value = d.styleMode;
+if ($('customStyleField')) $('customStyleField').hidden = (d.styleMode !== '__custom__' && d.styleMode !== 'custom');
+}
+if (d.customStyle !== undefined && $('customStyle')) $('customStyle').value = d.customStyle;
+if (d.resolution !== undefined && $('resolution')) $('resolution').value = d.resolution;
+if (d.count !== undefined && $('count')) $('count').value = d.count;
+if (d.guidance !== undefined && $('guidance')) $('guidance').value = d.guidance;
+if (d.seed !== undefined && $('seed')) $('seed').value = d.seed;
+} catch (_) {}
+};
+
 const prime = () => {
 const prompt = $('prompt')?.value.trim() || '';
 if (!prompt) { const message = $('generateStatus'); if (message) { message.textContent = 'Enter a prompt before generating.'; message.className = 'status error'; } return false; }
-const custom = $('styleMode')?.value === '__custom__';
+saveState();
+const custom = $('styleMode')?.value === '__custom__' || $('styleMode')?.value === 'custom';
 const customText = custom ? ($('customStyle')?.value.trim() || '') : '';
 setFrameworkValue('description', prompt + (customText ? ', ' + customText : ''));
 setFrameworkValue('negative', $('negative')?.value.trim() || '');
 setFrameworkValue('numImages', String(Math.max(1, Math.floor(Number($('count')?.value) || 1))));
 setFrameworkValue('guidance', String(Number($('guidance')?.value) || 7));
 setFrameworkValue('seed', $('seed')?.value.trim() || '');
-const catHash = $('catboxHash')?.value?.trim() || localStorage.getItem('prismForgeCatboxHash') || '';
+const catHash = $('catboxHash')?.value?.trim() || localStorage.getItem('prismForgeCatboxHash') || localStorage.getItem('catboxUserHash') || '';
 setFrameworkValue('catboxAPI', catHash);
 const shape = select('shape'); if (shape) { shape.value = $('resolution')?.value || shape.value; emit(shape, 'change'); }
 const style = select('artStyle'); if (style && !custom) { const match = [...style.options].find((option) => option.value === $('styleMode')?.value); if (match) { style.value = match.value; emit(style, 'change'); } }
 try { if (window.input) { window.input.description = prompt + (customText ? ', ' + customText : ''); window.input.negative = $('negative')?.value.trim() || ''; window.input.numImages = Number($('count')?.value) || 1; window.input.guidance = Number($('guidance')?.value) || 7; window.input.seed = $('seed')?.value.trim() || ''; window.input.catboxAPI = catHash; window.input.shape = $('resolution')?.value || '768x768'; } } catch (_) {}
 return true;
 };
-const bind = () => { const button = $('generate'); if (!button || button.dataset.promptBridgeBound === '1') return; button.dataset.promptBridgeBound = '1'; button.onclick = () => { if (!prime()) return; const native = backend()?.querySelector('#generateButtonEl'); if (!native) { const message = $('generateStatus'); if (message) { message.textContent = 'Perchance generation controls are still loading.'; message.className = 'status error'; } return; } const message = $('generateStatus'); if (message) { message.textContent = 'Generating with Perchance…'; message.className = 'status'; } native.click(); }; };
-bind(); setTimeout(bind, 700); setInterval(bind, 1200);
+
+const bind = () => {
+restoreState();
+['prompt', 'negative', 'customStyle', 'count', 'guidance', 'seed'].forEach(id => {
+const el = $(id);
+if (el && el.dataset.pfSaveBound !== '1') {
+el.dataset.pfSaveBound = '1';
+el.addEventListener('input', saveState);
+el.addEventListener('change', saveState);
+}
+});
+['styleMode', 'resolution'].forEach(id => {
+const el = $(id);
+if (el && el.dataset.pfSaveBound !== '1') {
+el.dataset.pfSaveBound = '1';
+el.addEventListener('change', saveState);
+}
+});
+const button = $('generate');
+if (!button || button.dataset.promptBridgeBound === '1') return;
+button.dataset.promptBridgeBound = '1';
+button.onclick = () => {
+if (!prime()) return;
+const native = backend()?.querySelector('#generateButtonEl');
+if (!native) {
+const message = $('generateStatus');
+if (message) { message.textContent = 'Perchance generation controls are still loading.'; message.className = 'status error'; }
+return;
+}
+const message = $('generateStatus');
+if (message) { message.textContent = 'Generating with Perchance…'; message.className = 'status'; }
+native.click();
+};
+};
+
+bind(); setTimeout(bind, 500); setTimeout(bind, 1200); setInterval(bind, 2500);
 })();
-</script><script id="prismForgeExternalPayloadAdapter">
+</script>
+<script id="prismForgeExternalPayloadAdapter">
 (() => {
 if (window.__prismForgeExternalPayloadAdapter) return;
 window.__prismForgeExternalPayloadAdapter = true;
@@ -257,10 +330,26 @@ clearTimeout(t._timer);
 t._timer = setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; }, 300); }, 4000);
 };
 
+// Global canvas hook for t2i framework
+const previousHook = window.processGeneration;
+window.processGeneration = (result) => {
+try {
+if (result?.iframe && result?.canvas) {
+result.iframe.__pfCanvas = result.canvas;
+if (result.iframe.parentElement) {
+result.iframe.parentElement.__pfCanvas = result.canvas;
+}
+}
+} catch (_) {}
+if (typeof previousHook === 'function') {
+try { previousHook(result); } catch (_) {}
+}
+};
+
 const uploadBlob = async (blob, name) => {
 const hash = getHash();
 if (!hash) {
-showToast('Enter & save Catbox Hash first in Catbox section!', true);
+showToast('⚠️ Please enter & save your Catbox User Hash in the Catbox section first!', true);
 throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
 }
 if (window.pfCatboxUploadBlob) return window.pfCatboxUploadBlob(blob, name);
@@ -280,7 +369,7 @@ return url;
 const uploadUrl = async (url) => {
 const hash = getHash();
 if (!hash) {
-showToast('Enter & save Catbox Hash first in Catbox section!', true);
+showToast('⚠️ Please enter & save your Catbox User Hash in the Catbox section first!', true);
 throw Error('Please enter and save your Catbox user hash in the Catbox panel first.');
 }
 const form = new FormData();
@@ -296,64 +385,97 @@ if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(result, 'Catbox upload');
 return result;
 };
 
-// Global hook: captures canvas and iframe elements as soon as generation finishes
-const existingHook = window.processGeneration;
-window.processGeneration = (result) => {
+const canvasToBlob = (canvas) => new Promise((resolve, reject) => {
+if (!canvas) return reject(Error('No canvas'));
+if (typeof canvas.toBlob === 'function') {
+canvas.toBlob((b) => b ? resolve(b) : reject(Error('Canvas toBlob failed')), 'image/png');
+} else {
 try {
-if (result?.iframe && result?.canvas) {
-result.iframe.__pfCanvas = result.canvas;
-if (result.iframe.parentElement) {
-result.iframe.parentElement.__pfCanvas = result.canvas;
+const dataUrl = canvas.toDataURL('image/png');
+fetch(dataUrl).then(r => r.blob()).then(resolve).catch(reject);
+} catch (e) {
+reject(e);
 }
 }
-} catch (_) {}
-if (typeof existingHook === 'function') {
-try { existingHook(result); } catch (_) {}
+});
+
+const imageToBlob = (img) => new Promise((resolve, reject) => {
+try {
+const canvas = document.createElement('canvas');
+canvas.width = img.naturalWidth || img.width || 768;
+canvas.height = img.naturalHeight || img.height || 768;
+const ctx = canvas.getContext('2d');
+ctx.drawImage(img, 0, 0);
+canvasToBlob(canvas).then(resolve).catch(reject);
+} catch (e) {
+reject(e);
 }
-};
+});
 
 const extractBlobFromElement = async (el) => {
 if (!el) throw Error('Element not found');
 
-// 1. Direct canvas attached from processGeneration hook
-if (el.__pfCanvas && typeof el.__pfCanvas.toBlob === 'function') {
-return new Promise((res, rej) => el.__pfCanvas.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
+// 1. Check in-memory canvas on element or parent
+if (el.__pfCanvas) {
+try { return await canvasToBlob(el.__pfCanvas); } catch (_) {}
 }
-if (el.parentElement?.__pfCanvas && typeof el.parentElement.__pfCanvas.toBlob === 'function') {
-return new Promise((res, rej) => el.parentElement.__pfCanvas.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
+if (el.parentElement?.__pfCanvas) {
+try { return await canvasToBlob(el.parentElement.__pfCanvas); } catch (_) {}
 }
 
 // 2. Direct canvas element
 if (el.tagName && el.tagName.toLowerCase() === 'canvas') {
-return new Promise((res, rej) => el.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
+try { return await canvasToBlob(el); } catch (_) {}
 }
 
-// 3. Direct img element
-if (el.tagName && el.tagName.toLowerCase() === 'img') {
-const src = el.currentSrc || el.src || '';
+// 3. Any canvas inside the container
+const innerCanvas = el.parentElement?.querySelector('canvas') || el.querySelector?.('canvas');
+if (innerCanvas) {
+try { return await canvasToBlob(innerCanvas); } catch (_) {}
+}
+
+// 4. Direct img element or inside container
+const imgEl = (el.tagName && el.tagName.toLowerCase() === 'img') ? el : (el.querySelector?.('img') || el.parentElement?.querySelector('img'));
+if (imgEl) {
+const src = imgEl.currentSrc || imgEl.src || '';
 if (src.startsWith('data:')) {
+const r = await fetch(src); return await r.blob();
+}
+if (src.startsWith('blob:')) {
 const r = await fetch(src); return await r.blob();
 }
 if (src.startsWith('http')) {
 try {
 const r = await fetch(src); return await r.blob();
 } catch (_) {
+try {
+return await imageToBlob(imgEl);
+} catch (_) {
 return { urlOnly: src };
 }
 }
 }
+}
 
-// 4. Iframe with canvas or img inside
+// 5. Iframe contentDocument check
 if (el.tagName && el.tagName.toLowerCase() === 'iframe') {
 try {
 const doc = el.contentDocument || el.contentWindow?.document;
 if (doc) {
-const canvas = doc.querySelector('canvas');
-if (canvas) return new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(Error('Canvas export failed')), 'image/png'));
-const img = doc.querySelector('img');
-if (img) return await extractBlobFromElement(img);
+const c = doc.querySelector('canvas');
+if (c) return await canvasToBlob(c);
+const im = doc.querySelector('img');
+if (im) return await extractBlobFromElement(im);
 }
 } catch (_) {}
+}
+
+// 6. Sibling image or canvas check
+if (el.parentElement) {
+const anyImg = el.parentElement.querySelector('img');
+if (anyImg) return await extractBlobFromElement(anyImg);
+const anyCanvas = el.parentElement.querySelector('canvas');
+if (anyCanvas) return await extractBlobFromElement(anyCanvas);
 }
 
 throw Error('Image data not ready. Try again in a moment.');
