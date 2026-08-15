@@ -17,27 +17,27 @@
 </style></head>
 <body>
 <div class="page">
-  <header class="header"><div class="brand"><span class="mark">✦</span><span>Prism Forge</span><small>/ open image studio</small></div><div class="theme-row" aria-label="Visible theme choices"><button class="button" data-theme="graphite" type="button">Graphite</button><button class="button" data-theme="paper" type="button">Paper</button><button class="button" data-theme="olive" type="button">Olive</button></div></header>
-  <section class="hero"><div><div class="eyebrow">T2I BACKEND / VISIBLE UI</div><h1>Shape the frame. <span>Keep the signal.</span></h1></div><p>Prism Forge owns the interface. Perchance owns generation, the native image gallery, and channel-aware comments.</p></section>
-  <main>
-    <section class="card"><div class="heading"><div><div class="eyebrow">IMAGE WORKSPACE</div><h2>Generate an image</h2></div><p>These visible fields feed the framework’s hidden user inputs. The backend remains native Perchance.</p></div><div class="form"><div class="field"><label for="prompt">Prompt</label><textarea id="prompt" placeholder="Describe the subject, scene, composition, light, and mood."></textarea></div><div class="field"><label for="negative">Negative prompt <small>(optional)</small></label><input id="negative" placeholder="Details you want to avoid"></div><div class="grid2"><div class="field"><label for="styleMode">Art style</label><select id="styleMode"><option value="none">No style</option><option value="lolmao">Random imported lolmao style</option><option value="custom">Custom style direction</option></select></div><div class="field"><label for="resolution">Canvas</label><select id="resolution"><option value="512x768">Portrait · 512×768</option><option value="768x768" selected>Square · 768×768</option><option value="768x512">Landscape · 768×512</option></select></div></div><div class="field" id="customStyleField" hidden><label for="customStyle">Custom style direction</label><input id="customStyle" placeholder="Optional visual direction"></div><div class="grid2"><div class="field"><label for="count">Images to generate</label><input id="count" type="number" min="1" step="1" value="1"></div><div class="field"><label for="guidance">Guidance</label><input id="guidance" value="7"></div></div><div class="field"><label for="seed">Seed <small>(optional)</small></label><input id="seed" placeholder="Random if blank"></div><div class="inline"><button class="button primary" id="generate" type="button">Generate with Perchance</button><button class="button ghost" id="openProfiles" type="button">Third-party profiles</button></div><div class="status" id="generateStatus" aria-live="polite"></div></div></section>
-    <section class="card backend"><div class="heading"><div><div class="eyebrow">PERCHANCE NATIVE OUTPUT</div><h2>Generated gallery & comments</h2></div><div><p>The default Perchance gallery and comment channels stay active here, styled by Prism Forge.</p><div class="native-visibility-tools" id="nativeVisibilityTools"><button class="button ghost" id="toggleNativeGallery" type="button" aria-pressed="true">Hide native gallery</button><button class="button ghost" id="toggleNativeComments" type="button" aria-pressed="true">Hide comments</button></div></div></div><div id="backendMount">[generateHTML(settings)]</div></section>
-    <section class="card"><div class="heading"><div><div class="eyebrow">CATBOX / IMPORTS</div><h2>Catbox gallery</h2></div><button class="button ghost" id="clearCatbox" type="button">Clear imports</button></div><div class="form"><div class="field"><label for="catboxUrl">Album URL or direct image URL</label><input id="catboxUrl" placeholder="https://catbox.moe/c/album-id"></div><div class="inline"><button class="button" id="loadCatbox" type="button">Load album</button><button class="button ghost" id="addUrl" type="button">Add direct URL</button></div></div><div class="status" id="catboxStatus"></div><div class="external-grid" id="catboxGrid"></div></section>
-  </main>
+<header class="header"><div class="brand"><span class="mark">✦</span><span>Prism Forge</span><small>/ open image studio</small></div><div class="theme-row" aria-label="Visible theme choices"><button class="button" data-theme="graphite" type="button">Graphite</button><button class="button" data-theme="paper" type="button">Paper</button><button class="button" data-theme="olive" type="button">Olive</button></div></header>
+<section class="hero"><div><div class="eyebrow">T2I BACKEND / VISIBLE UI</div><h1>Shape the frame. <span>Keep the signal.</span></h1></div><p>Prism Forge owns the interface. Perchance owns generation, the native image gallery, and channel-aware comments.</p></section>
+<main>
+<section class="card"><div class="heading"><div><div class="eyebrow">IMAGE WORKSPACE</div><h2>Generate an image</h2></div><p>These visible fields feed the framework’s hidden user inputs. The backend remains native Perchance.</p></div><div class="form"><div class="field"><label for="prompt">Prompt</label><textarea id="prompt" placeholder="Describe the subject, scene, composition, light, and mood."></textarea></div><div class="field"><label for="negative">Negative prompt <small>(optional)</small></label><input id="negative" placeholder="Details you want to avoid"></div><div class="grid2"><div class="field"><label for="styleMode">Art style</label><select id="styleMode"><option value="none">No style</option><option value="lolmao">Random imported lolmao style</option><option value="custom">Custom style direction</option></select></div><div class="field"><label for="resolution">Canvas</label><select id="resolution"><option value="512x768">Portrait · 512×768</option><option value="768x768" selected>Square · 768×768</option><option value="768x512">Landscape · 768×512</option></select></div></div><div class="field" id="customStyleField" hidden><label for="customStyle">Custom style direction</label><input id="customStyle" placeholder="Optional visual direction"></div><div class="grid2"><div class="field"><label for="count">Images to generate</label><input id="count" type="number" min="1" step="1" value="1"></div><div class="field"><label for="guidance">Guidance</label><input id="guidance" value="7"></div></div><div class="field"><label for="seed">Seed <small>(optional)</small></label><input id="seed" placeholder="Random if blank"></div><div class="inline"><button class="button primary" id="generate" type="button">Generate with Perchance</button><button class="button ghost" id="openProfiles" type="button">Third-party profiles</button></div><div class="status" id="generateStatus" aria-live="polite"></div></div></section>
+<section class="card backend"><div class="heading"><div><div class="eyebrow">PERCHANCE NATIVE OUTPUT</div><h2>Generated gallery & comments</h2></div><div><p>The default Perchance gallery and comment channels stay active here, styled by Prism Forge.</p><div class="native-visibility-tools" id="nativeVisibilityTools"><button class="button ghost" id="toggleNativeGallery" type="button" aria-pressed="true">Hide native gallery</button><button class="button ghost" id="toggleNativeComments" type="button" aria-pressed="true">Hide comments</button></div></div></div><div id="backendMount">[generateHTML(settings)]</div></section>
+<section class="card"><div class="heading"><div><div class="eyebrow">CATBOX / IMPORTS</div><h2>Catbox gallery</h2></div><button class="button ghost" id="clearCatbox" type="button">Clear imports</button></div><div class="form"><div class="field"><label for="catboxUrl">Album URL or direct image URL</label><input id="catboxUrl" placeholder="https://catbox.moe/c/album-id"></div><div class="inline"><button class="button" id="loadCatbox" type="button">Load album</button><button class="button ghost" id="addUrl" type="button">Add direct URL</button></div></div><div class="status" id="catboxStatus"></div><div class="external-grid" id="catboxGrid"></div></section>
+</main>
 </div>
 <div class="modal" id="profilesModal" role="dialog" aria-modal="true"><div class="modal-card"><div class="modal-head"><h2>Third-party model profiles</h2><button class="button" id="closeProfiles" type="button">Close</button></div><p>Save as many profiles as you need. Each supports its own proxy URL, API key, model ID, size, image count, and optional headers.</p><div class="profile-bar"><label>Active profile<select id="profileSelect"></select></label><button class="button" id="newProfile" type="button">New</button><button class="button" id="duplicateProfile" type="button">Duplicate</button><button class="button" id="deleteProfile" type="button">Delete</button></div><div class="form"><div class="field"><label for="profileName">Profile name</label><input id="profileName"></div><div class="field"><label for="providerType">Provider type</label><select id="providerType"><option value="openai">OpenAI-compatible <small>(proxy /v1/images/generations)</small></option><option value="nvidia">NVIDIA NIM visual genai</option></select></div><div class="field" id="nvFields" hidden><div class="grid2"><div class="field"><label for="nvWidth">Width</label><select id="nvWidth"><option>768</option><option>832</option><option>896</option><option>960</option><option selected>1024</option><option>1088</option><option>1152</option><option>1216</option><option>1280</option><option>1344</option></select></div><div class="field"><label for="nvHeight">Height</label><select id="nvHeight"><option>768</option><option>832</option><option>896</option><option>960</option><option selected>1024</option><option>1088</option><option>1152</option><option>1216</option><option>1280</option><option>1344</option></select></div></div><div class="grid2"><div class="field"><label for="nvSteps">Steps</label><input id="nvSteps" type="number" min="5" max="100" step="1" value="50"></div><div class="field"><label for="nvGuidance">Guidance (cfg)</label><input id="nvGuidance" type="number" min="1.01" max="9" step="0.1" value="3.5"></div></div><div class="field"><label for="nvMode">Mode</label><select id="nvMode"><option value="base" selected>base (text-to-image)</option><option value="canny">canny (control image)</option><option value="depth">depth (control image)</option></select></div></div><div class="field"><label for="endpoint">Proxy URL or full image endpoint</label><input id="endpoint" placeholder="https://your-proxy.example/v1 or https://ai.api.nvidia.com/v1"></div><div class="field"><label for="apiKey">API key</label><input id="apiKey" type="password" autocomplete="off"></div><div class="field"><label for="modelIds">Model IDs</label><input id="modelIds" placeholder="black-forest-labs/flux.1-dev, black-forest-labs/flux.2-klein-4b"></div><div class="field" id="nvPresets" hidden><label>NVIDIA quick presets</label><div class="pf-upload-row"><button class="button" type="button" data-nv-preset="black-forest-labs/flux.1-dev,black-forest-labs/flux.1-kontext-dev,black-forest-labs/flux.2-klein-4b">All 3 (FLUX)</button><button class="button ghost" type="button" data-nv-preset="black-forest-labs/flux.1-dev">flux.1-dev</button><button class="button ghost" type="button" data-nv-preset="black-forest-labs/flux.1-kontext-dev">flux.1-kontext-dev</button><button class="button ghost" type="button" data-nv-preset="black-forest-labs/flux.2-klein-4b">flux.2-klein-4b</button><button class="button ghost" type="button" data-nv-preset="black-forest-labs/flux.1-schnell">flux.1-schnell</button><button class="button ghost" type="button" data-nv-preset="stabilityai/stable-diffusion-3-medium,stabilityai/stable-diffusion-xl">SD-3 + SDXL</button></div><small>Click a preset to fill model IDs. Some models may not be provisioned for your key (e.g. SD and schnell).</small></div><div class="field"><label for="model">Selected model</label><select id="model"></select></div><div class="grid2"><div class="field"><label for="profileSize">Image size</label><select id="profileSize"><option value="512x768">Portrait · 512×768</option><option value="768x768">Square · 768×768</option><option value="768x512">Landscape · 768×512</option></select></div><div class="field"><label for="profileCount">Images</label><input id="profileCount" type="number" min="1" step="1" value="1"></div></div><div class="field"><label for="headers">Optional JSON headers</label><textarea id="headers"></textarea></div><div class="inline"><button class="button" id="saveProfile" type="button">Save profile</button><button class="button primary" id="generateExternal" type="button">Generate with profile</button></div></div><div class="status" id="profileStatus"></div><div class="external-grid" id="externalGrid"></div></div></div>
 <div class="lightbox" id="lightbox"><button class="button" id="closeLightbox" type="button">Close</button><img id="lightboxImage" alt="Expanded image"></div>
 <script>
 (()=>{const $=id=>document.getElementById(id),profileKey='prismForgeProfiles:backend-v1',catboxKey='prismForgeCatbox:backend-v1',uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7),blank=n=>({id:uid(),name:n||'New provider',providerType:'openai',endpoint:'',apiKey:'',modelIds:'',model:'',size:'768x768',count:1,headers:'',nvSteps:50,nvGuidance:3.5,nvWidth:1024,nvHeight:1024,nvMode:'base'});let profiles={items:[blank('My first provider')],activeId:''},catbox=[];const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'')||f}catch{return f}},status=(id,t,k='')=>{const e=$(id);if(e){e.textContent=t;e.className='status '+k}};
-  const bridge=()=>document.querySelector('#backendMount'),field=n=>bridge()?.querySelector('[data-name="'+n+'"] textarea, [data-name="'+n+'"] input'),select=()=>bridge()?.querySelector('select[data-name="artStyle"]');const syncBackend=()=>{const p=field('description'),n=field('negative'),shape=bridge()?.querySelector('select[data-name="shape"]'),num=field('numImages'),g=field('guidance'),seed=field('seed'),cb=field('catboxAPI'),style=select();if(p){p.value=$('prompt').value;p.oninput?.({})}if(n){n.value=$('negative').value;n.oninput?.({})}if(shape){shape.value=$('resolution').value;shape.onchange?.({})}if(num){num.value=$('count').value;num.oninput?.({})}if(g){g.value=$('guidance').value;g.oninput?.({})}if(seed){seed.value=$('seed').value;seed.oninput?.({})}if(cb){const h=$('catboxHash')?.value?.trim()||localStorage.getItem('prismForgeCatboxHash')||'';if(cb.value!==h){cb.value=h;cb.oninput?.({})}}if(style){const opts=[...style.options],mode=$('styleMode').value;const target=mode==='lolmao'?(opts.filter(o=>!o.textContent.toLowerCase().includes('no style'))[Math.floor(Math.random()*Math.max(1,opts.length-1))]||opts[0]):opts.find(o=>o.textContent.toLowerCase().includes('no style'))||opts[0];style.value=target.value;style.onchange?.({})}};const clickNative=()=>{syncBackend();const b=bridge()?.querySelector('#generateButtonEl');if(!b){status('generateStatus','Framework generate control is not ready yet.','error');return}status('generateStatus','Generating with Perchance…');b.click()};
-  const renderCatbox=()=>{const root=$('catboxGrid');root.innerHTML='';catbox.forEach((item,i)=>{const figure=document.createElement('figure');const img=document.createElement('img');img.src=item.url;img.alt=item.label;img.onclick=()=>{$('lightboxImage').src=item.url;$('lightbox').classList.add('open')};const cap=document.createElement('figcaption');cap.textContent=item.label+' · remove';cap.onclick=()=>{catbox.splice(i,1);localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox()};figure.append(img,cap);root.append(figure)})};const addCatbox=(urls,label)=>{let c=0;urls.filter(Boolean).forEach(url=>{if(!catbox.some(x=>x.url===url)){catbox.unshift({url,label:label||'Imported'});c++}});localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox();return c};const loadCatbox=async()=>{const url=$('catboxUrl').value.trim();if(!url){status('catboxStatus','Paste a Catbox URL first.','error');return}try{if(/\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(url)){status('catboxStatus',addCatbox([url],'Catbox URL')?'Image added.':'Already imported.','ok');return}const r=await fetch(url);const text=await r.text();const urls=[...text.matchAll(/https?:\/\/files\.catbox\.moe\/[^\s"'<>]+/gi)].map(m=>m[0].replace(/[)&,.;]+$/,''));if(!urls.length)throw Error('No direct image URLs found.');status('catboxStatus',addCatbox(urls,'Catbox album')+' images added.','ok')}catch(e){status('catboxStatus',e.message||'Catbox import failed.','error')}};
-  const active=()=>profiles.items.find(p=>p.id===profiles.activeId)||profiles.items[0],models=v=>String(v||'').split(',').map(x=>x.trim()).filter(Boolean),endpoint=v=>{const x=String(v||'').trim().replace(/\/$/,'');if(!x)throw Error('Add a proxy URL first.');return /\/images\/generations$/i.test(x)?x:x+'/images/generations'};const write=()=>{const p=active();p.name=$('profileName').value.trim()||'Unnamed provider';p.endpoint=$('endpoint').value.trim();p.apiKey=$('apiKey').value.trim();p.modelIds=$('modelIds').value.trim();p.model=$('model').value;p.size=$('profileSize').value;p.count=Math.max(1,Math.floor(Number($('profileCount').value)||1));p.headers=$('headers').value.trim();p.providerType=($('providerType').value)||'openai';p.nvWidth=parseInt($('nvWidth').value,10)||1024;p.nvHeight=parseInt($('nvHeight').value,10)||1024;p.nvSteps=Math.max(5,Math.min(100,Math.floor(Number($('nvSteps').value)||50)));p.nvGuidance=Math.max(1.01,Math.min(9,Number($('nvGuidance').value)||3.5));p.nvMode=$('nvMode').value||'base'};const syncProviderType=(v)=>{const nv=(v==='nvidia');$('nvFields').hidden=!nv;$('nvPresets').hidden=!nv;if(nv){$('endpoint').placeholder='https://ai.api.nvidia.com/v1 or proxy';$('modelIds').placeholder='black-forest-labs/flux.1-dev, black-forest-labs/flux.2-klein-4b'}else{$('endpoint').placeholder='https://your-proxy.example/v1';$('modelIds').placeholder='model-a, model-b'}};const fill=sel=>{$('model').innerHTML='';(models($('modelIds').value).length?models($('modelIds').value):['']).forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n||'Add model IDs above';o.selected=n===sel;$('model').append(o)})};const renderProfiles=()=>{const s=$('profileSelect');s.innerHTML='';profiles.items.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;o.selected=p.id===profiles.activeId;s.append(o)});const p=active();$('profileName').value=p.name;$('providerType').value=p.providerType||'openai';$('endpoint').value=p.endpoint;$('apiKey').value=p.apiKey;$('modelIds').value=p.modelIds;$('profileSize').value=p.size;$('profileCount').value=p.count;$('headers').value=p.headers;$('nvWidth').value=p.nvWidth||1024;$('nvHeight').value=p.nvHeight||1024;$('nvSteps').value=p.nvSteps||50;$('nvGuidance').value=p.nvGuidance||3.5;$('nvMode').value=p.nvMode||'base';syncProviderType(p.providerType||'openai');fill(p.model||models(p.modelIds)[0]||'')};const generateExternal=async()=>{try{write();const p=active();const isNvidia=(p.providerType||'openai')==='nvidia';if(!p.endpoint||!p.model)throw Error('Add a proxy URL and model first.');let extra={};if(p.headers)extra=JSON.parse(p.headers);const h={'Content-Type':'application/json',...extra};if(p.apiKey)h.Authorization='Bearer '+p.apiKey;
+const bridge=()=>document.querySelector('#backendMount'),field=n=>bridge()?.querySelector('[data-name="'+n+'"] textarea, [data-name="'+n+'"] input'),select=()=>bridge()?.querySelector('select[data-name="artStyle"]');const syncBackend=()=>{const p=field('description'),n=field('negative'),shape=bridge()?.querySelector('select[data-name="shape"]'),num=field('numImages'),g=field('guidance'),seed=field('seed'),cb=field('catboxAPI'),style=select();if(p){p.value=$('prompt').value;p.oninput?.({})}if(n){n.value=$('negative').value;n.oninput?.({})}if(shape){shape.value=$('resolution').value;shape.onchange?.({})}if(num){num.value=$('count').value;num.oninput?.({})}if(g){g.value=$('guidance').value;g.oninput?.({})}if(seed){seed.value=$('seed').value;seed.oninput?.({})}if(cb){const h=$('catboxHash')?.value?.trim()||localStorage.getItem('prismForgeCatboxHash')||'';if(cb.value!==h){cb.value=h;cb.oninput?.({})}}if(style){const opts=[...style.options],mode=$('styleMode').value;const target=mode==='lolmao'?(opts.filter(o=>!o.textContent.toLowerCase().includes('no style'))[Math.floor(Math.random()*Math.max(1,opts.length-1))]||opts[0]):opts.find(o=>o.textContent.toLowerCase().includes('no style'))||opts[0];style.value=target.value;style.onchange?.({})}};const clickNative=()=>{syncBackend();const b=bridge()?.querySelector('#generateButtonEl');if(!b){status('generateStatus','Framework generate control is not ready yet.','error');return}status('generateStatus','Generating with Perchance…');b.click()};
+const renderCatbox=()=>{const root=$('catboxGrid');root.innerHTML='';catbox.forEach((item,i)=>{const figure=document.createElement('figure');const img=document.createElement('img');img.src=item.url;img.alt=item.label;img.onclick=()=>{$('lightboxImage').src=item.url;$('lightbox').classList.add('open')};const cap=document.createElement('figcaption');cap.textContent=item.label+' · remove';cap.onclick=()=>{catbox.splice(i,1);localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox()};figure.append(img,cap);root.append(figure)})};const addCatbox=(urls,label)=>{let c=0;urls.filter(Boolean).forEach(url=>{if(!catbox.some(x=>x.url===url)){catbox.unshift({url,label:label||'Imported'});c++}});localStorage.setItem(catboxKey,JSON.stringify(catbox));renderCatbox();return c};const loadCatbox=async()=>{const url=$('catboxUrl').value.trim();if(!url){status('catboxStatus','Paste a Catbox URL first.','error');return}try{if(/\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(url)){status('catboxStatus',addCatbox([url],'Catbox URL')?'Image added.':'Already imported.','ok');return}const r=await fetch(url);const text=await r.text();const urls=[...text.matchAll(/https?:\/\/files\.catbox\.moe\/[^\s"'<>]+/gi)].map(m=>m[0].replace(/[)&,.;]+$/,''));if(!urls.length)throw Error('No direct image URLs found.');status('catboxStatus',addCatbox(urls,'Catbox album')+' images added.','ok')}catch(e){status('catboxStatus',e.message||'Catbox import failed.','error')}};
+const active=()=>profiles.items.find(p=>p.id===profiles.activeId)||profiles.items[0],models=v=>String(v||'').split(',').map(x=>x.trim()).filter(Boolean),endpoint=v=>{const x=String(v||'').trim().replace(/\/$/,'');if(!x)throw Error('Add a proxy URL first.');return /\/images\/generations$/i.test(x)?x:x+'/images/generations'};const write=()=>{const p=active();p.name=$('profileName').value.trim()||'Unnamed provider';p.endpoint=$('endpoint').value.trim();p.apiKey=$('apiKey').value.trim();p.modelIds=$('modelIds').value.trim();p.model=$('model').value;p.size=$('profileSize').value;p.count=Math.max(1,Math.floor(Number($('profileCount').value)||1));p.headers=$('headers').value.trim();p.providerType=($('providerType').value)||'openai';p.nvWidth=parseInt($('nvWidth').value,10)||1024;p.nvHeight=parseInt($('nvHeight').value,10)||1024;p.nvSteps=Math.max(5,Math.min(100,Math.floor(Number($('nvSteps').value)||50)));p.nvGuidance=Math.max(1.01,Math.min(9,Number($('nvGuidance').value)||3.5));p.nvMode=$('nvMode').value||'base'};const syncProviderType=(v)=>{const nv=(v==='nvidia');$('nvFields').hidden=!nv;$('nvPresets').hidden=!nv;if(nv){$('endpoint').placeholder='https://ai.api.nvidia.com/v1 or proxy';$('modelIds').placeholder='black-forest-labs/flux.1-dev, black-forest-labs/flux.2-klein-4b'}else{$('endpoint').placeholder='https://your-proxy.example/v1';$('modelIds').placeholder='model-a, model-b'}};const fill=sel=>{$('model').innerHTML='';(models($('modelIds').value).length?models($('modelIds').value):['']).forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n||'Add model IDs above';o.selected=n===sel;$('model').append(o)})};const renderProfiles=()=>{const s=$('profileSelect');s.innerHTML='';profiles.items.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;o.selected=p.id===profiles.activeId;s.append(o)});const p=active();$('profileName').value=p.name;$('providerType').value=p.providerType||'openai';$('endpoint').value=p.endpoint;$('apiKey').value=p.apiKey;$('modelIds').value=p.modelIds;$('profileSize').value=p.size;$('profileCount').value=p.count;$('headers').value=p.headers;$('nvWidth').value=p.nvWidth||1024;$('nvHeight').value=p.nvHeight||1024;$('nvSteps').value=p.nvSteps||50;$('nvGuidance').value=p.nvGuidance||3.5;$('nvMode').value=p.nvMode||'base';syncProviderType(p.providerType||'openai');fill(p.model||models(p.modelIds)[0]||'')};const generateExternal=async()=>{try{write();const p=active();const isNvidia=(p.providerType||'openai')==='nvidia';if(!p.endpoint||!p.model)throw Error('Add a proxy URL and model first.');let extra={};if(p.headers)extra=JSON.parse(p.headers);const h={'Content-Type':'application/json',...extra};if(p.apiKey)h.Authorization='Bearer '+p.apiKey;
 const promptBase=$('prompt').value.trim()||'';const seedRaw=$('seed').value.trim();
 let r;if(isNvidia){const base=p.endpoint.toString().trim().replace(/\/$/,'');const url=/\/genai\//i.test(base)?base+'/genai/'+encodeURIComponent(p.model):/\/v1$/i.test(base)?base+'/genai/'+encodeURIComponent(p.model):base+'/v1/genai/'+encodeURIComponent(p.model);const payload={prompt:promptBase,width:p.nvWidth||1024,height:p.nvHeight||1024,steps:p.nvSteps||50,cfg_scale:p.nvGuidance||3.5,seed:seedRaw?Number(seedRaw):0,mode:p.nvMode||'base'};r=await fetch(url,{method:'POST',headers:h,body:JSON.stringify(payload)})}else{r=await fetch(endpoint(p.endpoint),{method:'POST',headers:h,body:JSON.stringify({model:p.model,prompt:promptBase,size:p.size,n:p.count,response_format:'url'})})}
 const t=await r.text();let d;try{d=JSON.parse(t)}catch{throw Error('Proxy returned non-JSON data ('+r.status+').')}if(!r.ok)throw Error(d.error?.message||d.detail||d.message||('Proxy rejected the request ('+r.status+').'));
 $('externalGrid').innerHTML='';const harvested=(d.artifacts||d.data||d.images||[]);harvested.forEach((item,i)=>{const raw=item.base64||item.b64_json;const url=item.url||raw&&('data:image/png;base64,'+raw);if(!url)return;const f=document.createElement('figure'),im=document.createElement('img');im.src=url;im.onclick=()=>{$('lightboxImage').src=url;$('lightbox').classList.add('open')};const c=document.createElement('figcaption');c.textContent=(isNvidia?'NIM ':'Third-party ')+(i+1)+(item.finishReason&&item.finishReason!=='SUCCESS'?' · '+item.finishReason:'');const up=document.createElement('button');up.className='pf-upload-button';up.type='button';up.textContent='Send to Catbox';up.onclick=async()=>{try{const response=await fetch(url.startsWith('data:')?url:(url));const blob=await response.blob();await pfCatboxUploadBlob(blob,'profile-gen-'+Date.now()+'.png');}catch(e){status('profileStatus',e.message||'Catbox send failed.','error')}};f.append(im,c,up);$('externalGrid').append(f)});if(!harvested.length)throw Error('No images returned by the proxy.');status('profileStatus','Generation complete ('+harvested.length+' image(s)).','ok')}catch(e){status('profileStatus',e.message||'External generation failed.','error')}};
-  document.querySelectorAll('[data-theme]').forEach(b=>b.onclick=()=>{const t=b.dataset.theme;document.documentElement.dataset.theme=t==='graphite'?'':t;localStorage.setItem('prismForgeTheme',t)});$('styleMode').onchange=()=>{$('customStyleField').hidden=$('styleMode').value!=='custom';syncBackend()};$('generate').onclick=clickNative;$('openProfiles').onclick=()=>{$('profilesModal').classList.add('open');renderProfiles()};$('closeProfiles').onclick=()=>{$('profilesModal').classList.remove('open')};$('profileSelect').onchange=()=>{write();profiles.activeId=$('profileSelect').value;renderProfiles()};$('providerType').onchange=()=>{write();syncProviderType($('providerType').value)};$('modelIds').oninput=()=>fill($('model').value);document.querySelectorAll('[data-nv-preset]').forEach(b=>b.onclick=()=>{$('modelIds').value=b.dataset.nvPreset;fill(models($('modelIds').value)[0]||'');write()});$('newProfile').onclick=()=>{write();const p=blank('Provider '+(profiles.items.length+1));profiles.items.push(p);profiles.activeId=p.id;renderProfiles()};$('duplicateProfile').onclick=()=>{write();const p={...active(),id:uid(),name:active().name+' copy'};profiles.items.push(p);profiles.activeId=p.id;renderProfiles()};$('deleteProfile').onclick=()=>{profiles.items=profiles.items.length>1?profiles.items.filter(p=>p.id!==profiles.activeId):[blank('My first provider')];profiles.activeId=profiles.items[0].id;renderProfiles()};$('saveProfile').onclick=()=>{write();localStorage.setItem(profileKey,JSON.stringify(profiles));status('profileStatus','Profile saved locally.','ok')};$('generateExternal').onclick=generateExternal;$('loadCatbox').onclick=loadCatbox;$('addUrl').onclick=()=>{const u=$('catboxUrl').value.trim();status('catboxStatus',addCatbox([u],'Direct URL')?'Image added.':'Already imported.','ok')};$('clearCatbox').onclick=()=>{catbox=[];localStorage.setItem(catboxKey,'[]');renderCatbox()};$('closeLightbox').onclick=()=>{$('lightbox').classList.remove('open')};
-  const theme=localStorage.getItem('prismForgeTheme');if(theme&&theme!=='graphite')document.documentElement.dataset.theme=theme;profiles=read(profileKey,profiles);if(!profiles.items?.length)profiles={items:[blank('My first provider')],activeId:''};if(!profiles.activeId)profiles.activeId=profiles.items[0].id;catbox=read(catboxKey,[]);renderProfiles();renderCatbox();setTimeout(syncBackend,700);
+document.querySelectorAll('[data-theme]').forEach(b=>b.onclick=()=>{const t=b.dataset.theme;document.documentElement.dataset.theme=t==='graphite'?'':t;localStorage.setItem('prismForgeTheme',t)});$('styleMode').onchange=()=>{$('customStyleField').hidden=$('styleMode').value!=='custom';syncBackend()};$('generate').onclick=clickNative;$('openProfiles').onclick=()=>{$('profilesModal').classList.add('open');renderProfiles()};$('closeProfiles').onclick=()=>{$('profilesModal').classList.remove('open')};$('profileSelect').onchange=()=>{write();profiles.activeId=$('profileSelect').value;renderProfiles()};$('providerType').onchange=()=>{write();syncProviderType($('providerType').value)};$('modelIds').oninput=()=>fill($('model').value);document.querySelectorAll('[data-nv-preset]').forEach(b=>b.onclick=()=>{$('modelIds').value=b.dataset.nvPreset;fill(models($('modelIds').value)[0]||'');write()});$('newProfile').onclick=()=>{write();const p=blank('Provider '+(profiles.items.length+1));profiles.items.push(p);profiles.activeId=p.id;renderProfiles()};$('duplicateProfile').onclick=()=>{write();const p={...active(),id:uid(),name:active().name+' copy'};profiles.items.push(p);profiles.activeId=p.id;renderProfiles()};$('deleteProfile').onclick=()=>{profiles.items=profiles.items.length>1?profiles.items.filter(p=>p.id!==profiles.activeId):[blank('My first provider')];profiles.activeId=profiles.items[0].id;renderProfiles()};$('saveProfile').onclick=()=>{write();localStorage.setItem(profileKey,JSON.stringify(profiles));status('profileStatus','Profile saved locally.','ok')};$('generateExternal').onclick=generateExternal;$('loadCatbox').onclick=loadCatbox;$('addUrl').onclick=()=>{const u=$('catboxUrl').value.trim();status('catboxStatus',addCatbox([u],'Direct URL')?'Image added.':'Already imported.','ok')};$('clearCatbox').onclick=()=>{catbox=[];localStorage.setItem(catboxKey,'[]');renderCatbox()};$('closeLightbox').onclick=()=>{$('lightbox').classList.remove('open')};
+const theme=localStorage.getItem('prismForgeTheme');if(theme&&theme!=='graphite')document.documentElement.dataset.theme=theme;profiles=read(profileKey,profiles);if(!profiles.items?.length)profiles={items:[blank('My first provider')],activeId:''};if(!profiles.activeId)profiles.activeId=profiles.items[0].id;catbox=read(catboxKey,[]);renderProfiles();renderCatbox();setTimeout(syncBackend,700);
 })();
 </script>
 <style id="prismForgeWrapperOverrides">
@@ -50,62 +50,62 @@ body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #ba
 </style>
 <script id="prismForgeWrapperBehaviorFix">
 (() => {
-  const $ = (id) => document.getElementById(id);
-  const backend = () => document.getElementById('backendMount');
-  const hiddenStyle = () => backend()?.querySelector('select[data-name="artStyle"]');
-  const hiddenInput = (name) => backend()?.querySelector(`[data-name="${name}"] textarea,[data-name="${name}"] input`);
-  const syncVisibleStyle = () => {
-    const visible = $('styleMode');
-    const hidden = hiddenStyle();
-    if (!visible || !hidden) return;
-    const custom = visible.value === '__custom__';
-    const selected = [...hidden.options].find((option) => option.value === visible.value) || [...hidden.options].find((option) => option.textContent.trim().toLowerCase().includes('no style')) || hidden.options[0];
-    const promptInput = hiddenInput('description');
-    const negativeInput = hiddenInput('negative');
-    if (promptInput) {
-      const customText = custom ? $('customStyle')?.value.trim() : '';
-      promptInput.value = $('prompt')?.value.trim() + (customText ? ', ' + customText : '');
-      promptInput.oninput?.({});
-    }
-    if (negativeInput) { negativeInput.value = $('negative')?.value.trim() || ''; negativeInput.oninput?.({}); }
-    if (selected && !custom) { hidden.value = selected.value; hidden.onchange?.({}); }
-  };
-  const hydrateVisibleStyles = () => {
-    const visible = $('styleMode');
-    const hidden = hiddenStyle();
-    if (!visible || !hidden || !hidden.options.length) return false;
-    if (visible.dataset.hydrated !== '1') {
-      const current = visible.value;
-      visible.innerHTML = '';
-      [...hidden.options].forEach((option) => { const clone = document.createElement('option'); clone.value = option.value; clone.textContent = option.textContent; visible.append(clone); });
-      const custom = document.createElement('option'); custom.value = '__custom__'; custom.textContent = 'Custom style direction'; visible.append(custom);
-      visible.dataset.hydrated = '1';
-      visible.value = [...visible.options].some((option) => option.textContent.trim().toLowerCase().includes('no style')) ? [...visible.options].find((option) => option.textContent.trim().toLowerCase().includes('no style')).value : current;
-      visible.onchange = () => { $('customStyleField').hidden = visible.value !== '__custom__'; syncVisibleStyle(); };
-      $('customStyle')?.addEventListener('input', syncVisibleStyle);
-      $('prompt')?.addEventListener('input', syncVisibleStyle);
-      $('negative')?.addEventListener('input', syncVisibleStyle);
-    }
-    syncVisibleStyle();
-    return true;
-  };
-  const applyTheme = (theme) => { const value = theme || 'graphite'; document.documentElement.dataset.theme = value === 'graphite' ? '' : value; document.body.dataset.pfTheme = value; document.body.style.backgroundColor = 'var(--bg)'; document.body.style.color = 'var(--text)'; localStorage.setItem('prismForgeTheme', value); };
-  const addVisibilityTools = () => {
-    const heading = backend()?.querySelector('.heading');
-    if (!heading || heading.querySelector('.native-visibility-tools')) return;
-    const tools = document.createElement('div'); tools.className = 'native-visibility-tools';
-    const galleryButton = document.createElement('button'); galleryButton.className = 'button ghost'; galleryButton.type = 'button'; galleryButton.textContent = 'Hide native gallery';
-    const commentsButton = document.createElement('button'); commentsButton.className = 'button ghost'; commentsButton.type = 'button'; commentsButton.textContent = 'Hide comments';
-    const gallery = () => backend()?.querySelector('#imageGalleryCtn8569284');
-    const comments = () => backend()?.querySelector('#commentsPluginCtn654732');
-    galleryButton.onclick = () => { const node = gallery(); if (!node) return; const hidden = node.dataset.pfHidden === '1'; node.dataset.pfHidden = hidden ? '0' : '1'; node.style.display = hidden ? '' : 'none'; galleryButton.textContent = hidden ? 'Hide native gallery' : 'Show native gallery'; };
-    commentsButton.onclick = () => { const node = comments(); if (!node) return; const hidden = node.dataset.pfHidden === '1'; node.dataset.pfHidden = hidden ? '0' : '1'; node.style.display = hidden ? '' : 'none'; commentsButton.textContent = hidden ? 'Hide comments' : 'Show comments'; };
-    tools.append(galleryButton, commentsButton); heading.append(tools);
-  };
-  document.querySelectorAll('[data-theme]').forEach((button) => { button.onclick = () => applyTheme(button.dataset.theme); });
-  applyTheme(localStorage.getItem('prismForgeTheme') || 'graphite');
-  const tick = () => { hydrateVisibleStyles(); addVisibilityTools(); applyTheme(localStorage.getItem('prismForgeTheme') || 'graphite'); };
-  tick(); setTimeout(tick, 500); setInterval(tick, 900);
+const $ = (id) => document.getElementById(id);
+const backend = () => document.getElementById('backendMount');
+const hiddenStyle = () => backend()?.querySelector('select[data-name="artStyle"]');
+const hiddenInput = (name) => backend()?.querySelector(`[data-name="${name}"] textarea,[data-name="${name}"] input`);
+const syncVisibleStyle = () => {
+const visible = $('styleMode');
+const hidden = hiddenStyle();
+if (!visible || !hidden) return;
+const custom = visible.value === '__custom__';
+const selected = [...hidden.options].find((option) => option.value === visible.value) || [...hidden.options].find((option) => option.textContent.trim().toLowerCase().includes('no style')) || hidden.options[0];
+const promptInput = hiddenInput('description');
+const negativeInput = hiddenInput('negative');
+if (promptInput) {
+const customText = custom ? $('customStyle')?.value.trim() : '';
+promptInput.value = $('prompt')?.value.trim() + (customText ? ', ' + customText : '');
+promptInput.oninput?.({});
+}
+if (negativeInput) { negativeInput.value = $('negative')?.value.trim() || ''; negativeInput.oninput?.({}); }
+if (selected && !custom) { hidden.value = selected.value; hidden.onchange?.({}); }
+};
+const hydrateVisibleStyles = () => {
+const visible = $('styleMode');
+const hidden = hiddenStyle();
+if (!visible || !hidden || !hidden.options.length) return false;
+if (visible.dataset.hydrated !== '1') {
+const current = visible.value;
+visible.innerHTML = '';
+[...hidden.options].forEach((option) => { const clone = document.createElement('option'); clone.value = option.value; clone.textContent = option.textContent; visible.append(clone); });
+const custom = document.createElement('option'); custom.value = '__custom__'; custom.textContent = 'Custom style direction'; visible.append(custom);
+visible.dataset.hydrated = '1';
+visible.value = [...visible.options].some((option) => option.textContent.trim().toLowerCase().includes('no style')) ? [...visible.options].find((option) => option.textContent.trim().toLowerCase().includes('no style')).value : current;
+visible.onchange = () => { $('customStyleField').hidden = visible.value !== '__custom__'; syncVisibleStyle(); };
+$('customStyle')?.addEventListener('input', syncVisibleStyle);
+$('prompt')?.addEventListener('input', syncVisibleStyle);
+$('negative')?.addEventListener('input', syncVisibleStyle);
+}
+syncVisibleStyle();
+return true;
+};
+const applyTheme = (theme) => { const value = theme || 'graphite'; document.documentElement.dataset.theme = value === 'graphite' ? '' : value; document.body.dataset.pfTheme = value; document.body.style.backgroundColor = 'var(--bg)'; document.body.style.color = 'var(--text)'; localStorage.setItem('prismForgeTheme', value); };
+const addVisibilityTools = () => {
+const heading = backend()?.querySelector('.heading');
+if (!heading || heading.querySelector('.native-visibility-tools')) return;
+const tools = document.createElement('div'); tools.className = 'native-visibility-tools';
+const galleryButton = document.createElement('button'); galleryButton.className = 'button ghost'; galleryButton.type = 'button'; galleryButton.textContent = 'Hide native gallery';
+const commentsButton = document.createElement('button'); commentsButton.className = 'button ghost'; commentsButton.type = 'button'; commentsButton.textContent = 'Hide comments';
+const gallery = () => backend()?.querySelector('#imageGalleryCtn8569284');
+const comments = () => backend()?.querySelector('#commentsPluginCtn654732');
+galleryButton.onclick = () => { const node = gallery(); if (!node) return; const hidden = node.dataset.pfHidden === '1'; node.dataset.pfHidden = hidden ? '0' : '1'; node.style.display = hidden ? '' : 'none'; galleryButton.textContent = hidden ? 'Hide native gallery' : 'Show native gallery'; };
+commentsButton.onclick = () => { const node = comments(); if (!node) return; const hidden = node.dataset.pfHidden === '1'; node.dataset.pfHidden = hidden ? '0' : '1'; node.style.display = hidden ? '' : 'none'; commentsButton.textContent = hidden ? 'Hide comments' : 'Show comments'; };
+tools.append(galleryButton, commentsButton); heading.append(tools);
+};
+document.querySelectorAll('[data-theme]').forEach((button) => { button.onclick = () => applyTheme(button.dataset.theme); });
+applyTheme(localStorage.getItem('prismForgeTheme') || 'graphite');
+const tick = () => { hydrateVisibleStyles(); addVisibilityTools(); applyTheme(localStorage.getItem('prismForgeTheme') || 'graphite'); };
+tick(); setTimeout(tick, 500); setInterval(tick, 900);
 })();
 </script>
 <style id="prismForgeCatboxThemeAddons">
@@ -116,176 +116,170 @@ body, #backendMount, #backendMount > div, #backendMount .main-container-nix, #ba
 </style>
 <script id="prismForgeCatboxThemeAddonsScript">
 (()=>{
-  const $=id=>document.getElementById(id),hashKey='prismForgeCatboxHash';
-  const setStatus=(text,kind='')=>{const e=$('catboxStatus');if(e){e.textContent=text;e.className='status '+kind}};
-  const applyTheme=(theme)=>{const value=theme||'graphite';document.documentElement.dataset.theme=value==='graphite'?'':value;document.body.dataset.pfTheme=value;document.body.style.backgroundColor='var(--bg)';document.body.style.color='var(--text)';localStorage.setItem('prismForgeTheme',value)};
-  const addThemeButtons=()=>{const row=document.querySelector('.theme-row');if(!row)return;[['ocean','Ocean'],['sunset','Sunset'],['mono','Mono']].forEach(([value,label])=>{if(row.querySelector('[data-theme="'+value+'"]'))return;const b=document.createElement('button');b.className='button';b.type='button';b.dataset.theme=value;b.textContent=label;b.onclick=()=>applyTheme(value);row.append(b)})};
-  const albumId=()=>{const value=$('catboxUrl')?.value.trim()||'';const match=value.match(/catbox\.moe\/c\/([A-Za-z0-9]+)/i);return match?match[1]:''};
-  const readSaved=()=>{try{return JSON.parse(localStorage.getItem('prismForgeCatbox:backend-v1')||'[]')}catch{return[]}};
-  const saveUrl=(url,label)=>{const list=readSaved();if(!list.some(item=>item.url===url)){list.unshift({url,label:label||'Catbox upload'});localStorage.setItem('prismForgeCatbox:backend-v1',JSON.stringify(list))}renderSaved()};
-  const renderSaved=()=>{const root=$('catboxGrid');if(!root)return;const list=readSaved();root.innerHTML='';list.forEach((item,index)=>{const figure=document.createElement('figure');const img=document.createElement('img');img.src=item.url;img.alt=item.label;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:cover;cursor:zoom-in';img.onclick=()=>{$('lightboxImage').src=item.url;$('lightbox').classList.add('open')};const caption=document.createElement('figcaption');caption.textContent=item.label+' · remove';caption.style.cssText='padding:8px;color:var(--muted);font-size:11px;cursor:pointer';caption.onclick=()=>{list.splice(index,1);localStorage.setItem('prismForgeCatbox:backend-v1',JSON.stringify(list));renderSaved()};figure.append(img,caption);root.append(figure)})};
-  const uploadBlob=async(blob,name)=>{const hash=$('catboxHash')?.value.trim()||localStorage.getItem(hashKey)||'';if(!hash){setStatus('Enter and save your Catbox user hash before uploading.','error');return}const form=new FormData();form.append('reqtype','fileupload');form.append('userhash',hash);const album=albumId();if(album)form.append('album',album);form.append('fileToUpload',blob,name||'prism-forge.png');setStatus('Uploading to Catbox…');try{const response=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:form});const url=(await response.text()).trim();if(!/^https?:\/\/files\.catbox\.moe\//i.test(url))throw Error(url||'Catbox did not return an image URL.');saveUrl(url,'Catbox upload');setStatus('Uploaded: '+url,'ok')}catch(error){setStatus(error.message||'Catbox upload failed. Check the hash, album, and browser network permissions.','error')}};
-  const addPanel=()=>{const input=$('catboxUrl'),card=input?.closest('.card'),form=card?.querySelector('.form');if(!input||!form||form.querySelector('.pf-upload-panel'))return;const panel=document.createElement('div');panel.className='pf-upload-panel';panel.innerHTML='<label for="catboxHash"><strong>Catbox user hash</strong></label><input id="catboxHash" type="password" autocomplete="off" placeholder="Your Catbox.moe user hash"><small>Stored only in this browser and used for authenticated uploads.</small><div class="pf-upload-row"><button class="button" id="saveCatboxHash" type="button">Save hash</button><button class="button ghost" id="forgetCatboxHash" type="button">Forget hash</button></div><label for="catboxFile"><strong>Upload a local image</strong></label><input id="catboxFile" type="file" accept="image/*"><div class="pf-upload-row"><button class="button primary" id="uploadCatbox" type="button">Upload file to Catbox</button></div>';form.prepend(panel);$('catboxHash').value=localStorage.getItem(hashKey)||'';$('saveCatboxHash').onclick=()=>{const value=$('catboxHash').value.trim();if(!value){setStatus('Enter a Catbox user hash first.','error');return}localStorage.setItem(hashKey,value);setStatus('Catbox hash saved in this browser.','ok')};$('forgetCatboxHash').onclick=()=>{localStorage.removeItem(hashKey);$('catboxHash').value='';setStatus('Catbox hash removed from this browser.','ok')};$('uploadCatbox').onclick=async()=>{const file=$('catboxFile').files?.[0];if(!file){setStatus('Choose an image file first.','error');return}await uploadBlob(file,file.name)};};
-  const decorateNativeUploads = () => {};
-  window.pfCatboxUploadBlob = uploadBlob;
-  window.pfCatboxSaveUrl = saveUrl;
-  addThemeButtons();applyTheme(localStorage.getItem('prismForgeTheme')||'graphite');addPanel();renderSaved();setTimeout(addPanel,900);setInterval(addPanel,1800);
+const $=id=>document.getElementById(id),hashKey='prismForgeCatboxHash';
+const setStatus=(text,kind='')=>{const e=$('catboxStatus');if(e){e.textContent=text;e.className='status '+kind}};
+const applyTheme=(theme)=>{const value=theme||'graphite';document.documentElement.dataset.theme=value==='graphite'?'':value;document.body.dataset.pfTheme=value;document.body.style.backgroundColor='var(--bg)';document.body.style.color='var(--text)';localStorage.setItem('prismForgeTheme',value)};
+const addThemeButtons=()=>{const row=document.querySelector('.theme-row');if(!row)return;[['ocean','Ocean'],['sunset','Sunset'],['mono','Mono']].forEach(([value,label])=>{if(row.querySelector('[data-theme="'+value+'"]'))return;const b=document.createElement('button');b.className='button';b.type='button';b.dataset.theme=value;b.textContent=label;b.onclick=()=>applyTheme(value);row.append(b)})};
+const albumId=()=>{const value=$('catboxUrl')?.value.trim()||'';const match=value.match(/catbox\.moe\/c\/([A-Za-z0-9]+)/i);return match?match[1]:''};
+const readSaved=()=>{try{return JSON.parse(localStorage.getItem('prismForgeCatbox:backend-v1')||'[]')}catch{return[]}};
+const saveUrl=(url,label)=>{const list=readSaved();if(!list.some(item=>item.url===url)){list.unshift({url,label:label||'Catbox upload'});localStorage.setItem('prismForgeCatbox:backend-v1',JSON.stringify(list))}renderSaved()};
+const renderSaved=()=>{const root=$('catboxGrid');if(!root)return;const list=readSaved();root.innerHTML='';list.forEach((item,index)=>{const figure=document.createElement('figure');const img=document.createElement('img');img.src=item.url;img.alt=item.label;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:cover;cursor:zoom-in';img.onclick=()=>{$('lightboxImage').src=item.url;$('lightbox').classList.add('open')};const caption=document.createElement('figcaption');caption.textContent=item.label+' · remove';caption.style.cssText='padding:8px;color:var(--muted);font-size:11px;cursor:pointer';caption.onclick=()=>{list.splice(index,1);localStorage.setItem('prismForgeCatbox:backend-v1',JSON.stringify(list));renderSaved()};figure.append(img,caption);root.append(figure)})};
+const uploadBlob=async(blob,name)=>{const hash=$('catboxHash')?.value.trim()||localStorage.getItem(hashKey)||'';if(!hash){setStatus('Enter and save your Catbox user hash before uploading.','error');return}const form=new FormData();form.append('reqtype','fileupload');form.append('userhash',hash);const album=albumId();if(album)form.append('album',album);form.append('fileToUpload',blob,name||'prism-forge.png');setStatus('Uploading to Catbox…');try{const response=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:form});const url=(await response.text()).trim();if(!/^https?:\/\/files\.catbox\.moe\//i.test(url))throw Error(url||'Catbox did not return an image URL.');saveUrl(url,'Catbox upload');setStatus('Uploaded: '+url,'ok')}catch(error){setStatus(error.message||'Catbox upload failed. Check the hash, album, and browser network permissions.','error')}};
+const addPanel=()=>{const input=$('catboxUrl'),card=input?.closest('.card'),form=card?.querySelector('.form');if(!input||!form||form.querySelector('.pf-upload-panel'))return;const panel=document.createElement('div');panel.className='pf-upload-panel';panel.innerHTML='<label for="catboxHash"><strong>Catbox user hash</strong></label><input id="catboxHash" type="password" autocomplete="off" placeholder="Your Catbox.moe user hash"><small>Stored only in this browser and used for authenticated uploads.</small><div class="pf-upload-row"><button class="button" id="saveCatboxHash" type="button">Save hash</button><button class="button ghost" id="forgetCatboxHash" type="button">Forget hash</button></div><label for="catboxFile"><strong>Upload a local image</strong></label><input id="catboxFile" type="file" accept="image/*"><div class="pf-upload-row"><button class="button primary" id="uploadCatbox" type="button">Upload file to Catbox</button></div>';form.prepend(panel);$('catboxHash').value=localStorage.getItem(hashKey)||'';$('saveCatboxHash').onclick=()=>{const value=$('catboxHash').value.trim();if(!value){setStatus('Enter a Catbox user hash first.','error');return}localStorage.setItem(hashKey,value);setStatus('Catbox hash saved in this browser.','ok')};$('forgetCatboxHash').onclick=()=>{localStorage.removeItem(hashKey);$('catboxHash').value='';setStatus('Catbox hash removed from this browser.','ok')};$('uploadCatbox').onclick=async()=>{const file=$('catboxFile').files?.[0];if(!file){setStatus('Choose an image file first.','error');return}await uploadBlob(file,file.name)};};
+const decorateNativeUploads = () => {};
+window.pfCatboxUploadBlob = uploadBlob;
+window.pfCatboxSaveUrl = saveUrl;
+addThemeButtons();applyTheme(localStorage.getItem('prismForgeTheme')||'graphite');addPanel();renderSaved();setTimeout(addPanel,900);setInterval(addPanel,1800);
 })();
 </script><script id="prismForgePermanentVisibilityControls">
 (() => {
-  const galleryKey = 'prismForgeNativeGalleryVisible';
-  const commentsKey = 'prismForgeNativeCommentsVisible';
-  const readVisible = (key) => localStorage.getItem(key) !== '0';
-  const node = (selector) => document.querySelector('#backendMount ' + selector);
-  const apply = (kind) => {
-    const isGallery = kind === 'gallery';
-    const key = isGallery ? galleryKey : commentsKey;
-    const selector = isGallery ? '#imageGalleryCtn8569284' : '#commentsPluginCtn654732';
-    const button = document.getElementById(isGallery ? 'toggleNativeGallery' : 'toggleNativeComments');
-    const visible = readVisible(key);
-    const target = node(selector);
-    if (target) { target.style.display = visible ? '' : 'none'; target.dataset.pfVisible = visible ? '1' : '0'; }
-    if (button) { button.textContent = visible ? (isGallery ? 'Hide native gallery' : 'Hide comments') : (isGallery ? 'Show native gallery' : 'Show comments'); button.setAttribute('aria-pressed', visible ? 'true' : 'false'); }
-  };
-  const bind = (kind) => {
-    const isGallery = kind === 'gallery';
-    const key = isGallery ? galleryKey : commentsKey;
-    const button = document.getElementById(isGallery ? 'toggleNativeGallery' : 'toggleNativeComments');
-    if (!button || button.dataset.bound === '1') return;
-    button.dataset.bound = '1';
-    button.addEventListener('click', () => { localStorage.setItem(key, readVisible(key) ? '0' : '1'); apply(kind); });
-  };
-  const tick = () => { bind('gallery'); bind('comments'); apply('gallery'); apply('comments'); };
-  tick(); setTimeout(tick, 500); setInterval(tick, 1000);
+const galleryKey = 'prismForgeNativeGalleryVisible';
+const commentsKey = 'prismForgeNativeCommentsVisible';
+const readVisible = (key) => localStorage.getItem(key) !== '0';
+const node = (selector) => document.querySelector('#backendMount ' + selector);
+const apply = (kind) => {
+const isGallery = kind === 'gallery';
+const key = isGallery ? galleryKey : commentsKey;
+const selector = isGallery ? '#imageGalleryCtn8569284' : '#commentsPluginCtn654732';
+const button = document.getElementById(isGallery ? 'toggleNativeGallery' : 'toggleNativeComments');
+const visible = readVisible(key);
+const target = node(selector);
+if (target) { target.style.display = visible ? '' : 'none'; target.dataset.pfVisible = visible ? '1' : '0'; }
+if (button) { button.textContent = visible ? (isGallery ? 'Hide native gallery' : 'Hide comments') : (isGallery ? 'Show native gallery' : 'Show comments'); button.setAttribute('aria-pressed', visible ? 'true' : 'false'); }
+};
+const bind = (kind) => {
+const isGallery = kind === 'gallery';
+const key = isGallery ? galleryKey : commentsKey;
+const button = document.getElementById(isGallery ? 'toggleNativeGallery' : 'toggleNativeComments');
+if (!button || button.dataset.bound === '1') return;
+button.dataset.bound = '1';
+button.addEventListener('click', () => { localStorage.setItem(key, readVisible(key) ? '0' : '1'); apply(kind); });
+};
+const tick = () => { bind('gallery'); bind('comments'); apply('gallery'); apply('comments'); };
+tick(); setTimeout(tick, 500); setInterval(tick, 1000);
 })();
 </script><script id="prismForgePromptStateBridge">
 (() => {
-  const $ = (id) => document.getElementById(id);
-  const backend = () => document.getElementById('backendMount');
-  const input = (name) => backend()?.querySelector(`[data-name="${name}"] textarea,[data-name="${name}"] input`);
-  const select = (name) => backend()?.querySelector(`select[data-name="${name}"]`);
-  const emit = (element, type) => element?.dispatchEvent(new Event(type, { bubbles: true }));
-  const setFrameworkValue = (name, value) => { const element = input(name); if (element) { element.value = value; emit(element, 'input'); emit(element, 'change'); } try { if (window.input) window.input[name] = value; } catch (_) {} };
-  const prime = () => {
-    const prompt = $('prompt')?.value.trim() || '';
-    if (!prompt) { const message = $('generateStatus'); if (message) { message.textContent = 'Enter a prompt before generating.'; message.className = 'status error'; } return false; }
-    const custom = $('styleMode')?.value === '__custom__';
-    const customText = custom ? ($('customStyle')?.value.trim() || '') : '';
-    setFrameworkValue('description', prompt + (customText ? ', ' + customText : ''));
-    setFrameworkValue('negative', $('negative')?.value.trim() || '');
-    setFrameworkValue('numImages', String(Math.max(1, Math.floor(Number($('count')?.value) || 1))));
-    setFrameworkValue('guidance', String(Number($('guidance')?.value) || 7));
-    setFrameworkValue('seed', $('seed')?.value.trim() || '');
-    const catHash = $('catboxHash')?.value?.trim() || localStorage.getItem('prismForgeCatboxHash') || '';
-    setFrameworkValue('catboxAPI', catHash);
-    const shape = select('shape'); if (shape) { shape.value = $('resolution')?.value || shape.value; emit(shape, 'change'); }
-    const style = select('artStyle'); if (style && !custom) { const match = [...style.options].find((option) => option.value === $('styleMode')?.value); if (match) { style.value = match.value; emit(style, 'change'); } }
-    try { if (window.input) { window.input.description = prompt + (customText ? ', ' + customText : ''); window.input.negative = $('negative')?.value.trim() || ''; window.input.numImages = Number($('count')?.value) || 1; window.input.guidance = Number($('guidance')?.value) || 7; window.input.seed = $('seed')?.value.trim() || ''; window.input.catboxAPI = catHash; window.input.shape = $('resolution')?.value || '768x768'; } } catch (_) {}
-    return true;
-  };
-  const bind = () => { const button = $('generate'); if (!button || button.dataset.promptBridgeBound === '1') return; button.dataset.promptBridgeBound = '1'; button.onclick = () => { if (!prime()) return; const native = backend()?.querySelector('#generateButtonEl'); if (!native) { const message = $('generateStatus'); if (message) { message.textContent = 'Perchance generation controls are still loading.'; message.className = 'status error'; } return; } const message = $('generateStatus'); if (message) { message.textContent = 'Generating with Perchance…'; message.className = 'status'; } native.click(); }; };
-  bind(); setTimeout(bind, 700); setInterval(bind, 1200);
+const $ = (id) => document.getElementById(id);
+const backend = () => document.getElementById('backendMount');
+const input = (name) => backend()?.querySelector(`[data-name="${name}"] textarea,[data-name="${name}"] input`);
+const select = (name) => backend()?.querySelector(`select[data-name="${name}"]`);
+const emit = (element, type) => element?.dispatchEvent(new Event(type, { bubbles: true }));
+const setFrameworkValue = (name, value) => { const element = input(name); if (element) { element.value = value; emit(element, 'input'); emit(element, 'change'); } try { if (window.input) window.input[name] = value; } catch (_) {} };
+const prime = () => {
+const prompt = $('prompt')?.value.trim() || '';
+if (!prompt) { const message = $('generateStatus'); if (message) { message.textContent = 'Enter a prompt before generating.'; message.className = 'status error'; } return false; }
+const custom = $('styleMode')?.value === '__custom__';
+const customText = custom ? ($('customStyle')?.value.trim() || '') : '';
+setFrameworkValue('description', prompt + (customText ? ', ' + customText : ''));
+setFrameworkValue('negative', $('negative')?.value.trim() || '');
+setFrameworkValue('numImages', String(Math.max(1, Math.floor(Number($('count')?.value) || 1))));
+setFrameworkValue('guidance', String(Number($('guidance')?.value) || 7));
+setFrameworkValue('seed', $('seed')?.value.trim() || '');
+const catHash = $('catboxHash')?.value?.trim() || localStorage.getItem('prismForgeCatboxHash') || '';
+setFrameworkValue('catboxAPI', catHash);
+const shape = select('shape'); if (shape) { shape.value = $('resolution')?.value || shape.value; emit(shape, 'change'); }
+const style = select('artStyle'); if (style && !custom) { const match = [...style.options].find((option) => option.value === $('styleMode')?.value); if (match) { style.value = match.value; emit(style, 'change'); } }
+try { if (window.input) { window.input.description = prompt + (customText ? ', ' + customText : ''); window.input.negative = $('negative')?.value.trim() || ''; window.input.numImages = Number($('count')?.value) || 1; window.input.guidance = Number($('guidance')?.value) || 7; window.input.seed = $('seed')?.value.trim() || ''; window.input.catboxAPI = catHash; window.input.shape = $('resolution')?.value || '768x768'; } } catch (_) {}
+return true;
+};
+const bind = () => { const button = $('generate'); if (!button || button.dataset.promptBridgeBound === '1') return; button.dataset.promptBridgeBound = '1'; button.onclick = () => { if (!prime()) return; const native = backend()?.querySelector('#generateButtonEl'); if (!native) { const message = $('generateStatus'); if (message) { message.textContent = 'Perchance generation controls are still loading.'; message.className = 'status error'; } return; } const message = $('generateStatus'); if (message) { message.textContent = 'Generating with Perchance…'; message.className = 'status'; } native.click(); }; };
+bind(); setTimeout(bind, 700); setInterval(bind, 1200);
 })();
 </script><script id="prismForgeExternalPayloadAdapter">
 (() => {
-  if (window.__prismForgeExternalPayloadAdapter) return;
-  window.__prismForgeExternalPayloadAdapter = true;
-  const $ = (id) => document.getElementById(id);
-  const preview = (payload) => {
-    const status = $('profileStatus');
-    if (!status) return;
-    let details = $('externalPayloadPreview');
-    if (!details) { const wrapper = document.createElement('details'); wrapper.className = 'request-preview'; wrapper.innerHTML = '<summary>Show last external request</summary><pre id="externalPayloadPreview"></pre>'; status.after(wrapper); details = $('externalPayloadPreview'); }
-    details.textContent = JSON.stringify(payload, null, 2);
-  };
-  const compose = (body) => {
-    const base = $('prompt')?.value.trim() || body.prompt || '';
-    const visibleNegative = $('negative')?.value.trim() || '';
-    const style = window.input?.artStyle;
-    const stylePrompt = typeof style?.prompt === 'string' ? style.prompt.trim() : '';
-    const styleNegative = typeof style?.negative === 'string' ? style.negative.trim() : '';
-    let prompt = base;
-    if (stylePrompt && stylePrompt !== base && !stylePrompt.includes('[input.')) prompt = stylePrompt.includes(base) ? stylePrompt : base + ', ' + stylePrompt;
-    let negative = visibleNegative;
-    if (styleNegative && !styleNegative.includes('[input.') && styleNegative !== visibleNegative && !negative.includes(styleNegative)) negative = [visibleNegative, styleNegative].filter(Boolean).join(', ');
-    const next = {...body, prompt, negative_prompt: negative, size: $('profileSize')?.value || body.size, n: Math.max(1, Number($('profileCount')?.value) || Number(body.n) || 1), guidance_scale: Number($('guidance')?.value) || undefined};
-    const seed = $('seed')?.value.trim(); if (seed) next.seed = Number(seed);
-    Object.keys(next).forEach((key) => next[key] === undefined || next[key] === '' ? delete next[key] : null);
-    return next;
-  };
-  const realFetch = window.fetch.bind(window);
-  window.fetch = (url, options = {}) => {
-    if (typeof url === 'string' && /\/images\/generations$/i.test(url) && options.body) {
-      try { const payload = compose(JSON.parse(options.body)); options = {...options, body: JSON.stringify(payload)}; preview(payload); } catch (_) {}
-    }
-    return realFetch(url, options);
-  };
+if (window.__prismForgeExternalPayloadAdapter) return;
+window.__prismForgeExternalPayloadAdapter = true;
+const $ = (id) => document.getElementById(id);
+const preview = (payload) => {
+const status = $('profileStatus');
+if (!status) return;
+let details = $('externalPayloadPreview');
+if (!details) { const wrapper = document.createElement('details'); wrapper.className = 'request-preview'; wrapper.innerHTML = '<summary>Show last external request</summary><pre id="externalPayloadPreview"></pre>'; status.after(wrapper); details = $('externalPayloadPreview'); }
+details.textContent = JSON.stringify(payload, null, 2);
+};
+const compose = (body) => {
+const base = $('prompt')?.value.trim() || body.prompt || '';
+const visibleNegative = $('negative')?.value.trim() || '';
+const style = window.input?.artStyle;
+const stylePrompt = typeof style?.prompt === 'string' ? style.prompt.trim() : '';
+const styleNegative = typeof style?.negative === 'string' ? style.negative.trim() : '';
+let prompt = base;
+if (stylePrompt && stylePrompt !== base && !stylePrompt.includes('[input.')) prompt = stylePrompt.includes(base) ? stylePrompt : base + ', ' + stylePrompt;
+let negative = visibleNegative;
+if (styleNegative && !styleNegative.includes('[input.') && styleNegative !== visibleNegative && !negative.includes(styleNegative)) negative = [visibleNegative, styleNegative].filter(Boolean).join(', ');
+const next = {...body, prompt, negative_prompt: negative, size: $('profileSize')?.value || body.size, n: Math.max(1, Number($('profileCount')?.value) || Number(body.n) || 1), guidance_scale: Number($('guidance')?.value) || undefined};
+const seed = $('seed')?.value.trim(); if (seed) next.seed = Number(seed);
+Object.keys(next).forEach((key) => next[key] === undefined || next[key] === '' ? delete next[key] : null);
+return next;
+};
+const realFetch = window.fetch.bind(window);
+window.fetch = (url, options = {}) => {
+if (typeof url === 'string' && /\/images\/generations$/i.test(url) && options.body) {
+try { const payload = compose(JSON.parse(options.body)); options = {...options, body: JSON.stringify(payload)}; preview(payload); } catch (_) {}
+}
+return realFetch(url, options);
+};
 })();
 </script><script id="prismForgeUnifiedCatbox">
 (() => {
-  // Per-image Catbox upload FALLBACK.
-  // The t2i framework's own processGeneration (in the output template) creates
-  // "Upload to Catbox" buttons natively when catboxAPI input + onFinish hook are
-  // present in the .perchance source. This script only adds buttons to images
-  // that the framework missed (e.g. external profile results in #externalGrid).
-  // It does NOT override window.processGeneration.
-
-  const hashKey = 'prismForgeCatboxHash';
-  const albumKey = 'defaultCatboxAlbum';
-  const albumRe = /catbox\.moe\/c\/([A-Za-z0-9]+)/i;
-
-  const $ = (id) => document.getElementById(id);
-  const setStatus = (text, kind = '') => { const node = $('catboxStatus'); if (node) { node.textContent = text; node.className = 'status ' + kind; } };
-  const getHash = () => $('catboxHash')?.value.trim() || localStorage.getItem(hashKey) || '';
-  const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem(albumKey) || ''; const m = url.match(/catbox\.moe\/c\/([A-Za-z0-9]+)/i); return m ? m[1] : ''; };
-
-  const uploadBlob = async (blob, name) => {
-    if (!blob) throw Error('No image data.');
-    if (window.pfCatboxUploadBlob) return window.pfCatboxUploadBlob(blob, name);
-    const hash = getHash(); if (!hash) throw Error('Enter and save your Catbox user hash.');
-    const form = new FormData(); form.append('reqtype', 'fileupload'); form.append('userhash', hash);
-    const album = getAlbum(); if (album) form.append('album', album);
-    form.append('fileToUpload', blob, name || 'prism-forge.png');
-    const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
-    const url = (await r.text()).trim();
-    if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw Error(url || 'Catbox returned no URL.');
-    if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
-    return url;
-  };
-
-  const wire = (button, img) => {
-    if (button.dataset.pfBound === '1') return;
-    button.dataset.pfBound = '1'; button.type = 'button';
-    button.onclick = async () => {
-      if (button.disabled) return;
-      button.disabled = true; const orig = button.textContent; button.textContent = 'Uploading\u2026';
-      setStatus('Uploading image to Catbox\u2026');
-      try {
-        const url = img.currentSrc || img.src || '';
-        if (url.startsWith('data:')) { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
-        else if (url) { try { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
-                        catch (_) { /* urlupload fallback */ const h=getHash(); if(!h){setStatus('Enter hash first.','error');return;} const f=new FormData();f.append('reqtype','urlupload');f.append('userhash',h);const al=getAlbum();if(al)f.append('album',al);f.append('url',url);const rr=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:f});const u=(await rr.text()).trim();if(!/^https?:\/\/files\.catbox\.moe\//i.test(u))throw Error(u);if(window.pfCatboxSaveUrl)window.pfCatboxSaveUrl(u,'Catbox upload');setStatus('Uploaded: '+u,'ok'); } }
-        else throw Error('No image URL available.');
-      } catch (e) { setStatus(e.message || 'Catbox upload failed.', 'error'); }
-      finally { button.disabled = false; button.textContent = orig; }
-    };
-  };
-
-  const scan = () => {
-    // Only scan external grid results (framework handles native gallery images)
-    const extGrid = document.querySelector('#externalGrid');
-    if (extGrid) {
-      extGrid.querySelectorAll('img').forEach((img) => {
-        if (img.closest('#catboxGrid')) return;
-        const holder = img.parentElement; if (!holder) return;
-        let btn = holder.querySelector(':scope > .pf-upload-button');
-        if (!btn) { btn = document.createElement('button'); btn.className = 'pf-upload-button'; btn.textContent = 'Send to Catbox'; img.insertAdjacentElement('afterend', btn); }
-        wire(btn, img);
-      });
-    }
-  };
-
-  scan(); new MutationObserver(scan).observe(document.body, { subtree: true, childList: true });
-  setTimeout(scan, 700); setInterval(scan, 2000);
+// Per-image Catbox upload FALLBACK.
+// The t2i framework's own processGeneration (in the output template) creates
+// "Upload to Catbox" buttons natively when catboxAPI input + onFinish hook are
+// present in the .perchance source. This script only adds buttons to images
+// that the framework missed (e.g. external profile results in #externalGrid).
+// It does NOT override window.processGeneration.
+const hashKey = 'prismForgeCatboxHash';
+const albumKey = 'defaultCatboxAlbum';
+const albumRe = /catbox\.moe\/c\/([A-Za-z0-9]+)/i;
+const $ = (id) => document.getElementById(id);
+const setStatus = (text, kind = '') => { const node = $('catboxStatus'); if (node) { node.textContent = text; node.className = 'status ' + kind; } };
+const getHash = () => $('catboxHash')?.value.trim() || localStorage.getItem(hashKey) || '';
+const getAlbum = () => { const url = $('catboxUrl')?.value.trim() || localStorage.getItem(albumKey) || ''; const m = url.match(/catbox\.moe\/c\/([A-Za-z0-9]+)/i); return m ? m[1] : ''; };
+const uploadBlob = async (blob, name) => {
+if (!blob) throw Error('No image data.');
+if (window.pfCatboxUploadBlob) return window.pfCatboxUploadBlob(blob, name);
+const hash = getHash(); if (!hash) throw Error('Enter and save your Catbox user hash.');
+const form = new FormData(); form.append('reqtype', 'fileupload'); form.append('userhash', hash);
+const album = getAlbum(); if (album) form.append('album', album);
+form.append('fileToUpload', blob, name || 'prism-forge.png');
+const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
+const url = (await r.text()).trim();
+if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw Error(url || 'Catbox returned no URL.');
+if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
+return url;
+};
+const wire = (button, img) => {
+if (button.dataset.pfBound === '1') return;
+button.dataset.pfBound = '1'; button.type = 'button';
+button.onclick = async () => {
+if (button.disabled) return;
+button.disabled = true; const orig = button.textContent; button.textContent = 'Uploading\u2026';
+setStatus('Uploading image to Catbox\u2026');
+try {
+const url = img.currentSrc || img.src || '';
+if (url.startsWith('data:')) { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
+else if (url) { try { const r = await fetch(url); const b = await r.blob(); await uploadBlob(b, 'prism-forge.png'); }
+catch (_) { /* urlupload fallback */ const h=getHash(); if(!h){setStatus('Enter hash first.','error');return;} const f=new FormData();f.append('reqtype','urlupload');f.append('userhash',h);const al=getAlbum();if(al)f.append('album',al);f.append('url',url);const rr=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:f});const u=(await rr.text()).trim();if(!/^https?:\/\/files\.catbox\.moe\//i.test(u))throw Error(u);if(window.pfCatboxSaveUrl)window.pfCatboxSaveUrl(u,'Catbox upload');setStatus('Uploaded: '+u,'ok'); } }
+else throw Error('No image URL available.');
+} catch (e) { setStatus(e.message || 'Catbox upload failed.', 'error'); }
+finally { button.disabled = false; button.textContent = orig; }
+};
+};
+const scan = () => {
+// Only scan external grid results (framework handles native gallery images)
+const extGrid = document.querySelector('#externalGrid');
+if (extGrid) {
+extGrid.querySelectorAll('img').forEach((img) => {
+if (img.closest('#catboxGrid')) return;
+const holder = img.parentElement; if (!holder) return;
+let btn = holder.querySelector(':scope > .pf-upload-button');
+if (!btn) { btn = document.createElement('button'); btn.className = 'pf-upload-button'; btn.textContent = 'Send to Catbox'; img.insertAdjacentElement('afterend', btn); }
+wire(btn, img);
+});
+}
+};
+scan(); new MutationObserver(scan).observe(document.body, { subtree: true, childList: true });
+setTimeout(scan, 700); setInterval(scan, 2000);
 })();
 </script></body></html>
