@@ -1,316 +1,87 @@
 generateHTML = {import:t2i-framework-plugin-v2}
 superFetch = {import:super-fetch-plugin}
-createMediaGallery = {import:create-media-gallery-plugin}
-genStats = {import:generator-stats-plugin-v2}
-copyText = {import:copy-text-plugin}
-remember = {import:remember-plugin}
+commentsPlugin = {import:comments-plugin}
+t2iStyles = {import:t2i-styles}
 
 $meta
-  title = flux AI Art Generator (free, no sign-up, unlimited)
-  description = Create beautiful humans with this AI image generator. It's completely free, unlimited, and there's no sign-up required, ever. You can create pretty pictures and anime or realistic-looking, beautiful human characters with a text-to-image model. AI art of your OC, villains, story characters, your fanfic, etc. Can generate basically any style.  
+  title = Prism Forge — Open Image Studio
+  description = A clean provider-neutral image workspace with Perchance generation, imported lolmao art styles, Catbox tools, comments, and external model profiles.
   image = https://user-uploads.perchance.org/file/0adef8a14fc4e89cf7a9c5005d6417f4.jpeg
 
-// Feel free to edit the settings below and then save your own copy of this generator!
-// You'll probably just want to scroll down to the artStyle list and edit those - it's pretty self-explanatory, just follow the format.
- 
-settings 
-  pageTitle = BRUH!!!! ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯
-  introMessage = Add a description, then click <b>generate</b>.<br><br><span style="font-size:80%; color:grey; max-width:200px; display:inline-block;">This generator was made using the <a href="https://perchance.org/text-to-image-plugin" target="_blank">text-to-image plugin</a>.</span>
-  underImagesMessage = <div style="max-width:700px; margin:0 auto; padding:0 1rem; font-size:85%; opacity:0.7;">Enjoy Otaku !!!
-  socialFeatures = enabled // or 'button' or 'enabled' or 'disabled'
+settings
+  pageTitle = Prism Forge backend
+  introMessage =
+  underImagesMessage =
+  socialFeatures = enabled
   numImages = [Number(input.numImages)]
-  
   imageButtons
-    personality = true 
-    privateSave = true
-  // note: the t2i-framework-plugin makes all user inputs from the `userInputs` list accessible by name as [input.theNameOfTheInput], as shown here:
-  imageOptions // <-- options for the text-to-image plugin that generates the images: https://perchance.org/text-to-image-plugin
-    saveTitle = ([input.artStyle.getName]) [input.description] // .getName is a built-in Perchance property that gets the name of a given list/sublist/node
-    prompt = [input.artStyle.prompt], natural beauty
-    negativePrompt = [input.artStyle.negative], ugly, amputee, deformed
+    personality = false
+    privateSave = false
+  imageOptions
+    prompt = [input.artStyle.prompt]
+    negativePrompt = [input.artStyle.negative]
     resolution = [input.shape]
-    guidanceScale = [input.Gscale]
+    guidanceScale = [input.guidance]
     seed = [input.seed]
-    onFinish(result) =>
-      processGeneration(result)
-      
-  userInputs // you can add more user inputs to this list, and then use them like [input.nameOfInput] in the `prompt`, `negativePrompt`, `artStyle.prompt`, etc.
-
-    scratchpad // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ Scratchpad
-      tip = [t2i.defaultText.scratchpadTip] // this loads the default text, but you can delete it and add your own tip. Just change this line to "tip = You own cool tips."
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = true // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        [t2i.defaultText.scratchpadPlaceholder]
-
-    scratchpadex // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ Notepad
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = true // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-   
-    scratchpad2 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ Note
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = true // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-
-    scratchpad3 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ pad
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = true // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-
-    scratchpad4 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ child pad (10-13)
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = true // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-
-    scratchpad5 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ child pad (10-13)
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = false // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-
-    scratchpad6 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ child pad(7-9)
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = true // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-
-    scratchpad7 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ child pad (7-9)
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = false // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-
-    scratchpad8 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ child pad (15-17)
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = true // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-
-    scratchpad9 // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = 🗒️ child pad (15-17)
-      tip =   Keep your shits here ....while use other one for your prompt variable.
-      type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      parseVariables = false // <-- allows people to write "ANIMAL = {dog|cat|frog}" in the scratchpad, and then use "[ANIMAL]" in their prompt to get a random one of those animals
-      width = min(750px, 100%)
-      height = 40vh
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1; // so the scratchpad only shows up after they've clicked generate a couple of times (to reduce confusion/clutter for newbies)
-      examples
-        a very very very small ,short  ,tiny ,beautiful cute innocent looking very childish girl with medium breasts , very small childish face,  slender face, in a park, she is very short, she have very short torso, very very little body parts, very very small limbs, dwarf like small short, dwarfism, she have very slender and petit body, cute pussy, slit , clitoris , nipples ,Sunlight highlighting detailed textures in the picture .Ultra-detailed, HDR, UHD+, 8K resolution, masterpiece, best quality, high animism, 2D anime, cozy outdoor settings  , full naked , 3rd person pov, full body , doe eyes , She is sitting on her brothers dick, reverse cowgirl, dick inside pussy, full dick inside pussy, penetration , she is moaning out if ecstasy, cum coating her pussy, semen dripping 
-        
-           
+  userInputs
     description
-      label = 📝 Description 
-      tip = [t2i.defaultText.promptTip]
+      label = Prompt bridge
       type = paragraph
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      width = min(750px, 100%)
-      takesUpFullRow = true
-      useVariables = true // See comment on the `parseVariables = true` line on the `scratchpad` user input, above. This line makes it so those variables can be used in this text box.
-      modifiers = [input.artStyle?.modifiers || null]
-      modifierUpdates = event:description.input, event:artStyle.change
-      enterKeyTriggersGeneration = false // <-- can still use shift+enter to create a new line
-      defaultValue = nature // <-- if user doesn't type anything in the description, this will be used as default
-      // we use artstyle-specific random prompts if available, otherwise fall back to randomDescriptions list:
-      examples = [input.artStyle?.randomPrompt || randomDescription] // <-- the placeholder examples that rotate in the text box
-      random = [input.artStyle?.randomPrompt || randomDescription] // <-- added to the text box when the 'random' button gets clicked
-    
+      defaultValue =
+      visible() =>
+        return true;
     negative
-      label = 🚫 Anti-Description (optional)
-      tip = [t2i.defaultText.negativePromptTip]
+      label = Negative bridge
       type = text
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      useVariables = true // See comment on `useVariables` line on the `description` user input, above.
-      examples
-        things you 𝗱𝗼𝗻'𝘁 want in the image
-
-    catboxAPI // Note: the 'remember' option storage is 'based on' this 'scratchpad' name, so if you change that name to something else like 'notepad', people will lose all their saved scratchpad text. But it's safe to change the 'label', below.
-      label = Catbox Hash
-      tip = You can get one of these from your user dashboard on catbox.moe\n\nNOTE: if it is incorrect, the upload will still succeed but will not show up on your account!
-      type = text
-      width = 100%
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      takesUpFullRow = true
-      foldToggleState = hidden // or 'shown' if you want it to start shown, or delete this line if you don't want it to be show-able/hide-able
-      
+      defaultValue =
+      visible() =>
+        return true;
     artStyle
-      label = 🎨 Art Style
+      label = Art Style bridge
       type = select
-      remember = true // <-- makes it so the selected option will be remembered even if the user refreshes/closes the page
+      remember = true
       options
-        Casual Photo // <-- example of a custom "Casual Photo" card style - just follow this format and add as many of them as you want to this 'options' list
-          prompt = [input.description], casual photo, natural beauty
-          negative = [input.negative], bad photo, bad lighting, high production value, unnatural studio lighting, commercial photoshoot, photoshopped, terrible photo, deformed, ugly, amputee, extra limbs
-          meta:position = 1 // positions are 'zero-indexed', so this moves the Casual Photo style to the second item in the selector list
-        meta:import
-          from = {import:lolmao-bro-artstyle} // <-- imports a bunch of 'default' styles (you can delete this, or put it at the end, below 'No style' if you want)
-          
-        𝗡𝗼 𝘀𝘁𝘆𝗹𝗲
+        No style
           prompt = [input.description]
-          negative = [input.negative], (little kid:0.1)
-          meta:position = 5
-
+          negative = [input.negative]
+          meta:position = 0
+        meta:import
+          from = {import:lolmao-bro-artstyle}
+        meta:import
+          from = {import:t2i-styles}
     shape
-      label = 🖼️ Shape
+      label = Shape bridge
       type = select
-      remember = true // <-- the selected option will be remembered even if the user refreshes/closes the page
       options
         Portrait = 512x768
         Square = 768x768
         Landscape = 768x512
-        
     numImages
-      label = 🔢 How many?
+      label = Image count bridge
       type = text
+      defaultValue = 1
       enterKeyTriggersGeneration = true
-      foldToggleState = hidden
-      remember = true     
-      visible() =>
-        return Number(localStorage.generateClickCount) > 1;
-        
-    Gscale
-      label = Guidance scale (optional)
-      type = select
-      tip = (You will not have to change this much unless you have a very specific use case.) This is how much the AI tries to copy your prompt. Low numbers let the AI wander more from your prompt(which sometims makes the image blurry), and high numbers make the AI try to stick to the prompt as much as possible(however this might create deformed of scrambled images if the prompt is not specific enough)
-      remember = true // <-- the selected option will be remembered even if the user refreshes/closes the page
-      options
-        default(7) = 7
-        1
-        2
-        3
-        4
-        5
-        6
-        7
-        8
-        9
-        10
-        11
-        12
-        13
-        14
-        15
-        16
-        17
-        18
-        19
-        20
-        21
-        22
-        23
-        24
-        25
-        26
-        27
-        28
-        29
-        30
-
-    seed
-      label = Seed (Positive numbers only)(optional)
+      remember = true
+    guidance
+      label = Guidance bridge
       type = text
-      remember = true // <-- the text that the user inputs will be remembered so it's still there even if they close/refresh the page
-      tip = (This is not used often, so don't use it if you don't understand it. Set to 7)The seed determines the image. Same seed plus same prompt equals same image. leave blank or type "-1" for a random seed. This is mostly useful for replicating images or making slight edits because Same Seed + Similar Prompt = Similar Image.
-      examples
-        {Leave blank for random seed. | Same seed + same prompt = same image. | Same seed + similar prompt = similar image}
-     
-      
-  defaultCommentOptions // for comments plugin: https://perchance.org/comments-plugin
+      defaultValue = 7
+    seed
+      label = Seed bridge
+      type = text
+    catboxAPI
+      label = Catbox Hash
+      type = text
+      remember = true
+      takesUpFullRow = true
+      visible() =>
+        return true;
+  defaultCommentOptions
     width = 100%
     height = 400
-    commentPlaceholderText = Type a fcking comment...
+    commentPlaceholderText = Share a prompt, observation, or helpful variation.
     customEmojis = {import:huge-emoji-list}
-    submitButtonText = submit comment
-    bannedUsers = [bannedUsersList]
-    
+    submitButtonText = post comment
   commentChannels
     general
       label = General
@@ -322,183 +93,14 @@ settings
       label = Room 3
     prompts
       label = Prompts
-      commentPlaceholderText = Share a cool prompt/style. If it's good, it may get added to the Art Style selector.
+      commentPlaceholderText = Share a useful prompt or workflow idea.
       submitButtonText = share prompt
-  
   galleryOptions
     gallery = true
-    showprompt = never 
+    showprompt = never
     shownegativePrompt = never
     sort = trending
     hideIfScoreIsBelow = -1
-    adaptiveHeight = true // <-- expand gallery height so it never has its own scrollbar
+    adaptiveHeight = true
     remember = true
-
-    
-  showFeedback = false // you can temporarily change this to 'true' and then click the feedback button to view feedback
-
-        
-        
-        
-        
-        
-        
-        
-profession
-  waitress
-  nurse
-  librarian
-  teacher
-  scientist
-  college professor
-        
-        
-randomDescription     
-  beautiful {elven|tiefling} [profession], {tight dress|peekaboo cutout dress}, narrow waist
-  {angel|demon girl}, wind blowing hair, {high-waisted shorts|plunging neckline}, {ethereal|bokeh}
-  {cheerful|shy|surprised}, blushing, {midriff|velvet}, {backlit|tilt-shift}
-  {catgirl|wolfgirl|foxgirl}, moonlit, {low|high}-angle shot
-  {tank top|oversized shirt|ripped jeans}, beautiful detailed face, {high contrast|low depth of field|long exposure}
-  {kimono|cheongsam|thigh-high slit dress}, long elegant legs, {wide|narrow} hips, {cyberpunk|blue skies|candle-lit}
-  {petite|curvy}, {21-35} years old, {athletic|graceful}, {green|red|blue|hot pink} short shorts
-  overlooking the {city|harbor|kingdom|valley|sea} at night, wind blowing hair, {tight|short|off-the-shoulder} dress, sleek figure
-  [profession], pretty smile, shallow depth of field, blush, {bokeh|extreme close-up}
-  [profession], she's wearing cute glasses, filled with sweetness and joy
-  beautiful {woman|witch|woodland dryad} holding a {lantern|candle|torch} at {dusk|midnight|sunrise}, {wading|wandering|standing still}, {bokeh|misty atmosphere|starlit sky}
-  {extremely detailed close-up|blurred background shot} of {face|eyes|lips}, {plump|rosy|delicate} lips, {beautiful|ravishing|captivating}
-  {elegant|enchanting|regal} {elf|fairy|vampire} lady, {shallow depth of field|backlit|high contrast}
-  {red|navy blue|black silk} scarf, {arched|graceful|delicate} back, {narrow|tiny|slim} waist
-  wearing {headphones|earbuds|vinyl record player}, {jumpsuit|leather jacket|denim vest}, {slim|athletic|toned} build, {sitting|lying|leaning}, legs {crossed|extended}
-  {fiery|passionate|vivacious} salsa dancer, {twirling dress|flashing heels|clapping castanets}
-  {20's something|30's something} girl, {cafe selfie|beachside selfie|rooftop selfie}, {steaming coffee|cold frappe|hot chocolate}
-  {nomadic|wanderer|exotic} desert woman, {colorful|intricate|handwoven} scarf, {sunset|twilight|dawn} backdrop
-  {young|rebellious|sophisticated} woman, {mirror selfie|polaroid selfie|group selfie}, {new haircut|new hat|new piercing}
-  {magical|charming|bewitching} mermaid, {underwater|near the shore|in the moonlight}, {glistening|shimmering|colorful} scales
-  {female boxer|mixed martial artist}, {red|blue|black} gloves, {intense focus|steely determination}, {sweaty glow|hard-earned sweat}, inside a {boxing ring|cage}
-  beautiful {young woman|woman} on a swing, {park|garden}, {mid-air|high in the sky}, {laughing|joyful}, {sunlit|late afternoon}
-  {young woman|lady} in a garden, planting {flowers|vegetables|herbs}, {dirt-covered|mud-stained} hands, {springtime|bright morning|drizzling rain}
-  {woman|craft artist} at a craft store, choosing {materials|fabrics|beads}, {creative|imaginative}, {warm lighting|soft focus|vivid colors}
-  {pop star|rock idol}, {on stage|center spotlight}, radiant under {spotlights|stage lights}, {crowd cheering|music blaring}
-  {forest ranger|wildlife conservationist}, {wildlife|wilderness} in the background, {binoculars|camera}, {wilderness|mountainous} background, {sunny day|storm brewing|snowfall}
-  {21-27} year old girl at a convenience store, {selfie|quick snap}, {casual wear|sportswear}, {evening|midnight}
-  {tomboy mechanic|female engineer}, {grease smudged|oil-stained}, {wrench|screwdriver} in hand, {garage|workshop}, {focused|determined}
-  {sultry jazz singer|blues vocalist}, {spotlight|blue light}, {mid-note|belting out a soulful tune}, {smoky jazz bar|music lounge}, {long evening dress|sequin gown}
-  {ninja woman|samurai lady}, {moonlit|starlit} night, {rooftop|tree} vantage point, {quiet city|ancient village} below, {black|dark blue} {kimono|suit}
-  {young woman|woman} at a pet store, playing with {puppies|kittens}, {joyful|delighted}, {sunlight through window|flourescence}
-  beautiful {woman|freelancer} at a coffee shop, working on a {laptop|tablet}, {focused|deep in thought}, {cappuccino|latte|tea} by her side
-  {victorian lady|regency dame}, {bonnet|wide-brimmed hat}, {parasol|fan}, {garden|manor house} backdrop, {lace dress|satin gown}
-  {angelic figure|heavenly entity}, flowing {white|ivory} gown, {halo|glowing aura}, {ethereal|divine} light, {heavenly clouds|blossoming garden}
-  {woman|country girl} on a farm, feeding {chickens|ducks}, {rustic|peaceful}, {early morning|sunset}
-  {young woman|woman} at a {climbing|bouldering} wall, {reaching for|grasping at} the top, {determined|focused}, {sweat on forehead|chalk on hands}
-  {elegant princess|regal lady}, flowing {gown|robe}, {enchanted|fairytale} castle behind, {full moon|twinkle stars|sunset}, {tiara|crown} on her head
-  {gypsy fortune teller|seer|spiritual medium}, wide {shimmering|hypnotic} eyes, {crystal ball|tarot cards|pendulum}
-  radiant {bride|groom}, {veil|gossamer shroud}, {happy tears|eyes welling up with joy}
-  {professional painter|abstract artist|expressionist painter}, {color-splattered|ink-stained} apron
-  {cute witch|sorceress|mystic}, {broomstick|magic wand}, {black cat|white owl|familiar}, {twinkling night sky|new moon|eclipse}
-  {cowgirl|rancher|rodeo rider}, hat {tilted|worn}, sunset on the {ranch|farm|prairie}
-  bohemian {artist|painter|sculptor}, {flower crown|laurel wreath}, {sunset|sunrise} painting session
-  {woman|lady|dreamer} on a rooftop, {city|skyline|panoramic} views, {dreaming|contemplating|meditating}
-  medieval {maiden|noblewoman|princess}, {hooded|fur-lined} cloak, {mysterious|enigmatic|mystical} aura
-  {college student|undergraduate scholar|graduate student}, library corner, engrossed in {notes|books|thesis}
-  {young woman|lady|enthusiast} at a vintage clothes shop, trying on {hats|gloves|scarves}
-  {female knight|warrior princess|shield maiden}, {polished|gleaming|battle-ready} armor, {determined|resolute|intimidating} stance
-  {young woman|hiker|adventurous soul} on a hiking trail, {mountainous|forest|wilderness} backdrop, {triumphant|celebratory|jubilant}
-  attractive woman, {detective|crime investigator|private eye}, {trench|leather} coat, {magnifying glass|notebook|torch}, {intriguing|penetrating|analytical} glance
-  {woman|housewife|student} at the laundromat, {folding|sorting} clothes, {cheerful|content|absorbed}
-  {young lady|woman|lady} {on a balcony|at the window}, {coffee|tea} mug, {sunrise|morning sunlight|daybreak}
-  {woman|camper|nature lover} at a campfire, roasting {marshmallows|hot dogs|fire-baked potatoes}, {cozy|warm|quilted} blanket
-  {young woman|woman|pizza lover} in a pizzeria, {first|second|final} bite, {heavenly|delicious|ecstatic}
-  {young woman|college girl} in a {candy store|chocolate shop}, wide-{eyed|eyed and fascinated}
-  {young lady|bookworm}, {cozy nook|quiet library corner}, engrossed in a {novel|comic book}
-  {steampunk diva|cyberpunk enchantress}, {corset|leather harness}, {gears|sprockets}, {top hat|aviator goggles}
-  {female DJ|club queen}, {headphones|mixing deck}, {neon lights|laser beams}, {dancing crowd|jumping fans}
-  {girl|rock chick} with {guitar|bass guitar}, {strumming|pick sliding}, {bedroom|garage band} background
-  {young woman|nature lover} in a {greenhouse|garden}, tending to {plants|blooming flowers}, {content|peaceful}
-  {woman|food enthusiast} at {farmers market|organic store}, {basket|tote bag}, choosing {fruits|vegetables}
-  {woman|bookworm} in a {hammock|swing}, reading a {book|magazine}, {serene|absorbed}
-  {glamorous movie star|Hollywood diva}, {red carpet|premiere}, {flashing lights|paparazzo}
-  {showgirl|cabaret performer}, {sparkly outfit|sequinned costume}, {feather headdress|long gloves}, {stage lights|spotlight}
-  beautiful {vampiress|gothic maiden}, {gothic attire|Victorian gown}, {moonlit|under a full moon}, {alluring grin|mysterious smile}
-  {vintage pin-up girl|50s starlet}, {polka dot dress|nautical swimsuit}, {cherry red|bubblegum pink} lipstick
-  beautiful {punk skater girl|street artist}, {graffiti background|skate park}, {bold smirk|cheeky grin}
-  {young woman|daydreamer} on a {city bus|trolley}, {window seat|backseat}, {candid moment|lost in thought}
-  {athlete|fitness enthusiast}, {sports gear|workout attire}, {toned muscles|sweat dripping}, {catching breath|doing stretches}
-  {flapper girl|jazz age darling}, {feather boa|beaded dress}, {vivacious laughter|dancing}, {jazz age energy|roaring twenties vibe}
-  {ancient Egyptian queen|Pharaoh's lady}, {gold headdress|jeweled collar}, {mysterious|captivating} eyes
-  in {PJs|onesie}, {petting her dog|watching TV}, {lazy Sunday morning|oddball hours}
-  {woman|vinyl collector} in a {music store|record shop}, {browsing|digging through} vinyl records
-  {woman|spa-goer} at a {spa|wellness retreat}, getting a {facial|hot stone massage}, {zen mode|relaxed}
-  {southern belle|Victorian lady}, {parasol|lace fan}, {hoop skirt|voluminous gown}, {soft blush|bashful}
-  {police officer|detective}, {uniform|plainclothes}, {authentic expression|serious gaze}, {city beat|street patrol}
-  {woman|freelancer}, {home office setup|laptop in bed}, {work-from-home mode|burning the midnight oil}
-  {rock climber|mountaineer}, {chalked hands|safety harness}, {triumphant atop peak|scaling the heights}
-  {sun-kissed surfer girl|beach bum}, {catching a wave|wiping out}, {golden hour|sunset hues}
-  {punk rocker|metalhead}, {leather jacket|band tee}, {smoky eyes|piercings}
-  {superheroine|masked vigilante}, {wind-swept cape|utility belt}, {city skyline|rooftop perch}
-  {female astronaut|space explorer}, {helmet off|floating in zero gravity}, {gaze towards stars|Earth reflection in visor}
-  {beautiful woman|foodie} at a {street food stall|local bistro}, {tasting local cuisine|relishing the flavors}
-  woman at a {photo booth|carnival game stand}, {pulling funny faces|making a peace sign}
-  young woman at a {juice bar|trendy cafe}, {sipping on a smoothie|tasting an acai bowl}
-  {serene|focused} yogi, {lotus position|warrior pose}, {sunset|sunrise} lighting
-  attractive woman in a {park|garden}, {yoga mat|exercise ball}, {meditative|tree} pose
-  beautiful woman at a {picnic|barbecue}, {laying out the spread|grilling food}, sunny day
-  {ice skater|gymnast}, {mid-spin|striking a pose}, {sparkling|shimmering} outfit
-  beautiful woman at the {bakery|candy store}, {eyeing pastries|choosing chocolates}
-  {snow queen|ice princess}, {icy|shimmering} gown, glistening snowflakes
-  {zookeeper|marine biologist}, {safari hat|wetsuit}, {cuddling baby animals|swimming with dolphins}
-  {scuba diver|marine explorer}, {ocean|coral reef} background, vibrant coral
-  woman at a {garage sale|vintage marketplace}, {discovering|admiring} antiques
-  young woman in a {karaoke bar|jazz club}, {singing her heart out|playing the saxophone}
-  woman on {bed|sofa}, {laptop|tablet}, {binge-watching series|reading an e-book}
-  young woman at the {ice cream parlor|gelato shop}, deciding {flavors|toppings}, excited
-  attractive woman in the {kitchen|bakehouse}, {baking|cooking}, flour smudged nose
-  young woman in {gym gear|athletic wear}, {home workout|yoga practice}, balancing pose
-  beautiful woman at the {airport|train station}, {window|observation deck}, watching {takeoffs|trains departing}, wanderlust
-  woman in {art studio|craft room}, {canvas|easel}, {paint-splattered|chalk-covered} apron
-  young woman at a {skate park|roller derby}, determined
-  attractive woman on a {boat|canoe}, {fishing|rowing}, peaceful
-  woman at a {pottery class|painting workshop}, hands {covered in clay|smudged with paint}
-  {playful|mischievous} catgirl, {glittering|luminescent} eyes, {city|harbor} night scape
-  {college|university} girl, {stack of books|laptop and notes}, {glasses|trendy eyewear}, candid laughter
-  {lady|captain} pirate, {eye patch|tricorn hat}, wind-blown hair, {iconic smirk|defiant grin}
-  young woman on the {beach|seashore}, {sunhat|wide-brimmed straw hat}, {building a sandcastle|collecting seashells}
-  beautiful woman in a {thrift shop|vintage boutique}, {hunting for bargains|trying on clothes}, vintage style
-  attractive woman on a {bicycle|roller skates}, wind in hair, {sunset|twilight}
-  young woman at a {diner|retro cafe}, {enjoying a milkshake|savoring a sundae}, retro vibe
-  girl in a {record store|music shop}, {headphones|earbuds} on, vinyl browsing
-  {petite|tiny} fairy, {delicate|glowing} wings, {sparkling|pulsing} aura
-  beautiful woman, {kitchen counter|breakfast nook}, {chopping vegetables|whisking batter}, focused
-  woman at {a} {amusement park|fairground}, {cotton candy|popcorn}, excited
-  elven {enchantress|sorceress}, {fireflies|glowing orbs} in the background
-  attractive woman at the {beach|lakeside}, {building a sandcastle|making a flower crown}, playful
-  enchanting {siren|mermaid}, {ocean waves|coral reef backdrop}, {haunting|enchanting} melody, flowing {red|blue} hair
-  {woman|lady} at a {bookstore|library}, browsing through {novels|poetry books}, soft smile, {glasses|hat}
-  gothic {maiden|lady}, {lace|velvet} dress, {parasol|walking cane}, hidden smile, {full moon|foggy} backdrop
-  chic {businesswoman|lawyer}, {pencil skirt|tailored pantsuit}, confident smirking, {skyline|office} view
-  {girl|woman} at a {music festival|rock concert}, {dancing|head-banging}, lost in rhythm, {flower crown|bandana}
-  beautiful {chef|baker}, {apron|chef's jacket}, satisfied grin, {freshly baked bread|pastry}, {rustic|modern} kitchen
-  Renaissance {woman|lady}, {corset|ball gown} dress, blushing cheek, soft focus, {castle|manor} backdrop
-  {gamer|streamer} girl, {neon|ambient} lighting, engrossed in play, {retro|futuristic} gaming setup
-  chic {fashionista|model}, {catwalk|runway}, fierce {stride|pose}, {evening gown|haute couture}
-  young woman on a carousel, {mid-ride|reaching for brass ring}, {childlike|carefree} joy, {sundress|overalls}
-  beautiful {woman|lady} at the {florist|botanic garden}, smelling {roses|lilies}, blooming happiness, {summer dress|blouse}
-  young lady in a {swimming pool|lake}, {floating|diving}, big grin, {bikini|one-piece swimsuit}
-  mysterious {spy|agent}, {sunglasses|mask}, {city streets|rooftops} at night, {leather jacket|trench coat}
-  tribal warrior {woman|princess}, painted {mask|face}, strong stance, {jungle|dusty plains} backdrop
-  {ballerina|dancer}, {en pointe|mid-pirouette}, delicate grace, {stage|dance studio} setting
-  {woman|lady} with her {cat|dog}, {couch|armchair}, {knitting|reading}, {fireplace|window} view
-  {girl|woman} at her desk, vibrant {sketches|paintings}, daydreaming, {loft|studio} ambiance
-  {nurse|physician}, comforting smile, soothing aura, {hospital ward|private clinic}, wearing {scrubs|lab coat}
-        
-        
-        
-        
-        
-bannedUsersList
-  
-        
-        
-
-
-
-
+  showFeedback = false
