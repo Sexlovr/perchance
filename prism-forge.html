@@ -415,27 +415,30 @@ reject(e);
 const extractBlobFromElement = async (el) => {
 if (!el) throw Error('Element not found');
 
-// 1. Check in-memory canvas on element or parent
+// 1. Direct canvas or memory canvas
 if (el.__pfCanvas) {
 try { return await canvasToBlob(el.__pfCanvas); } catch (_) {}
 }
 if (el.parentElement?.__pfCanvas) {
 try { return await canvasToBlob(el.parentElement.__pfCanvas); } catch (_) {}
 }
+if (window.currentCanvas) {
+try { return await canvasToBlob(window.currentCanvas); } catch (_) {}
+}
 
-// 2. Direct canvas element
+// 2. Direct canvas tag
 if (el.tagName && el.tagName.toLowerCase() === 'canvas') {
 try { return await canvasToBlob(el); } catch (_) {}
 }
 
-// 3. Any canvas inside the container
-const innerCanvas = el.parentElement?.querySelector('canvas') || el.querySelector?.('canvas');
-if (innerCanvas) {
-try { return await canvasToBlob(innerCanvas); } catch (_) {}
+// 3. Find any canvas inside container or parent
+const anyCanvas = el.querySelector?.('canvas') || el.parentElement?.querySelector('canvas') || document.querySelector('#outputAreaEl canvas') || document.querySelector('.hover-full');
+if (anyCanvas) {
+try { return await canvasToBlob(anyCanvas); } catch (_) {}
 }
 
-// 4. Direct img element or inside container
-const imgEl = (el.tagName && el.tagName.toLowerCase() === 'img') ? el : (el.querySelector?.('img') || el.parentElement?.querySelector('img'));
+// 4. Image element: data/blob/http URL
+const imgEl = (el.tagName && el.tagName.toLowerCase() === 'img') ? el : (el.querySelector?.('img') || el.parentElement?.querySelector('img') || document.querySelector('#outputAreaEl img'));
 if (imgEl) {
 const src = imgEl.currentSrc || imgEl.src || '';
 if (src.startsWith('data:')) {
@@ -445,42 +448,45 @@ if (src.startsWith('blob:')) {
 const r = await fetch(src); return await r.blob();
 }
 if (src.startsWith('http')) {
-try {
-const r = await fetch(src); return await r.blob();
-} catch (_) {
-try {
-return await imageToBlob(imgEl);
-} catch (_) {
 return { urlOnly: src };
 }
 }
-}
-}
 
-// 5. Iframe contentDocument check
-if (el.tagName && el.tagName.toLowerCase() === 'iframe') {
+// 5. Iframe search: check contentDocument or src
+if (el.tagName && el.tagName.toLowerCase() === 'iframe' || el.querySelector?.('iframe')) {
+const ifr = el.tagName?.toLowerCase() === 'iframe' ? el : el.querySelector('iframe');
 try {
-const doc = el.contentDocument || el.contentWindow?.document;
+const doc = ifr?.contentDocument || ifr?.contentWindow?.document;
 if (doc) {
 const c = doc.querySelector('canvas');
 if (c) return await canvasToBlob(c);
 const im = doc.querySelector('img');
-if (im) return await extractBlobFromElement(im);
+if (im) {
+const s = im.currentSrc || im.src || '';
+if (s.startsWith('data:') || s.startsWith('blob:')) {
+const r = await fetch(s); return await r.blob();
+}
+if (s.startsWith('http')) return { urlOnly: s };
+}
 }
 } catch (_) {}
+if (ifr?.src && ifr.src.startsWith('http') && !ifr.src.includes('perchance.org')) {
+return { urlOnly: ifr.src };
+}
 }
 
-// 6. Sibling image or canvas check
-if (el.parentElement) {
-const anyImg = el.parentElement.querySelector('img');
-if (anyImg) return await extractBlobFromElement(anyImg);
-const anyCanvas = el.parentElement.querySelector('canvas');
-if (anyCanvas) return await extractBlobFromElement(anyCanvas);
+// 6. Last resort: check latest generated image URL from Perchance gallery
+const latestGalleryImg = document.querySelector('#imageGalleryCtn8569284 img, #outputAreaEl img');
+if (latestGalleryImg) {
+const src = latestGalleryImg.currentSrc || latestGalleryImg.src || '';
+if (src.startsWith('data:') || src.startsWith('blob:')) {
+const r = await fetch(src); return await r.blob();
+}
+if (src.startsWith('http')) return { urlOnly: src };
 }
 
 throw Error('Image data not ready. Try again in a moment.');
 };
-
 const handleUploadClick = async (btn, targetMedia) => {
 if (btn.disabled) return;
 const hash = getHash();
