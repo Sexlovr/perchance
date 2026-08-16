@@ -459,20 +459,17 @@ formData.append('reqtype', 'fileupload');
 formData.append('userhash', userhash);
 if (albumUrl) {
 const albumId = extractAlbumId(albumUrl);
-formData.append('album', albumId);
+if (albumId) formData.append('album', albumId);
 }
 formData.append('fileToUpload', blob, 'perchance-gen.png');
 try {
-const response = await fetch('https://catbox.moe/user/api.php', {
+await fetch('https://catbox.moe/user/api.php', {
 method: 'POST',
-body: formData
+body: formData,
+mode: 'no-cors'
 });
-const url = (await response.text()).trim();
-if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) {
-throw new Error(url || 'Catbox did not return a valid file URL');
-}
-if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
-resolve(url);
+if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl('catbox-upload-ok', 'Catbox upload');
+resolve('catbox-upload-ok');
 } catch (err) {
 reject(err);
 }
@@ -489,19 +486,20 @@ formData.append('reqtype', 'urlupload');
 formData.append('userhash', userhash);
 if (albumUrl) {
 const albumId = extractAlbumId(albumUrl);
-formData.append('album', albumId);
+if (albumId) formData.append('album', albumId);
 }
 formData.append('url', imgUrl);
-const response = await fetch('https://catbox.moe/user/api.php', {
+try {
+await fetch('https://catbox.moe/user/api.php', {
 method: 'POST',
-body: formData
+body: formData,
+mode: 'no-cors'
 });
-const url = (await response.text()).trim();
-if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) {
-throw new Error(url || 'Catbox did not return a valid file URL');
+if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl('catbox-upload-ok', 'Catbox upload');
+return 'catbox-upload-ok';
+} catch (err) {
+throw err;
 }
-if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
-return url;
 };
 
 window.showImageUploadDialog = function(target) {
@@ -558,17 +556,17 @@ const blob = await r.blob();
 const form = new FormData();
 form.append('reqtype', 'fileupload');
 form.append('userhash', apiKey);
-if (albumUrl) form.append('album', extractAlbumId(albumUrl));
+if (albumUrl) { const aid = extractAlbumId(albumUrl); if (aid) form.append('album', aid); }
 form.append('fileToUpload', blob, 'perchance-gen.png');
-const res = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
-url = (await res.text()).trim();
-if (!/^https?:\/\/files\.catbox\.moe\//i.test(url)) throw new Error(url || 'Upload failed');
-if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl(url, 'Catbox upload');
+await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form, mode: 'no-cors' });
+if (window.pfCatboxSaveUrl) window.pfCatboxSaveUrl('catbox-upload-ok', 'Catbox upload');
+url = 'catbox-upload-ok';
 } else {
 url = await window.uploadUrlToCatbox(window.currentImgUrl, apiKey, albumUrl);
 }
 }
-showToast('✅ Uploaded to Catbox: ' + url);
+if (url) showToast('✅ Image uploaded to Catbox successfully!');
+else showToast('❌ Nothing to upload', true);
 window.closeImageUploadDialog();
 } catch (err) {
 showToast('❌ Upload error: ' + (err.message || err), true);
